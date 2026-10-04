@@ -3,14 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Portal de Diseño Gráfico 4 — FADU, UBA" />
-    <title>Diseño Gráfico 4 — FADU UBA</title>
+    <meta name="description" content="Portal de Diseño Gráfico 4 — Cátedra Meygide-Carpintero, FADU, UBA." />
+    <meta name="theme-color" content="#18235d" />
+    <title>Diseño Gráfico 4 — FADU, UBA</title>
+    <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <main>
-      <p>FADU · UBA</p>
-      <h1>Diseño Gráfico 4</h1>
-      <p>Portal de la cátedra.</p>
-    </main>
+    <div class="site-frame">
+      <aside class="site-rail" aria-label="Navegación principal">
+        <div>
+          <p class="site-mark" aria-label="Diseño Gráfico 4">DG 04</p>
+          <p>Cátedra Meygide-Carpintero<br />FADU, UBA</p>
+        </div>
+        <nav>
+          <a href="#programa">Programa</a>
+          <a href="#enfoque">Enfoque</a>
+          <a href="#cierre">Cátedra</a>
+        </nav>
+      </aside>
+
+      <main class="site-content">
+        <div class="content-inner">
+          <header class="site-meta"><span>Nivel 4 / 2026</span><span>Portal de la asignatura</span></header>
+
+          <section class="hero" id="enfoque" aria-labelledby="hero-title">
+            <h1 id="hero-title">Interfaces<br />para la<br />experiencia</h1>
+            <div class="hero-copy">
+              <span class="eyebrow">Diseño de productos digitales</span>
+              <p>Exploramos en profundidad el diseño de productos digitales, con foco en la construcción de interfaces de usuario para la Web y el proceso de diseño de aplicaciones móviles.</p>
+              <a class="hero-link" href="#programa">Explorar el programa ↓</a>
+            </div>
+          </section>
+
+          <section class="program" id="programa" aria-labelledby="program-title">
+            <div class="program-heading"><h2 id="program-title">Programa</h2><p>Cuatro ejercicios para abordar la experiencia de usuario desde la narrativa, la edición, el sitio y la aplicación.</p></div>
+            <div class="exercise-list">
+              <article class="exercise"><span class="exercise-number">01</span><div><h3>Scrollytelling</h3><p>Construcción del discurso narrativo digital interactivo: adecuación conceptual, discursiva, visual y gráfica. El scrolling como herramienta narrativa en la web.</p><ul><li>Gramática del Scrollytelling</li><li>Diseño Editorial Web</li></ul></div><span class="exercise-tag">Narrativa</span></article>
+              <article class="exercise"><span class="exercise-number">02</span><div><h3>Diseño Editorial Web</h3><p>¿Cómo diseñar piezas editoriales cuando hay tantos tamaños de páginas como pantallas de dispositivos?</p><ul><li>Tipografía en la web</li><li>Diferencias respecto del diseño gráfico tradicional</li><li>Tipos de layouts y grillas flexibles</li><li>Diseño responsive: breakpoints y rangos de viewports</li></ul></div><span class="exercise-tag">Edición</span></article>
+              <article class="exercise"><span class="exercise-number">03</span><div><h3>Diseño UI / UX / Diseño de Sitio Web</h3><p>¿Qué rol debe asumir el Diseño de Experiencias de Usuario (UX) en la actualidad para construir entornos digitales más transparentes, más inclusivos y más equitativos?</p><ul><li>Diseño atómico y sistemas de diseño</li><li>Usabilidad y accesibilidad</li><li>Multimedia</li><li>Diseño de interacciones macro y micro</li><li>Prototipos interactivos y videos de simulación</li></ul></div><span class="exercise-tag">UI / UX</span></article>
+              <article class="exercise"><span class="exercise-number">04</span><div><h3>Diseño UI / UX / Diseño de App</h3><p>Empatía e inclusión como ejes claves del diseño en proyectos de tecnología e innovación.</p><ul><li>Metodologías ágiles en el Diseño UX</li><li>Design Thinking</li><li>Investigación UX</li><li>Arquitectura de la información</li><li>Flujos de tareas, wireframes y wireflows</li><li>Auditoría UX y validación de prototipos</li></ul></div><span class="exercise-tag">UI / UX</span></article>
+            </div>
+          </section>
+
+          <section class="closing" id="cierre" aria-labelledby="closing-title"><h2 id="closing-title">Diseñar<br />entornos<br />digitales.</h2><p>Diseño Gráfico 4 pone en relación pensamiento crítico, investigación y práctica proyectual para construir experiencias digitales más transparentes, inclusivas y equitativas.</p></section>
+          <footer class="site-footer"><span>Diseño Gráfico 4 · Cátedra Meygide-Carpintero</span><span>FADU · UBA</span></footer>
+        </div>
+      </main>
+    </div>
   </body>
 </html>

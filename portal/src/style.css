@@ -288,6 +288,7 @@ a {
     .hero {
         grid-template-columns: 1fr;
         padding-top: 8vh;
+        padding-bottom: 6vh;
     }
     .hero h1 {
         max-width: 90%;

@@ -51,7 +51,7 @@ Empatía e inclusión como ejes claves del diseño en proyectos de tecnología e
 
 <!-- página: trabajo-practico-5.md -->
 
-Trabajo de investigación y reflexión sobre temas vinculados a la práctica del diseño de productos digitales y experiencias de usuario atravesados por la emergencia de la "Inteligencia Artificial" y su impacto en el flujo de trabajo. Los ejes a explorar son:
+Trabajo de investigación y reflexión sobre temas vinculados a la práctica del diseño de experiencias de usuario, atravesadas por la emergencia de la "Inteligencia Artificial" y su impacto en el flujo de trabajo del diseñador. Los ejes a explorar son:
 - Sistemas de diseño
 - Design Thinking
 - Prototipado

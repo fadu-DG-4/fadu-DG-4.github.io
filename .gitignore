@@ -1,0 +1,11 @@
+# Dependencias
+portal/node_modules/
+
+# Builds
+portal/dist/
+
+# Archivos de Vite
+portal/.vite/
+
+# Configuración local de editores
+jsconfig.json

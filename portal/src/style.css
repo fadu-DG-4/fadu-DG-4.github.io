@@ -37,11 +37,19 @@ a {
 .site-rail {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 40px;
+    gap: 10px;
     padding: 22px 18px;
     border-right: 2px solid var(--ink);
 }
+.site-rail-vertical {
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 20px;
+}
+.site-rail-vertical p {
+    margin-top: 2px;
+    margin-bottom: 8px
+}
+
 
 .site-mark {
     margin: 0;
@@ -107,7 +115,7 @@ a {
     display: grid;
     grid-template-columns: minmax(0, 1.34fr) minmax(260px, 0.66fr);
     gap: clamp(28px, 6vw, 100px);
-    padding: clamp(80px, 13vw, 102px) 0 93px;
+    padding: clamp(60px, 12vw, 72px) 0 93px;
     border-bottom: 1px solid var(--line);
 }
 
@@ -347,12 +355,13 @@ a {
     .hero h1 {
         font-size: clamp(4rem, 20vw, 7.3rem);
     }
+    .site-header *:last-child {
+        display: none;
+    }
 }
 
 @media (max-width: 440px) {
-    .site-meta,
     .program-heading,
-    .site-header,
     .site-footer {
         display: block;
     }

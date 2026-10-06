@@ -18,7 +18,7 @@ Construcción del discurso narrativo digital interactivo: adecuación conceptual
 - Tipos de layouts y grillas flexibles
 - Diseño responsive: breakpoints y rangos de viewports
 
-## Diseño UI / UX / Diseño de Sitio Web — Web
+## Diseño Web — UI / UX
 
 ¿Qué rol debe asumir el Diseño de Experiencias de Usuario (UX) en la actualidad para construir entornos digitales más transparentes, más inclusivos y más equitativos?
 
@@ -28,7 +28,7 @@ Construcción del discurso narrativo digital interactivo: adecuación conceptual
 - Diseño de interacciones macro y micro
 - Prototipos interactivos y videos de simulación
 
-## Diseño UI / UX / Diseño de App — App
+## Diseño de Aplicaciones — Mobile First
 
 Empatía e inclusión como ejes claves del diseño en proyectos de tecnología e innovación.
 

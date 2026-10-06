@@ -13,16 +13,24 @@
     <div class="site-frame">
       <aside class="site-rail" aria-label="Navegación principal">
         <div class=site-rail-vertical>
-          <p class="site-mark">DG 04</p>
+          <p class="site-mark"><a href="/">DG 04</a></p>
           <p>Cátedra Meygide-Carpintero</p>
           <p>FADU, UBA</p>
         </div>
-        <div class="site-header"><span>Diseño Gráfico 4 · Cátedra Meygide-Carpintero</span><span>FADU · UBA</span></div>
-        <nav>
+        <div class="site-header">
+          <span>Diseño Gráfico 4 · Cátedra Meygide-Carpintero</span>
+          <span>FADU · UBA</span>
+          <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-nav">
+            <span class="sr-only">Abrir menú de navegación</span>
+            <span class="menu-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+          </button>
+        </div>
+        <nav class="desktop-nav">
           <a href="#programa">Programa</a>
-          <a href="#enfoque">Enfoque</a>
-          <a href="#cierre">Cátedra</a>
+          <a href="#equipo">Equipo</a>
+          <a href="/navegacion.html">Contenidos</a>
         </nav>
+        <nav class="mobile-nav" id="mobile-nav" aria-label="Navegación móvil" hidden></nav>
       </aside>
 
       <main class="site-content">
@@ -32,8 +40,8 @@
           <section class="hero" id="enfoque" aria-labelledby="hero-title">
             <h1 id="hero-title"><span style="white-space: nowrap">Diseñar en</span> entornos digitales.</h1>
             <div class="hero-copy">
-              <span class="eyebrow">Diseño de productos digitales</span>
-              <p>Exploramos en profundidad el diseño de productos digitales, con foco en la construcción de interfaces de usuario para la Web y el proceso de diseño de aplicaciones móviles.</p>
+              <span class="eyebrow"><!-- HERO_EYEBROW --></span>
+              <p><!-- HERO_TEXT --></p>
               <a class="hero-link" href="#programa">Explorar el programa ↓</a>
             </div>
           </section>
@@ -42,10 +50,15 @@
             <!-- PROGRAM_CONTENT -->
           </section>
 
-          <section class="closing" id="cierre" aria-labelledby="closing-title"><h2 id="closing-title">Interfaces para la experiencia.</h2><p>Diseño Gráfico 4 pone en relación pensamiento crítico, investigación y práctica proyectual para construir experiencias digitales más transparentes, inclusivas y equitativas.</p></section>
+          <section class="closing" id="cierre" aria-labelledby="closing-title"><h2 id="closing-title"><!-- CLOSING_TITLE --></h2><p><!-- CLOSING_TEXT --></p></section>
+
+          <section class="team" id="equipo" aria-labelledby="equipo-title">
+            <!-- EQUIPO_CONTENT -->
+          </section>
           <footer class="site-footer"><span>Diseño Gráfico 4 · Cátedra Meygide-Carpintero</span><span>FADU · UBA</span></footer>
         </div>
       </main>
     </div>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

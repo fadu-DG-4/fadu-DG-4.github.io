@@ -1,4 +1,4 @@
-# Guía: crear una cuenta en GitHub
+# ¿Cómo crear una cuenta en GitHub?
 
 GitHub es una plataforma para alojar proyectos, organizar archivos y trabajar con repositorios. A continuación, el instructivo con los pasos para crear una cuenta nueva en GitHub.
 

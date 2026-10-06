@@ -1,16 +1,39 @@
 import { defineConfig } from "vite";
 import { marked } from "marked";
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, readFileSync, readdirSync, statSync, unlinkSync, writeFileSync } from "node:fs";
+import { basename, resolve } from "node:path";
 
 const programaPath = resolve(process.cwd(), "..", "contenidos", "programa.md");
 const resumenPath = resolve(process.cwd(), "..", "contenidos", "resumen.md");
 const equipoPath = resolve(process.cwd(), "..", "contenidos", "equipo.md");
 const guiaGithubPath = resolve(process.cwd(), "..", "instructivos", "guia-crear-cuenta-github.md");
 const instructivosMediaPath = resolve(process.cwd(), "..", "instructivos", "medios");
-const trabajoPracticoPaths = [1, 2, 3, 4].map((number) =>
-  resolve(process.cwd(), "..", "contenidos", `trabajo-practico-${number}.md`),
-);
+const contenidosPath = resolve(process.cwd(), "..", "contenidos");
+const trabajoPracticoTemplatePath = resolve(process.cwd(), "trabajo-practico-template.html");
+const generatedPagesPath = process.cwd();
+
+function getTrabajoPracticoEntries() {
+  const markdown = readFileSync(programaPath, "utf8");
+  return [...markdown.matchAll(/<!--\s*página:\s*(trabajo-practico-[\d-]+\.md)\s*-->/gi)].map(
+    ([, fileName]) => ({
+      fileName,
+      markdownPath: resolve(contenidosPath, fileName),
+      htmlFileName: fileName.replace(/\.md$/i, ".html"),
+    }),
+  );
+}
+
+function prepareGeneratedPages() {
+  const template = readFileSync(trabajoPracticoTemplatePath, "utf8");
+
+  for (const { fileName, htmlFileName } of getTrabajoPracticoEntries()) {
+    const marker = `<!-- TRABAJO_PRACTICO_CONTENT: ${fileName} -->`;
+    writeFileSync(
+      resolve(generatedPagesPath, htmlFileName),
+      template.replace("<!-- TRABAJO_PRACTICO_CONTENT -->", marker),
+    );
+  }
+}
 
 function escapeHtml(value) {
   return value
@@ -34,13 +57,24 @@ function renderPrograma(markdown) {
     .map((section, index) => {
       const [heading, ...bodyLines] = section.trim().split(/\r?\n/);
       const [exerciseTitle, tag = ""] = heading.split(" — ").map((value) => value.trim());
-      const bodyHtml = marked.parse(bodyLines.join("\n").trim()).trim();
+      const pageMatch = section.match(/<!--\s*página:\s*([^>]+?)\s*-->/i);
+      const pagePath = pageMatch
+        ? pageMatch[1].trim().replace(/\.md$/i, ".html")
+        : "";
+      const visibleBody = bodyLines
+        .filter((line) => !/<!--\s*página:\s*[^>]+?\s*-->/i.test(line))
+        .join("\n")
+        .trim();
+      const bodyHtml = marked.parse(visibleBody).trim();
+      const titleHtml = pagePath
+        ? `<a href="/${escapeHtml(pagePath)}">${escapeHtml(exerciseTitle)}</a>`
+        : escapeHtml(exerciseTitle);
       const number = String(index + 1).padStart(2, "0");
 
       return `<article class="exercise">
   <span class="exercise-number">${number}</span>
   <div>
-    <h3>${escapeHtml(exerciseTitle)}</h3>
+    <h3>${titleHtml}</h3>
     ${bodyHtml}
   </div>
   <span class="exercise-tag">${escapeHtml(tag)}</span>
@@ -108,6 +142,14 @@ function renderTrabajoPractico(markdown, fallbackTitle) {
   return rendered || `<h1>${escapeHtml(fallbackTitle)}</h1>`;
 }
 
+function renderTrabajoPracticoPage(template, markdownPath, fallbackTitle) {
+  const markdown = readFileSync(markdownPath, "utf8");
+  return template.replace(
+    /<!--\s*TRABAJO_PRACTICO_CONTENT(?::[^>]+)?\s*-->/,
+    renderTrabajoPractico(markdown, fallbackTitle),
+  );
+}
+
 function renderGuiaGithub(markdown) {
   const normalizedMarkdown = markdown.replaceAll("](medios/", "](instructivos/medios/");
   return marked.parse(normalizedMarkdown).trim();
@@ -127,6 +169,13 @@ function emitDirectoryAssets(pluginContext, directory, outputPrefix) {
         source: readFileSync(sourcePath),
       });
     }
+  }
+}
+
+function removeGeneratedPages() {
+  for (const { htmlFileName } of getTrabajoPracticoEntries()) {
+    const generatedPath = resolve(generatedPagesPath, htmlFileName);
+    if (existsSync(generatedPath)) unlinkSync(generatedPath);
   }
 }
 
@@ -155,12 +204,43 @@ function serveInstructivosMedia(server) {
   });
 }
 
+function serveTrabajoPracticoPages(server) {
+  server.middlewares.use(async (request, response, next) => {
+    const requestPath = decodeURIComponent((request.url || "").split("?")[0]);
+    const match = requestPath.match(/^\/((?:trabajo-practico-\d+))\.html$/i);
+
+    if (!match) {
+      next();
+      return;
+    }
+
+    const fileName = `${match[1]}.md`;
+    const markdownPath = resolve(contenidosPath, fileName);
+    const entries = getTrabajoPracticoEntries();
+    const isConfigured = entries.some((entry) => entry.fileName.toLowerCase() === fileName.toLowerCase());
+
+    if (!isConfigured || !existsSync(markdownPath)) {
+      next();
+      return;
+    }
+
+    const template = readFileSync(trabajoPracticoTemplatePath, "utf8");
+    const html = renderTrabajoPracticoPage(template, markdownPath, `Trabajo práctico ${match[1].split("-").pop()}`);
+    const transformedHtml = await server.transformIndexHtml(request.url, html);
+
+    response.statusCode = 200;
+    response.setHeader("Content-Type", "text/html; charset=utf-8");
+    response.end(transformedHtml);
+  });
+}
+
 function markdownContentPlugin() {
   return {
     name: "markdown-content",
     configureServer(server) {
       serveInstructivosMedia(server);
-      [programaPath, resumenPath, equipoPath, guiaGithubPath, ...trabajoPracticoPaths].forEach((contentPath) => {
+      serveTrabajoPracticoPages(server);
+      [programaPath, resumenPath, equipoPath, guiaGithubPath, ...getTrabajoPracticoEntries().map((entry) => entry.markdownPath)].forEach((contentPath) => {
         server.watcher.add(contentPath);
       });
     },
@@ -172,12 +252,13 @@ function markdownContentPlugin() {
         const resumen = renderResumen(readFileSync(resumenPath, "utf8"));
         const equipo = renderEquipo(readFileSync(equipoPath, "utf8"));
         const guiaGithub = renderGuiaGithub(readFileSync(guiaGithubPath, "utf8"));
-        const trabajosPracticos = trabajoPracticoPaths.map((contentPath, index) =>
-          renderTrabajoPractico(
-            readFileSync(contentPath, "utf8"),
-            `Trabajo práctico ${index + 1}`,
-          ),
-        );
+        const pageMatch = html.match(/<!--\s*TRABAJO_PRACTICO_CONTENT:\s*([^>]+?)\s*-->/);
+        const trabajoPracticoContent = pageMatch
+          ? renderTrabajoPractico(
+              readFileSync(resolve(contenidosPath, pageMatch[1].trim()), "utf8"),
+              pageMatch[1].match(/\d+/)?.[0] ? `Trabajo práctico ${pageMatch[1].match(/\d+/)[0]}` : "Trabajo práctico",
+            )
+          : "";
 
         return html
           .replace("<!-- PROGRAM_CONTENT -->", content)
@@ -187,14 +268,11 @@ function markdownContentPlugin() {
           .replace("<!-- CLOSING_TEXT -->", resumen.closingText)
           .replace("<!-- EQUIPO_CONTENT -->", equipo)
           .replace("<!-- GUIA_GITHUB_CONTENT -->", guiaGithub)
-          .replace("<!-- TP1_CONTENT -->", trabajosPracticos[0])
-          .replace("<!-- TP2_CONTENT -->", trabajosPracticos[1])
-          .replace("<!-- TP3_CONTENT -->", trabajosPracticos[2])
-          .replace("<!-- TP4_CONTENT -->", trabajosPracticos[3]);
+          .replace(/<!--\s*TRABAJO_PRACTICO_CONTENT:\s*[^>]+?\s*-->/, trabajoPracticoContent);
       },
     },
     handleHotUpdate({ file, server }) {
-      if ([programaPath, resumenPath, equipoPath, guiaGithubPath, ...trabajoPracticoPaths].includes(resolve(file))) {
+      if ([programaPath, resumenPath, equipoPath, guiaGithubPath, ...getTrabajoPracticoEntries().map((entry) => entry.markdownPath)].includes(resolve(file))) {
         server.ws.send({ type: "full-reload" });
         return [];
       }
@@ -202,22 +280,33 @@ function markdownContentPlugin() {
     generateBundle() {
       emitDirectoryAssets(this, instructivosMediaPath, "instructivos/medios");
     },
+    closeBundle() {
+      removeGeneratedPages();
+    },
   };
 }
 
-export default defineConfig({
-  plugins: [markdownContentPlugin()],
-  build: {
-    rollupOptions: {
-      input: {
-        home: resolve(process.cwd(), "index.html"),
-        navegacion: resolve(process.cwd(), "navegacion.html"),
-        guiaGithub: resolve(process.cwd(), "guia-crear-cuenta-github.html"),
-        trabajoPractico1: resolve(process.cwd(), "trabajo-practico-1.html"),
-        trabajoPractico2: resolve(process.cwd(), "trabajo-practico-2.html"),
-        trabajoPractico3: resolve(process.cwd(), "trabajo-practico-3.html"),
-        trabajoPractico4: resolve(process.cwd(), "trabajo-practico-4.html"),
+export default defineConfig(({ command }) => {
+  if (command === "build") prepareGeneratedPages();
+
+  return {
+    plugins: [markdownContentPlugin()],
+    build: {
+      rollupOptions: {
+        input: {
+          home: resolve(process.cwd(), "index.html"),
+          navegacion: resolve(process.cwd(), "navegacion.html"),
+          guiaGithub: resolve(process.cwd(), "guia-crear-cuenta-github.html"),
+          ...(command === "build"
+            ? Object.fromEntries(
+                getTrabajoPracticoEntries().map(({ htmlFileName }) => [
+                  htmlFileName.replace(/\.html$/i, ""),
+                  resolve(generatedPagesPath, htmlFileName),
+                ]),
+              )
+            : {}),
+        },
       },
     },
-  },
+  };
 });

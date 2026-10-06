@@ -2,12 +2,12 @@
 
 ## Nancy Insua
 
-Diseñadora Gráfica (UBA)
+Diseñadora Gráfica (FADU, UBA) y Maestra Nacional de Artes Visuales (Esc. Nac. de Bellas Artes Carlos Morel)
 
 ## Gastón Martino
 
-Lic. Análisis de Sistemas & Diseñador Gráfico (UBA)
+Lic. Análisis de Sistemas (FIUBA, UBA) & Diseñador Gráfico (FADU, UBA)
 
 ## Clara Pedernera
 
-Diseñadora Gráfica (UBA)
+Diseñadora Gráfica (FADU, UBA)

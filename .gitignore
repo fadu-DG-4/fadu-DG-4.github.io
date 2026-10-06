@@ -6,6 +6,7 @@ portal/dist/
 
 # Archivos de Vite
 portal/.vite/
+portal/trabajo-practico-[0-9]*.html
 
 # Configuración local de editores
 jsconfig.json

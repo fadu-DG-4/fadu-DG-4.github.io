@@ -5,6 +5,9 @@
     --yellow: #f3d85d;
     --line: rgba(24, 35, 93, 0.72);
     --line-light: rgba(24, 35, 93, 0.21);
+    --content-title-max-width: 850px;
+    --content-body-max-width: 700px;
+    --content-table-max-width: var(--content-title-max-width);
     --serif: Georgia, "Times New Roman", serif;
     --sans: Arial, Helvetica, sans-serif;
 }
@@ -334,7 +337,7 @@ a {
 
 .tp-content h1,
 .page-content > h1 {
-    max-width: 850px;
+    max-width: var(--content-title-max-width);
     margin: 18px 0 48px;
     font-family: var(--serif);
     font-size: clamp(4rem, 10vw, 8rem);
@@ -348,7 +351,7 @@ a {
 }
 
 .guide-content h1 {
-    max-width: 850px;
+    max-width: var(--content-title-max-width);
     margin: 18px 0 48px;
     font-family: var(--serif);
     font-size: clamp(3.5rem, 8vw, 6.8rem);
@@ -376,8 +379,8 @@ a {
 .guide-content p,
 .guide-content ul,
 .guide-content ol,
-.guide-content blockquote {
-    max-width: 700px;
+.page-content blockquote {
+    max-width: var(--content-body-max-width);
     font-size: 1rem;
     line-height: 1.55;
 }
@@ -387,11 +390,48 @@ a {
     padding-left: 1.35rem;
 }
 
-.guide-content blockquote {
+.page-content blockquote {
     margin: 26px 0;
     padding: 14px 20px;
     border-left: 3px solid var(--yellow);
     background: var(--paper);
+    font-family: var(--serif);
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.page-content table {
+    width: 100%;
+    max-width: var(--content-table-max-width);
+    margin: 38px 0;
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 0.88rem;
+    line-height: 1.4;
+}
+
+.page-content th,
+.page-content td {
+    padding: 14px 12px;
+    border: 0;
+    border-left: 0;
+    border-right: 0;
+    text-align: left;
+    vertical-align: top;
+}
+
+.page-content thead th {
+    border-bottom: 2px solid var(--ink);
+    font-weight: 600;
+}
+
+.page-content tbody td {
+    border-bottom: 1px solid var(--line-light);
+}
+
+.page-content tbody tr:last-child td {
+    border-bottom: 2px solid var(--ink);
 }
 
 .guide-content img {
@@ -426,7 +466,7 @@ a {
 .page-content > p,
 .page-content > ul,
 .page-content > ol {
-    max-width: 650px;
+    max-width: var(--content-body-max-width);
     font-size: 1rem;
     line-height: 1.55;
 }

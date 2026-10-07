@@ -360,20 +360,41 @@ a {
     letter-spacing: -0.05em;
 }
 
-.guide-content h2 {
+.page-content h2 {
     margin: 58px 0 18px;
     font-family: var(--serif);
-    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 400;
     line-height: 0.93;
     letter-spacing: -0.05em;
 }
 
-.guide-content h3 {
+.page-content h3 {
     margin: 36px 0 14px;
     font-family: var(--serif);
-    font-size: 1.6rem;
+    font-size: 1.7rem;
     font-weight: 400;
+}
+
+.page-content h4 {
+    margin: 28px 0 12px;
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 400;
+}
+
+.page-content h5 {
+    margin: 24px 0 10px;
+    font-family: var(--serif);
+    font-size: 1.12rem;
+    font-weight: 400;
+}
+
+.page-content h6 {
+    margin: 20px 0 8px;
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 600;
 }
 
 .guide-content p,

@@ -9,7 +9,7 @@ Este ejercicio se plantea como un **laboratorio de investigación colaborativo**
 
 ## Consigna
 
-Organizados en duplas, los estudiantes abordarán un topico general de la disciplina —asignado al azar— para desarrollar una pequeña investigación acompañada de alguna **producción que permita comunicar, materializar o poner a prueba sus hallazgos**. Como cierre, cada grupo presentá los resultados del trabajo para compartilos y discutirlos colectivamente con el resto de los estudiantes y docentes, entendiendo esta instancia como una forma de **actualización colaborativa y reflexión conjunta**.
+Organizados en duplas, los estudiantes abordarán un topico general de la disciplina —asignado al azar— para desarrollar una pequeña investigación acompañada de alguna **producción que permita comunicar, materializar o poner a prueba sus hallazgos**. Como cierre, cada grupo presentá los resultados del trabajo para compartirlos y discutirlos colectivamente con el resto de sus compañeros y docentes, entendiendo esta instancia como una forma de **actualización colaborativa y reflexión conjunta**.
 
 El objetivo no es llegar a conclusiones definitivas, sino construir entre todos un mapa provisional de preguntas, hallazgos, tensiones y posibilidades que contribuya a prepararnos para intervenir de manera más consciente, crítica y activa en el futuro de nuestra práctica.
 
@@ -87,7 +87,7 @@ Como punto de partida para organizar la investigación, se propone estructurar e
 
 Esta estructura es orientativa y podrá modificarse a medida que avance la investigación. **El `README.md` debe funcionar como un documento vivo**, que pueda ampliarse, reorganizarse y actualizarse durante el desarrollo del proyecto.
 
-Recordar que en la carpeta compartida de trabajo pueden crear **subcarpetas y archivos adicionales** para organizar los materiales. Desde el `README.md` pueden incluirse enlaces a otros documentos `.md`, imágenes y demás recursos ubicados en cualquiera de las carpetas del repositorio.
+Recordar que en la carpeta compartida de trabajo se pueden crear **subcarpetas y archivos adicionales** para organizar los materiales. Desde el `README.md` pueden incluirse enlaces a otros documentos `.md`, imágenes y demás recursos ubicados en cualquiera de las restantes carpetas del repositorio.
 
 Se espera, además, que los documentos mantengan una **estructura y jerarquía de contenidos que facilite su lectura y comprensión**, incorporando cuando resulte pertinente **imágenes, diagramas, esquemas u otros recursos visuales** que ayuden a explicar y comunicar las ideas.
 

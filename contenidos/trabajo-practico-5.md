@@ -34,10 +34,65 @@ En este ejercicio, la inteligencia artificial será abordada desde una **doble p
 > La IA no reemplaza el trabajo de investigación y producción, forma parte de él y pueda ser también **objeto de observación y reflexión**. El modo en que cada grupo decida incorporarla —o eventualmente prescindir de ella en alguna instancia— será también parte de la experiencia y podrá constituir un hallazgo de la investigación.
 
 ## Repositorio de trabajo
-Cada grupo trabajará en una **carpeta compartida de OneDrive**, donde colocarán los documentos de trabajo y el material de la investigación que realicen. En enlace a la carpeta compartida donde deben subirse los archivos de cada grupo es:
+Cada grupo trabajará en una **carpeta compartida de OneDrive**, donde colocarán los documentos de trabajo y el material de la investigación que realicen. El enlace a la carpeta compartida donde deben subirse los archivos de trabajo de cada grupo es:
 
 > **[Carpeta compartida OneDrive](https://faduubaar-my.sharepoint.com/:f:/g/personal/gaston_martino_fadu_uba_ar/IgAMDDHI_GhHRoroEhR3vkCYAbe3uRV9lG7AK32woh2Zx5M?e=YKpIDf)**
 
-Al menos durante las primeras instancias del proyecto, el material producido deberá mantenerse en **formato Markdown**, es decir, como archivos con extensión `.md`. Este formato permite trabajar con documentos de texto simples, estructurados y fácilmente legibles tanto por personas como por las distintas herramientas de IA utilizadas durante el proceso.
+Al menos durante las primeras instancias del proyecto, el material producido deberá mantenerse en formato ***Markdown***, es decir, como archivos con extensión `.md`. Este formato permite trabajar con documentos de texto simples, estructurados y fácilmente legibles tanto por personas como por las distintas herramientas de IA utilizadas durante el proceso.
 
 > Un **archivo Markdown** (.md) es un archivo de texto plano que utiliza una sintaxis sencilla para estructurar y dar formato al contenido mediante caracteres y convenciones de texto. Permite incorporar títulos, listas, enlaces, imágenes, citas, código y otros elementos, manteniendo su contenido legible. Un lugar para revisar cómo es la sintaxis de estos archivos es: https://markdown.es/sintaxis-markdown/
+
+El punto de entrada de cada proyecto de investigación deberá ser un archivo denominado **README.md**. Este archivo *markdown* funcionará como presentación y punto de partida del proyecto: allí deberá introducirse el tema de investigación y comenzar a documentarse su desarrollo. Desde el `README.md` podrán incluirse enlaces a otros archivos `.md`, imágenes y demás materiales que formen parte del proyecto.
+
+Cada grupo podrá crear y organizar libremente las carpetas y archivos que considere necesarios para estructurar y documentar los contenidos de su repositorio.
+
+## Tarea para la próxima clase
+
+### 1. Aplicaciones de IA
+
+Se recomienda instalar y explorar **herramientas de Inteligencia Artificial** que puedan asistir, documentar y/o servir de apoyo a las distintas etapas de la investigación. Siempre que sea posible, se sugiere trabajar con las **aplicaciones de escritorio** en lugar de utilizar únicamente los chats de IA disponibles en la web. Estas aplicaciones ofrecen funcionalidades adicionales para trabajar con archivos y carpetas locales, generar y editar documentos `.md`, organizar materiales y, en algunos casos, conectarse con otras plataformas y herramientas como GitHub o Figma.
+
+Las siguientes son algunas de las aplicaciones que se recomienda descargar y explorar:
+
+**1. ChatGPT (OpenAI)**
+La aplicación de escritorio de ChatGPT permite trabajar con archivos y proyectos de investigación, y ofrece distintos modos y herramientas según el tipo de tarea. Además de su uso como asistente para investigar, organizar y documentar información, puede utilizarse para generar y editar archivos Markdown, analizar materiales y colaborar en el desarrollo de la producción del proyecto.
+
+**2. Antigravity (Google)**
+Antigravity es una herramienta orientada al trabajo con proyectos y archivos, que permite interactuar con el contenido de una carpeta utilizando Inteligencia Artificial. Su editor integrado (**Antigravity IDE**) puede resultar especialmente útil para trabajar con archivos Markdown (`.md`), código y otros materiales del repositorio, además de permitir explorar formas de automatizar y organizar parte del trabajo.
+
+**3. Claude (Anthropic)**
+Claude es otra alternativa para explorar el trabajo con Inteligencia Artificial, particularmente potente para tareas de investigación, escritura, análisis y programación. Además de su interfaz conversacional, ofrece herramientas orientadas al trabajo con archivos, código y proyectos, por lo que puede resultar especialmente interesante para experimentar con distintas formas de colaboración entre el investigador y la IA. **Lamentablemente, esta aplicación no tiene un plan gratuito**.
+
+> **Importante:** las herramientas, funcionalidades, modalidades de uso y límites de las versiones gratuitas o de pago pueden cambiar con frecuencia. No es necesario utilizar todas las herramientas propuestas ni contratar un plan de pago. El objetivo es **explorar sus posibilidades y evaluar críticamente qué aporta cada una al proceso de investigación**.
+
+### 2. Archivos .md
+**Familiarizarse con la sintaxis de los archivos Markdown.** Pedirle a la herramienta de Inteligencia Artificial que hayan instalado que genere una primera versión del archivo `README.md`. Revisar la sintaxis utilizada e intentar realizar algunos cambios manualmente. Explorar las posibilidades que ofrece Markdown para incorporar **imágenes, enlaces, tablas, listas, citas y diferentes opciones de formato**.
+
+Ante cualquier duda, recordar que pueden recurrir a la propia herramienta de IA para consultar cómo utilizar Markdown, solicitar ejemplos, revisar o corregir la sintaxis y resolver dudas sobre su funcionamiento.
+
+### 3. Investigación
+Realizar una **primera exploración amplia y exploratoria** sobre el tópico asignado. Identificar y analizar posibles subtópicos, conceptos y temas relacionados. Investigar de qué manera la **Inteligencia Artificial se vincula actualmente con ese campo**, qué usos y aplicaciones tiene y qué nuevas posibilidades, transformaciones o problemas plantea.
+
+> **Nota:** la investigación no debe realizarse exclusivamente con herramientas de Inteligencia Artificial. Es importante recurrir también a **otras fuentes de información**, como artículos académicos, libros, publicaciones especializadas y materiales provenientes de fuentes reconocidas y autorizadas.
+
+### 4. Recorte y documentación
+A partir de la información recabada y analizada, cada grupo deberá realizar un **recorte del tópico asignado**. Dado que cada tópico constituye un campo amplio, será necesario definir con mayor precisión el **alcance, ámbito o problema particular** que se pretende investigar. Esta definición deberá quedar documentada en el archivo `README.md` dentro de la carpeta compartida de trabajo.
+
+Como punto de partida para organizar la investigación, se propone estructurar el `README.md` en las siguientes secciones:
+
+* **Introducción:** presentación del tópico asignado, conceptos relevantes, primeros hallazgos, preguntas e intuiciones surgidas durante la exploración.
+* **Recorte:** definición precisa del aspecto, problema o ámbito particular que se investigará.
+* **Contexto actual:** síntesis del estado actual del campo (del recorte): herramientas en uso, metodologías, prácticas, problemáticas, discusiones y otros antecedentes relevantes.
+* **Objetivos:** a partir del recorte y del contexto relevado, formular **2 o 3 objetivos** que permitan orientar y encauzar el trabajo durante las siguientes etapas.
+
+Esta estructura es orientativa y podrá modificarse a medida que avance la investigación. **El `README.md` debe funcionar como un documento vivo**, que pueda ampliarse, reorganizarse y actualizarse durante el desarrollo del proyecto.
+
+Recordar que en la carpeta compartida de trabajo pueden crear **subcarpetas y archivos adicionales** para organizar los materiales. Desde el `README.md` pueden incluirse enlaces a otros documentos `.md`, imágenes y demás recursos ubicados en cualquiera de las carpetas del repositorio.
+
+Se espera, además, que los documentos mantengan una **estructura y jerarquía de contenidos que facilite su lectura y comprensión**, incorporando cuando resulte pertinente **imágenes, diagramas, esquemas u otros recursos visuales** que ayuden a explicar y comunicar las ideas.
+
+> **Nota:** el archivo `README.md`, las carpetas, los documentos adicionales y las imágenes deberán estar **subidos y correctamente organizados en la carpeta compartida correspondiente a cada grupo**. Una vez cargados los materiales, revisar los archivos `.md` para verificar que **mantengan su formato, las imágenes se visualicen correctamente y todos los enlaces funcionen**.
+
+
+
+

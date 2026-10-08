@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Investigación, Diseño &amp; IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f2eee3;
+    --ink:#1d3fb8;
+    --ink-2:#4563c9;
+    --ink-soft:rgba(29,63,184,.38);
+    --ink-faint:rgba(29,63,184,.14);
+    --ink-ghost:rgba(29,63,184,.07);
+    --bg:#d9d4c6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--bg)}
+  body{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--ink);-webkit-font-smoothing:antialiased;
+    padding:40px 24px 80px;line-height:1.6}
+  ::selection{background:var(--ink);color:var(--paper)}
+
+  /* ---------- sheet ---------- */
+  .sheet{position:relative;max-width:1180px;margin:0 auto;background:var(--paper);
+    box-shadow:0 30px 80px rgba(20,30,70,.16),0 2px 0 rgba(0,0,0,.04);padding:48px}
+  .sheet::before{ /* paper grain */
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .5  0 0 0 0 .4  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+  .frame{position:relative;border:1.5px solid var(--ink)}
+  .band{height:150px;border-bottom:1px solid var(--ink-soft);position:relative;
+    background-image:linear-gradient(var(--ink-faint) 1px,transparent 1px),linear-gradient(90deg,var(--ink-faint) 1px,transparent 1px);
+    background-size:40px 40px;background-position:-1px -1px}
+  .band.bottom{height:80px;border-bottom:0;border-top:1px solid var(--ink-soft)}
+  .h{position:absolute;width:11px;height:11px;background:var(--ink);transform:translate(-50%,-50%);z-index:2}
+  .md{position:relative;padding:56px 72px 72px}
+
+  .export{position:absolute;right:28px;top:50%;transform:translateY(-50%);z-index:3;display:inline-flex;align-items:center;gap:12px;
+    font-family:"Space Mono",monospace;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper);background:var(--ink);
+    border:1.5px solid var(--ink);padding:12px 18px;cursor:pointer;transition:background .2s,color .2s}
+  .export:hover{background:var(--paper);color:var(--ink)}
+  .export:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .export .ic{font-size:18px;line-height:1}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);
+    font-family:"Space Mono",monospace;font-size:13px;letter-spacing:.06em;padding:10px 16px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:10}
+  .toast.on{opacity:1}
+  /* ---------- markdown typography ---------- */
+  .md > *:first-child{margin-top:0}
+  .md h1{font-size:96px;font-weight:500;line-height:.98;letter-spacing:-.035em;text-transform:uppercase;margin:0 0 48px}
+  .md h2{font-size:44px;font-weight:500;line-height:1.05;letter-spacing:-.025em;text-transform:uppercase;
+    margin:84px 0 28px;padding-top:26px;border-top:1.5px solid var(--ink);position:relative}
+  .md h2::before{content:"";position:absolute;left:0;top:-1px;width:11px;height:11px;background:var(--ink);transform:translate(-50%,-50%)}
+  .md h2::after{content:"";position:absolute;right:0;top:-1px;width:11px;height:11px;background:var(--ink);transform:translate(50%,-50%)}
+  .md h3{font-size:25px;font-weight:600;line-height:1.25;text-transform:uppercase;letter-spacing:.01em;margin:56px 0 18px}
+  .md p{font-size:19px;line-height:1.65;margin:0 0 20px;max-width:920px}
+  .md strong{font-weight:600}
+  .md em{font-style:italic}
+  .md a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--ink-soft);text-underline-offset:4px;text-decoration-thickness:1px;word-break:break-word}
+  .md a:hover{text-decoration-color:var(--ink);background:var(--ink-ghost)}
+  .md code{font-family:"IBM Plex Mono",monospace;background:var(--ink-ghost);border:1px solid var(--ink-faint);padding:0 5px;font-size:.92em}
+
+  /* blockquotes: boxed, like the slides' callouts */
+  .md blockquote{position:relative;border:1.5px solid var(--ink);background:var(--paper);padding:26px 32px;margin:30px 0 34px;max-width:960px}
+  .md blockquote::before,.md blockquote::after{content:"";position:absolute;bottom:0;width:11px;height:11px;background:var(--ink);transform:translateY(50%)}
+  .md blockquote::before{left:0;transform:translate(-50%,50%)}
+  .md blockquote::after{right:0;transform:translate(50%,50%)}
+  .md blockquote p{font-size:18px;margin:0}
+  .md blockquote p + p{margin-top:14px}
+  .md > blockquote:first-of-type{border-width:0 0 0 6px;padding:6px 0 6px 30px;background:none;margin:0 0 20px}
+  .md > blockquote:first-of-type::before,.md > blockquote:first-of-type::after{display:none}
+  .md > blockquote:first-of-type p{font-size:24px;line-height:1.5}
+
+  /* lists */
+  .md ul,.md ol{margin:0 0 22px;padding:0;max-width:920px;border-top:1.5px solid var(--ink)}
+  .md ul{list-style:none}
+  .md li{font-size:19px;line-height:1.6;padding:14px 0 14px 34px;border-bottom:1px solid var(--ink-soft);position:relative}
+  .md ul > li::before{content:"";position:absolute;left:4px;top:24px;width:10px;height:10px;background:var(--ink)}
+  .md ol{padding-left:0;list-style-position:inside}
+
+  /* tables */
+  .table-wrap{overflow-x:auto;margin:28px 0 30px;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)}
+  .md table{border-collapse:collapse;width:100%;min-width:720px}
+  .md th{font-family:"Space Mono",monospace;font-weight:400;font-size:14px;letter-spacing:.12em;text-transform:uppercase;
+    padding:14px 18px;border-bottom:1.5px solid var(--ink);text-align:left;background:var(--ink-ghost)}
+  .md td{font-size:17px;line-height:1.55;padding:16px 18px;border-bottom:1px solid var(--ink-soft);vertical-align:top}
+  .md tr:last-child td{border-bottom:0}
+  .md th + th,.md td + td{border-left:1px solid var(--ink-soft)}
+  .md td:first-child,.md th:first-child{font-family:"Space Mono",monospace;width:56px;text-align:center}
+  .md td:nth-child(2){width:28%;text-transform:uppercase;font-size:16px}
+  .md tbody tr:hover td{background:var(--ink-ghost)}
+
+  .md hr{border:0;border-top:1.5px solid var(--ink);margin:48px 0}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    body{padding:16px 16px 48px}
+    .sheet{padding:16px}
+    .band{height:90px}
+    .export{right:12px;font-size:12px;padding:10px 12px}
+    .md{padding:36px 22px 48px}
+    .md h1{font-size:clamp(26px,8.4vw,46px);overflow-wrap:anywhere}
+    .md h2{font-size:28px;margin-top:60px}
+    .md h3{font-size:20px}
+    .md p,.md li{font-size:16px;overflow-wrap:anywhere}
+    .md > blockquote:first-of-type p{font-size:18px}
+    .md blockquote{padding:20px 20px}
+    .md blockquote p{font-size:16px}
+    .md td{font-size:15px}
+  }
+  @media print{
+    html,body{background:#fff;padding:0}
+    .sheet{box-shadow:none;padding:0}
+    .sheet::before{display:none}
+    .export,.toast{display:none}
+    .md h2{break-after:avoid}
+    .md blockquote,.md tr{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="frame">
+      <div class="band">
+        <button class="export" id="export" type="button"><span>Exportar como Markdown</span><span class="ic" aria-hidden="true">↓</span></button>
+        <span class="h" aria-hidden="true" style="left:0;top:100%"></span>
+        <span class="h" style="left:33.333%;top:100%"></span>
+        <span class="h" style="left:66.666%;top:100%"></span>
+        <span class="h" style="left:100%;top:100%"></span>
+      </div>
+      <main class="md">
+<h1>Investigación, Diseño &amp; IA</h1>
+<blockquote>
+<p>¿Realmente se están desarrollando herramientas de IA para los diseñadores o simplemente las compañías de tecnología que las promueven ven el proceso de diseño como un mero procedimiento susceptible —y destinado— a ser intervenido por la inteligencia artificial?</p>
+</blockquote>
+<h2>Introducción</h2>
+<p>La práctica del <strong>diseño de experiencias de usuario</strong> ha cambiado drásticamente con el surgimiento de la inteligencia artificial. No se puede seguir pensando el mismo proceso de diseño tradicional al que únicamente se le incorpora la IA como herramienta, asistente o automatizador de tareas. La IA está dando forma a <strong>nuevas prácticas de diseño</strong> que alteran sustancialmente el flujo de trabajo habitual.</p>
+<p>Este ejercicio se plantea como un <strong>laboratorio de investigación colaborativo</strong> donde docentes y estudiantes no pretenden conocer de antemano las respuestas ni partir de certezas sobre el futuro de la disciplina, sino <strong>investigar y explorar qué está ocurriendo</strong>, tomando distancia crítica de los discursos que presentan la innovación tecnológica como un fin en sí mismo.</p>
+<h2>Consigna</h2>
+<p>Organizados en duplas, los estudiantes abordarán un tópico general de la disciplina —asignado al azar— para desarrollar una breve investigación acompañada por una <strong>producción que permita comunicar, materializar o poner a prueba sus hallazgos</strong>. Como cierre, cada grupo presentará los resultados del trabajo para compartirlos y discutirlos colectivamente con el resto de sus compañeros y docentes, entendiendo esta instancia como una forma de <strong>actualización colaborativa y reflexión conjunta</strong>.</p>
+<p>El objetivo no es llegar a conclusiones definitivas, sino construir entre todos un mapa provisional de preguntas, hallazgos, tensiones y posibilidades que contribuya a prepararnos para intervenir de manera más consciente, crítica y activa en el futuro de nuestra práctica.</p>
+<h2>Tópicos para la investigación</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th style="text-align:left">Tópico</th>
+<th style="text-align:left">Subtópicos / temas vinculados</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td style="text-align:left"><strong>Sistemas de diseño</strong></td>
+<td style="text-align:left">Componentes, variantes, variables y tokens —primitivos y semánticos—. Nomenclaturas, lineamientos y convenciones. Auto-layout para componentes responsive.</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align:left"><strong>Design Thinking</strong></td>
+<td style="text-align:left">Metodología, etapas y diseño centrado en el usuario. Herramientas y entregables. Investigación UX. Personas y protopersonas.</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align:left"><strong>Prototipado</strong></td>
+<td style="text-align:left">Wireframes y mockups. Prototipos de baja, media y alta fidelidad. Handoff. La IA en el flujo de diseño, desde el prototipado hasta el handoff. Generación de HTML.</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align:left"><strong>Diseño web inclusivo</strong></td>
+<td style="text-align:left">Lineamientos y marcos oficiales de accesibilidad (p. ej., WCAG). Tecnologías de asistencia. Optimización de la experiencia para usuarios con diversidad funcional y necesidades específicas.</td>
+</tr>
+<tr>
+<td>5</td>
+<td style="text-align:left"><strong>Infografía interactiva</strong></td>
+<td style="text-align:left">Multimedia en la web, scrollytelling, diseño de interacción, diseño de la información y esquemática interactiva en la web.</td>
+</tr>
+<tr>
+<td>6</td>
+<td style="text-align:left"><strong>Generatividad</strong></td>
+<td style="text-align:left">Gráfica generativa. Sistemas generativos de imagen institucional. Producción de imágenes y video con IA. Edición y retoque de imágenes con IA.</td>
+</tr>
+<tr>
+<td>7</td>
+<td style="text-align:left"><strong>Pruebas de usuario / auditoría UX</strong></td>
+<td style="text-align:left">Validación de prototipos. Pruebas de usuario. Heurísticas para auditoría. Leyes de UX. Métodos de evaluación UX utilizando IA.</td>
+</tr>
+<tr>
+<td>8</td>
+<td style="text-align:left"><strong>Interfaces inmersivas &amp; 3D</strong></td>
+<td style="text-align:left">Realidades extendidas (XR): AR, VR y MR. Diseño de interacciones. Gamificación. Filtros. Gráfica espacial. Modelos 3D en el diseño de interfaces. Experiencias hápticas.</td>
+</tr>
+</tbody>
+</table>
+<h2>Forma de trabajo</h2>
+<p>Los estudiantes trabajarán en duplas y a cada dupla se le asignará, al azar, uno de los ocho tópicos de la tabla anterior como tema de investigación. Dado que se trata de temas amplios, vinculados con la disciplina del diseño digital, será importante que, durante las primeras instancias del proyecto, cada dupla realice un <strong>recorte y una definición precisa del problema o aspecto particular</strong> que abordará. En todos los casos, será requisito indagar en los <strong>usos, aplicaciones e implicancias (o injerencias) de la inteligencia artificial</strong> en el campo elegido.</p>
+<p>En este ejercicio, la inteligencia artificial será abordada desde una <strong>doble perspectiva: como objeto de investigación y como herramienta para llevarla a cabo</strong>. Se recomienda especialmente explorar el uso de herramientas de IA —como ChatGPT, Claude, Gemini, Antigravity u otras que resulten pertinentes— como asistentes para investigar, formular preguntas, organizar y documentar materiales, contrastar hallazgos, registrar el proceso e incluso como parte de la producción final a presentar.</p>
+<blockquote>
+<p>La IA no reemplaza el trabajo de investigación y producción, forma parte de él y puede ser también <strong>objeto de observación y reflexión</strong>. El modo en que cada grupo decida incorporarla —o eventualmente prescindir de ella en alguna instancia— será también parte de la experiencia y podrá constituir un hallazgo de la investigación.</p>
+</blockquote>
+<h2>Repositorio de trabajo</h2>
+<p>Cada grupo trabajará en una <strong>carpeta compartida de OneDrive</strong>, donde colocará los documentos de trabajo y el material de la investigación que realice. El enlace a la carpeta compartida en la que deben subirse los archivos de trabajo de cada grupo es:</p>
+<blockquote>
+<p><strong><a target="_blank" rel="noopener" href="https://faduubaar-my.sharepoint.com/:f:/g/personal/gaston_martino_fadu_uba_ar/IgAMDDHI_GhHRoroEhR3vkCYAbe3uRV9lG7AK32woh2Zx5M?e=YKpIDf">Carpeta compartida OneDrive</a></strong></p>
+</blockquote>
+<p>Al menos durante las primeras instancias del proyecto, el material producido deberá mantenerse en formato <em><strong>Markdown</strong></em>, es decir, como archivos con extensión <code>.md</code>. Este formato permite trabajar con documentos de texto simples, estructurados y fácilmente legibles tanto por personas como por las distintas herramientas de IA utilizadas durante el proceso.</p>
+<blockquote>
+<p>Un <strong>archivo Markdown</strong> (.md) es un archivo de texto plano que utiliza una sintaxis sencilla para estructurar y dar formato al contenido mediante caracteres y convenciones de texto. Permite incorporar títulos, listas, enlaces, imágenes, citas, código y otros elementos, manteniendo su contenido legible. Un lugar para revisar cómo es la sintaxis de estos archivos es: <a target="_blank" rel="noopener" href="https://markdown.es/sintaxis-markdown/">https://markdown.es/sintaxis-markdown/</a></p>
+</blockquote>
+<p>El punto de entrada de cada proyecto de investigación deberá ser un archivo denominado <strong>README.md</strong>. Este archivo <em>markdown</em> funcionará como presentación y punto de partida del proyecto: allí deberá introducirse el tema de investigación y comenzar a documentarse su desarrollo. Desde el <code>README.md</code> podrán incluirse enlaces a otros archivos <code>.md</code>, imágenes y demás materiales que formen parte del proyecto.</p>
+<p>Cada grupo podrá crear y organizar libremente las carpetas y archivos que considere necesarios para estructurar y documentar los contenidos de su repositorio.</p>
+<h2>Tarea para la próxima clase</h2>
+<h3>1. Aplicaciones de IA</h3>
+<p>Se recomienda instalar y explorar <strong>herramientas de inteligencia artificial</strong> que puedan asistir, documentar y/o servir de apoyo a las distintas etapas de la investigación. Siempre que sea posible, se sugiere trabajar con las <strong>aplicaciones de escritorio</strong> en lugar de utilizar únicamente los chats de IA disponibles en la web. Estas aplicaciones ofrecen funcionalidades adicionales para trabajar con archivos y carpetas locales, generar y editar documentos <code>.md</code>, organizar materiales y, en algunos casos, conectarse con otras plataformas y herramientas como GitHub o Figma.</p>
+<p>Las siguientes son algunas de las aplicaciones que se recomienda descargar y explorar:</p>
+<p><strong>1. ChatGPT (OpenAI)</strong>
+La aplicación de escritorio de ChatGPT permite trabajar con archivos y proyectos de investigación, y ofrece distintos modos y herramientas según el tipo de tarea. Además de su uso como asistente para investigar, organizar y documentar información, puede utilizarse para generar y editar archivos Markdown, analizar materiales y colaborar en el desarrollo de la producción del proyecto.</p>
+<p><strong>2. Antigravity (Google)</strong>
+Antigravity es una herramienta orientada al trabajo con proyectos y archivos, que permite interactuar con el contenido de una carpeta utilizando inteligencia artificial. Su editor integrado (<strong>Antigravity IDE</strong>) puede resultar especialmente útil para trabajar con archivos Markdown (<code>.md</code>), código y otros materiales del repositorio, además de permitir explorar formas de automatizar y organizar parte del trabajo.</p>
+<p><strong>3. Claude (Anthropic)</strong>
+Claude es otra alternativa para explorar el trabajo con inteligencia artificial, particularmente potente para tareas de investigación, escritura, análisis y programación. Además de su interfaz conversacional, ofrece herramientas orientadas al trabajo con archivos, código y proyectos, por lo que puede resultar especialmente interesante para experimentar con distintas formas de colaboración entre el investigador y la IA. <strong>Lamentablemente, esta aplicación no tiene un plan gratuito</strong>.</p>
+<blockquote>
+<p><strong>Importante:</strong> las herramientas, funcionalidades, modalidades de uso y límites de las versiones gratuitas o de pago pueden cambiar con frecuencia. No es necesario utilizar todas las herramientas propuestas ni contratar un plan de pago. El objetivo es <strong>explorar sus posibilidades y evaluar críticamente qué aporta cada una al proceso de investigación</strong>.</p>
+</blockquote>
+<h3>2. Archivos .md</h3>
+<p><strong>Familiarizarse con la sintaxis de los archivos Markdown.</strong> Pedirle a la herramienta de inteligencia artificial que hayan instalado que genere una primera versión del archivo <code>README.md</code>. Revisar la sintaxis utilizada e intentar realizar algunos cambios manualmente. Explorar las posibilidades que ofrece Markdown para incorporar <strong>imágenes, enlaces, tablas, listas, citas y diferentes opciones de formato</strong>.</p>
+<p>Ante cualquier duda, recordar que pueden recurrir a la propia herramienta de IA para consultar cómo utilizar Markdown, solicitar ejemplos, revisar o corregir la sintaxis y resolver dudas sobre su funcionamiento.</p>
+<h3>3. Investigación</h3>
+<p>Realizar una <strong>primera exploración amplia del tópico asignado</strong>. Identificar y analizar posibles subtópicos, conceptos y temas relacionados. Investigar de qué manera la <strong>inteligencia artificial se vincula actualmente con ese campo</strong>, qué usos y aplicaciones tiene y qué nuevas posibilidades, transformaciones o problemas plantea.</p>
+<blockquote>
+<p><strong>Nota:</strong> la investigación no debe realizarse exclusivamente con herramientas de inteligencia artificial. Es importante recurrir también a <strong>otras fuentes de información</strong>, como artículos académicos, libros, publicaciones especializadas y materiales provenientes de fuentes reconocidas y autorizadas.</p>
+</blockquote>
+<h3>4. Recorte y documentación</h3>
+<p>A partir de la información recabada y analizada, cada grupo deberá realizar un <strong>recorte del tópico asignado</strong>. Dado que cada tópico constituye un campo amplio, será necesario definir con mayor precisión el <strong>alcance, ámbito o problema particular</strong> que se pretende investigar. Esta definición deberá quedar documentada en el archivo <code>README.md</code> dentro de la carpeta compartida de trabajo.</p>
+<p>Como punto de partida para organizar la investigación, se propone estructurar el <code>README.md</code> en las siguientes secciones:</p>
+<ul>
+<li><strong>Introducción:</strong> presentación del tópico asignado, conceptos relevantes, primeros hallazgos, preguntas e intuiciones surgidas durante la exploración.</li>
+<li><strong>Recorte:</strong> definición precisa del aspecto, problema o ámbito particular que se investigará.</li>
+<li><strong>Contexto actual:</strong> síntesis del estado actual del campo (del recorte): herramientas en uso, metodologías, prácticas, problemáticas, discusiones y otros antecedentes relevantes.</li>
+<li><strong>Objetivos:</strong> a partir del recorte y del contexto relevado, formular <strong>2 o 3 objetivos</strong> que permitan orientar y encauzar el trabajo durante las siguientes etapas.</li>
+</ul>
+<p>Esta estructura es orientativa y podrá modificarse a medida que avance la investigación. <strong>El <code>README.md</code> debe funcionar como un documento vivo</strong>, que pueda ampliarse, reorganizarse y actualizarse durante el desarrollo del proyecto.</p>
+<p>Recordar que en la carpeta compartida de trabajo se pueden crear <strong>subcarpetas y archivos adicionales</strong> para organizar los materiales. Desde el <code>README.md</code> pueden incluirse enlaces a otros documentos <code>.md</code>, imágenes y demás recursos ubicados en cualquiera de las restantes carpetas del repositorio.</p>
+<p>Se espera, además, que los documentos mantengan una <strong>estructura y jerarquía de contenidos que facilite su lectura y comprensión</strong>, incorporando cuando resulte pertinente <strong>imágenes, diagramas, esquemas u otros recursos visuales</strong> que ayuden a explicar y comunicar las ideas.</p>
+<blockquote>
+<p><strong>Nota:</strong> el archivo <code>README.md</code>, las carpetas, los documentos adicionales y las imágenes deberán estar <strong>subidos y correctamente organizados en la carpeta compartida correspondiente a cada grupo</strong>. Una vez cargados los materiales, revisar los archivos <code>.md</code> para verificar que <strong>mantengan su formato, las imágenes se visualicen correctamente y todos los enlaces funcionen</strong>.</p>
+</blockquote>
+
+      </main>
+      <div class="band bottom" aria-hidden="true">
+        <span class="h" style="left:0;top:0"></span>
+        <span class="h" style="left:100%;top:0"></span>
+      </div>
+    </div>
+  </div>
+<script>
+  // wrap tables so they scroll horizontally on narrow screens
+  document.querySelectorAll(".md table").forEach(t=>{const w=document.createElement("div");w.className="table-wrap";t.parentNode.insertBefore(w,t);w.appendChild(t);});
+</script>
+<script type="application/json" id="md-source">"# Investigación, Diseño & IA\n\n> ¿Realmente se están desarrollando herramientas de IA para los diseñadores o simplemente las compañías de tecnología que las promueven ven el proceso de diseño como un mero procedimiento susceptible —y destinado— a ser intervenido por la inteligencia artificial?\n\n## Introducción\nLa práctica del **diseño de experiencias de usuario** ha cambiado drásticamente con el surgimiento de la inteligencia artificial. No se puede seguir pensando el mismo proceso de diseño tradicional al que únicamente se le incorpora la IA como herramienta, asistente o automatizador de tareas. La IA está dando forma a **nuevas prácticas de diseño** que alteran sustancialmente el flujo de trabajo habitual.\n\nEste ejercicio se plantea como un **laboratorio de investigación colaborativo** donde docentes y estudiantes no pretenden conocer de antemano las respuestas ni partir de certezas sobre el futuro de la disciplina, sino **investigar y explorar qué está ocurriendo**, tomando distancia crítica de los discursos que presentan la innovación tecnológica como un fin en sí mismo.\n\n## Consigna\n\nOrganizados en duplas, los estudiantes abordarán un tópico general de la disciplina —asignado al azar— para desarrollar una breve investigación acompañada por una **producción que permita comunicar, materializar o poner a prueba sus hallazgos**. Como cierre, cada grupo presentará los resultados del trabajo para compartirlos y discutirlos colectivamente con el resto de sus compañeros y docentes, entendiendo esta instancia como una forma de **actualización colaborativa y reflexión conjunta**.\n\nEl objetivo no es llegar a conclusiones definitivas, sino construir entre todos un mapa provisional de preguntas, hallazgos, tensiones y posibilidades que contribuya a prepararnos para intervenir de manera más consciente, crítica y activa en el futuro de nuestra práctica.\n\n## Tópicos para la investigación\n\n| # | Tópico | Subtópicos / temas vinculados |\n|---|:--------|:-------------------------------|\n| 1 | **Sistemas de diseño** | Componentes, variantes, variables y tokens —primitivos y semánticos—. Nomenclaturas, lineamientos y convenciones. Auto-layout para componentes responsive. |\n| 2 | **Design Thinking** | Metodología, etapas y diseño centrado en el usuario. Herramientas y entregables. Investigación UX. Personas y protopersonas. |\n| 3 | **Prototipado** | Wireframes y mockups. Prototipos de baja, media y alta fidelidad. Handoff. La IA en el flujo de diseño, desde el prototipado hasta el handoff. Generación de HTML. |\n| 4 | **Diseño web inclusivo** | Lineamientos y marcos oficiales de accesibilidad (p. ej., WCAG). Tecnologías de asistencia. Optimización de la experiencia para usuarios con diversidad funcional y necesidades específicas. |\n| 5 | **Infografía interactiva** | Multimedia en la web, scrollytelling, diseño de interacción, diseño de la información y esquemática interactiva en la web. |\n| 6 | **Generatividad** | Gráfica generativa. Sistemas generativos de imagen institucional. Producción de imágenes y video con IA. Edición y retoque de imágenes con IA. |\n| 7 | **Pruebas de usuario / auditoría UX** | Validación de prototipos. Pruebas de usuario. Heurísticas para auditoría. Leyes de UX. Métodos de evaluación UX utilizando IA. |\n| 8 | **Interfaces inmersivas & 3D** | Realidades extendidas (XR): AR, VR y MR. Diseño de interacciones. Gamificación. Filtros. Gráfica espacial. Modelos 3D en el diseño de interfaces. Experiencias hápticas. |\n\n## Forma de trabajo\nLos estudiantes trabajarán en duplas y a cada dupla se le asignará, al azar, uno de los ocho tópicos de la tabla anterior como tema de investigación. Dado que se trata de temas amplios, vinculados con la disciplina del diseño digital, será importante que, durante las primeras instancias del proyecto, cada dupla realice un **recorte y una definición precisa del problema o aspecto particular** que abordará. En todos los casos, será requisito indagar en los **usos, aplicaciones e implicancias (o injerencias) de la inteligencia artificial** en el campo elegido.\n\nEn este ejercicio, la inteligencia artificial será abordada desde una **doble perspectiva: como objeto de investigación y como herramienta para llevarla a cabo**. Se recomienda especialmente explorar el uso de herramientas de IA —como ChatGPT, Claude, Gemini, Antigravity u otras que resulten pertinentes— como asistentes para investigar, formular preguntas, organizar y documentar materiales, contrastar hallazgos, registrar el proceso e incluso como parte de la producción final a presentar.\n\n> La IA no reemplaza el trabajo de investigación y producción, forma parte de él y puede ser también **objeto de observación y reflexión**. El modo en que cada grupo decida incorporarla —o eventualmente prescindir de ella en alguna instancia— será también parte de la experiencia y podrá constituir un hallazgo de la investigación.\n\n## Repositorio de trabajo\nCada grupo trabajará en una **carpeta compartida de OneDrive**, donde colocará los documentos de trabajo y el material de la investigación que realice. El enlace a la carpeta compartida en la que deben subirse los archivos de trabajo de cada grupo es:\n\n> **[Carpeta compartida OneDrive](https://faduubaar-my.sharepoint.com/:f:/g/personal/gaston_martino_fadu_uba_ar/IgAMDDHI_GhHRoroEhR3vkCYAbe3uRV9lG7AK32woh2Zx5M?e=YKpIDf)**\n\nAl menos durante las primeras instancias del proyecto, el material producido deberá mantenerse en formato ***Markdown***, es decir, como archivos con extensión `.md`. Este formato permite trabajar con documentos de texto simples, estructurados y fácilmente legibles tanto por personas como por las distintas herramientas de IA utilizadas durante el proceso.\n\n> Un **archivo Markdown** (.md) es un archivo de texto plano que utiliza una sintaxis sencilla para estructurar y dar formato al contenido mediante caracteres y convenciones de texto. Permite incorporar títulos, listas, enlaces, imágenes, citas, código y otros elementos, manteniendo su contenido legible. Un lugar para revisar cómo es la sintaxis de estos archivos es: https://markdown.es/sintaxis-markdown/\n\nEl punto de entrada de cada proyecto de investigación deberá ser un archivo denominado **README.md**. Este archivo *markdown* funcionará como presentación y punto de partida del proyecto: allí deberá introducirse el tema de investigación y comenzar a documentarse su desarrollo. Desde el `README.md` podrán incluirse enlaces a otros archivos `.md`, imágenes y demás materiales que formen parte del proyecto.\n\nCada grupo podrá crear y organizar libremente las carpetas y archivos que considere necesarios para estructurar y documentar los contenidos de su repositorio.\n\n## Tarea para la próxima clase\n\n### 1. Aplicaciones de IA\n\nSe recomienda instalar y explorar **herramientas de inteligencia artificial** que puedan asistir, documentar y/o servir de apoyo a las distintas etapas de la investigación. Siempre que sea posible, se sugiere trabajar con las **aplicaciones de escritorio** en lugar de utilizar únicamente los chats de IA disponibles en la web. Estas aplicaciones ofrecen funcionalidades adicionales para trabajar con archivos y carpetas locales, generar y editar documentos `.md`, organizar materiales y, en algunos casos, conectarse con otras plataformas y herramientas como GitHub o Figma.\n\nLas siguientes son algunas de las aplicaciones que se recomienda descargar y explorar:\n\n**1. ChatGPT (OpenAI)**\nLa aplicación de escritorio de ChatGPT permite trabajar con archivos y proyectos de investigación, y ofrece distintos modos y herramientas según el tipo de tarea. Además de su uso como asistente para investigar, organizar y documentar información, puede utilizarse para generar y editar archivos Markdown, analizar materiales y colaborar en el desarrollo de la producción del proyecto.\n\n**2. Antigravity (Google)**\nAntigravity es una herramienta orientada al trabajo con proyectos y archivos, que permite interactuar con el contenido de una carpeta utilizando inteligencia artificial. Su editor integrado (**Antigravity IDE**) puede resultar especialmente útil para trabajar con archivos Markdown (`.md`), código y otros materiales del repositorio, además de permitir explorar formas de automatizar y organizar parte del trabajo.\n\n**3. Claude (Anthropic)**\nClaude es otra alternativa para explorar el trabajo con inteligencia artificial, particularmente potente para tareas de investigación, escritura, análisis y programación. Además de su interfaz conversacional, ofrece herramientas orientadas al trabajo con archivos, código y proyectos, por lo que puede resultar especialmente interesante para experimentar con distintas formas de colaboración entre el investigador y la IA. **Lamentablemente, esta aplicación no tiene un plan gratuito**.\n\n> **Importante:** las herramientas, funcionalidades, modalidades de uso y límites de las versiones gratuitas o de pago pueden cambiar con frecuencia. No es necesario utilizar todas las herramientas propuestas ni contratar un plan de pago. El objetivo es **explorar sus posibilidades y evaluar críticamente qué aporta cada una al proceso de investigación**.\n\n### 2. Archivos .md\n**Familiarizarse con la sintaxis de los archivos Markdown.** Pedirle a la herramienta de inteligencia artificial que hayan instalado que genere una primera versión del archivo `README.md`. Revisar la sintaxis utilizada e intentar realizar algunos cambios manualmente. Explorar las posibilidades que ofrece Markdown para incorporar **imágenes, enlaces, tablas, listas, citas y diferentes opciones de formato**.\n\nAnte cualquier duda, recordar que pueden recurrir a la propia herramienta de IA para consultar cómo utilizar Markdown, solicitar ejemplos, revisar o corregir la sintaxis y resolver dudas sobre su funcionamiento.\n\n### 3. Investigación\nRealizar una **primera exploración amplia del tópico asignado**. Identificar y analizar posibles subtópicos, conceptos y temas relacionados. Investigar de qué manera la **inteligencia artificial se vincula actualmente con ese campo**, qué usos y aplicaciones tiene y qué nuevas posibilidades, transformaciones o problemas plantea.\n\n> **Nota:** la investigación no debe realizarse exclusivamente con herramientas de inteligencia artificial. Es importante recurrir también a **otras fuentes de información**, como artículos académicos, libros, publicaciones especializadas y materiales provenientes de fuentes reconocidas y autorizadas.\n\n### 4. Recorte y documentación\nA partir de la información recabada y analizada, cada grupo deberá realizar un **recorte del tópico asignado**. Dado que cada tópico constituye un campo amplio, será necesario definir con mayor precisión el **alcance, ámbito o problema particular** que se pretende investigar. Esta definición deberá quedar documentada en el archivo `README.md` dentro de la carpeta compartida de trabajo.\n\nComo punto de partida para organizar la investigación, se propone estructurar el `README.md` en las siguientes secciones:\n\n* **Introducción:** presentación del tópico asignado, conceptos relevantes, primeros hallazgos, preguntas e intuiciones surgidas durante la exploración.\n* **Recorte:** definición precisa del aspecto, problema o ámbito particular que se investigará.\n* **Contexto actual:** síntesis del estado actual del campo (del recorte): herramientas en uso, metodologías, prácticas, problemáticas, discusiones y otros antecedentes relevantes.\n* **Objetivos:** a partir del recorte y del contexto relevado, formular **2 o 3 objetivos** que permitan orientar y encauzar el trabajo durante las siguientes etapas.\n\nEsta estructura es orientativa y podrá modificarse a medida que avance la investigación. **El `README.md` debe funcionar como un documento vivo**, que pueda ampliarse, reorganizarse y actualizarse durante el desarrollo del proyecto.\n\nRecordar que en la carpeta compartida de trabajo se pueden crear **subcarpetas y archivos adicionales** para organizar los materiales. Desde el `README.md` pueden incluirse enlaces a otros documentos `.md`, imágenes y demás recursos ubicados en cualquiera de las restantes carpetas del repositorio.\n\nSe espera, además, que los documentos mantengan una **estructura y jerarquía de contenidos que facilite su lectura y comprensión**, incorporando cuando resulte pertinente **imágenes, diagramas, esquemas u otros recursos visuales** que ayuden a explicar y comunicar las ideas.\n\n> **Nota:** el archivo `README.md`, las carpetas, los documentos adicionales y las imágenes deberán estar **subidos y correctamente organizados en la carpeta compartida correspondiente a cada grupo**. Una vez cargados los materiales, revisar los archivos `.md` para verificar que **mantengan su formato, las imágenes se visualicen correctamente y todos los enlaces funcionen**.\n\n\n\n\n"</script>
+<div class="toast" id="toast" role="status"></div>
+<script>
+  // export the original Markdown source as a local .md file
+  (function(){
+    const NAME="dg4-26-tp4-guia-markdown.md";
+    const btn=document.getElementById("export"), toast=document.getElementById("toast");
+    const say=m=>{toast.textContent=m;toast.classList.add("on");clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove("on"),2600)};
+    btn.addEventListener("click",async()=>{
+      const src=JSON.parse(document.getElementById("md-source").textContent);
+      const blob=new Blob([src],{type:"text/markdown;charset=utf-8"});
+      if(window.showSaveFilePicker){
+        try{
+          const h=await showSaveFilePicker({suggestedName:NAME,types:[{description:"Markdown",accept:{"text/markdown":[".md"]}}]});
+          const w=await h.createWritable();await w.write(blob);await w.close();say("Archivo guardado");return;
+        }catch(e){if(e&&e.name==="AbortError")return;}
+      }
+      const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=NAME;
+      document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);say("Descarga iniciada");
+    });
+  })();
+</script>
+</body>
+</html>

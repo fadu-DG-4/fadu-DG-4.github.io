@@ -1,40 +1,40 @@
 # Investigación, Diseño & IA
 
-> ¿Realmente se están desarrollando herramientas de IA para los diseñadores o simplemente las compañías de tecnología que las promueven ven el proceso de diseño como un mero procedimiento susceptible de —y destinado a— ser intervenido por la inteligencia artificial?
+> ¿Realmente se están desarrollando herramientas de IA para los diseñadores o simplemente las compañías de tecnología que las promueven ven el proceso de diseño como un mero procedimiento susceptible —y destinado— a ser intervenido por la inteligencia artificial?
 
 ## Introducción
-La práctica del **diseño de experiencias de usuario** ha cambiando drásticamente con el surgimiento de la inteligencia artificial. No se puede seguir pensando el mismo proceso de diseño tradicional al que únicamente se le incopora la IA como herramienta, asistente o automatizador de tareas. La IA está dando forma a **nuevas prácticas de diseño** que alteran sustancialmente el flujo de trabajo habitual.
+La práctica del **diseño de experiencias de usuario** ha cambiado drásticamente con el surgimiento de la inteligencia artificial. No se puede seguir pensando el mismo proceso de diseño tradicional al que únicamente se le incorpora la IA como herramienta, asistente o automatizador de tareas. La IA está dando forma a **nuevas prácticas de diseño** que alteran sustancialmente el flujo de trabajo habitual.
 
 Este ejercicio se plantea como un **laboratorio de investigación colaborativo** donde docentes y estudiantes no pretenden conocer de antemano las respuestas ni partir de certezas sobre el futuro de la disciplina, sino **investigar y explorar qué está ocurriendo**, tomando distancia crítica de los discursos que presentan la innovación tecnológica como un fin en sí mismo.
 
 ## Consigna
 
-Organizados en duplas, los estudiantes abordarán un topico general de la disciplina —asignado al azar— para desarrollar una pequeña investigación acompañada de alguna **producción que permita comunicar, materializar o poner a prueba sus hallazgos**. Como cierre, cada grupo presentá los resultados del trabajo para compartirlos y discutirlos colectivamente con el resto de sus compañeros y docentes, entendiendo esta instancia como una forma de **actualización colaborativa y reflexión conjunta**.
+Organizados en duplas, los estudiantes abordarán un tópico general de la disciplina —asignado al azar— para desarrollar una breve investigación acompañada por una **producción que permita comunicar, materializar o poner a prueba sus hallazgos**. Como cierre, cada grupo presentará los resultados del trabajo para compartirlos y discutirlos colectivamente con el resto de sus compañeros y docentes, entendiendo esta instancia como una forma de **actualización colaborativa y reflexión conjunta**.
 
 El objetivo no es llegar a conclusiones definitivas, sino construir entre todos un mapa provisional de preguntas, hallazgos, tensiones y posibilidades que contribuya a prepararnos para intervenir de manera más consciente, crítica y activa en el futuro de nuestra práctica.
 
 ## Tópicos para la investigación
 
-| # | Tópico | Subtópicos / Temas vinculados |
+| # | Tópico | Subtópicos / temas vinculados |
 |---|:--------|:-------------------------------|
-| 1	| **Sistemas de Diseño** | Componentes, variantes, variables, tokens: primitivos y semánticos. Nomenclaturas, lineamientos y convenciones. Auto-layout para componentes responsive.|
-| 2	| **Design Thinking** | Metodología, etapas, diseño centrado en el usuario. Herramientas y entregables. Investigación UX. Personas y protopersonas. |
-| 3	| **Prototipado** |	Wireframes, mockups. Prototipos de baja, media y alta fidelidad. Handoff. La IA en el flujo de diseño desde el prototipado hasta el handoff. Generación de HTML.|
-| 4	| **Diseño web inclusivo** | Lineamientos y marcos de accesibilidad oficiales (ej. WCGA).  Tecnologías de asistencias. Optimicación de la experiencia para usuarios con diversidad funcional y necesidades específicas.|
-| 5	| **Infografía interactiva** | Multimedia en la web, scrollytelling, diseño de interacción, diseño de la información, esquemática interactiva en la web.|
-| 6	| **Generatividad** | Gráfica generativa. Sistemas de imagen institucional generativos. Producción de imágenes y video con IA. Edición y retoque de imágenes con IA.|
-| 7	| **Pruebas de Usuario / Auditoría UX** | Validación de prototipos. Test de usuario. Heurísticas para auditoría. Leyes UX. Métodos de evaluación UX utilizando IA.|
-| 8	| **Interfaces inmersivas & 3D** | Realidades expandidas (XR): AR, VR, y MR. Diseño de interacciones. Gamification. Filtros. Gráfica espacial. Modelos 3D en el diseño de interfaces. Experiencias hápticas. |
+| 1 | **Sistemas de diseño** | Componentes, variantes, variables y tokens —primitivos y semánticos—. Nomenclaturas, lineamientos y convenciones. Auto-layout para componentes responsive. |
+| 2 | **Design Thinking** | Metodología, etapas y diseño centrado en el usuario. Herramientas y entregables. Investigación UX. Personas y protopersonas. |
+| 3 | **Prototipado** | Wireframes y mockups. Prototipos de baja, media y alta fidelidad. Handoff. La IA en el flujo de diseño, desde el prototipado hasta el handoff. Generación de HTML. |
+| 4 | **Diseño web inclusivo** | Lineamientos y marcos oficiales de accesibilidad (p. ej., WCAG). Tecnologías de asistencia. Optimización de la experiencia para usuarios con diversidad funcional y necesidades específicas. |
+| 5 | **Infografía interactiva** | Multimedia en la web, scrollytelling, diseño de interacción, diseño de la información y esquemática interactiva en la web. |
+| 6 | **Generatividad** | Gráfica generativa. Sistemas generativos de imagen institucional. Producción de imágenes y video con IA. Edición y retoque de imágenes con IA. |
+| 7 | **Pruebas de usuario / auditoría UX** | Validación de prototipos. Pruebas de usuario. Heurísticas para auditoría. Leyes de UX. Métodos de evaluación UX utilizando IA. |
+| 8 | **Interfaces inmersivas & 3D** | Realidades extendidas (XR): AR, VR y MR. Diseño de interacciones. Gamificación. Filtros. Gráfica espacial. Modelos 3D en el diseño de interfaces. Experiencias hápticas. |
 
 ## Forma de trabajo
-Los estudiantes trabajarán en duplas y a cada una de ellas se le asignará, al azar, uno de los ocho tópicos de la tabla anterior como tema de investigación. Dado que se trata de temas amplios, vinculados con la disciplina del diseño digital, será importante que, durante las primeras instancias del proyecto, cada dupla realice un **recorte y una definición precisa del problema o aspecto particular** que abordará. En todos los casos, será requisito indagar en los **usos, aplicaciones e implicancias (o injerencias) de la inteligencia artificial** en el campo elegido.
+Los estudiantes trabajarán en duplas y a cada dupla se le asignará, al azar, uno de los ocho tópicos de la tabla anterior como tema de investigación. Dado que se trata de temas amplios, vinculados con la disciplina del diseño digital, será importante que, durante las primeras instancias del proyecto, cada dupla realice un **recorte y una definición precisa del problema o aspecto particular** que abordará. En todos los casos, será requisito indagar en los **usos, aplicaciones e implicancias (o injerencias) de la inteligencia artificial** en el campo elegido.
 
 En este ejercicio, la inteligencia artificial será abordada desde una **doble perspectiva: como objeto de investigación y como herramienta para llevarla a cabo**. Se recomienda especialmente explorar el uso de herramientas de IA —como ChatGPT, Claude, Gemini, Antigravity u otras que resulten pertinentes— como asistentes para investigar, formular preguntas, organizar y documentar materiales, contrastar hallazgos, registrar el proceso e incluso como parte de la producción final a presentar.
 
-> La IA no reemplaza el trabajo de investigación y producción, forma parte de él y pueda ser también **objeto de observación y reflexión**. El modo en que cada grupo decida incorporarla —o eventualmente prescindir de ella en alguna instancia— será también parte de la experiencia y podrá constituir un hallazgo de la investigación.
+> La IA no reemplaza el trabajo de investigación y producción, forma parte de él y puede ser también **objeto de observación y reflexión**. El modo en que cada grupo decida incorporarla —o eventualmente prescindir de ella en alguna instancia— será también parte de la experiencia y podrá constituir un hallazgo de la investigación.
 
 ## Repositorio de trabajo
-Cada grupo trabajará en una **carpeta compartida de OneDrive**, donde colocarán los documentos de trabajo y el material de la investigación que realicen. El enlace a la carpeta compartida donde deben subirse los archivos de trabajo de cada grupo es:
+Cada grupo trabajará en una **carpeta compartida de OneDrive**, donde colocará los documentos de trabajo y el material de la investigación que realice. El enlace a la carpeta compartida en la que deben subirse los archivos de trabajo de cada grupo es:
 
 > **[Carpeta compartida OneDrive](https://faduubaar-my.sharepoint.com/:f:/g/personal/gaston_martino_fadu_uba_ar/IgAMDDHI_GhHRoroEhR3vkCYAbe3uRV9lG7AK32woh2Zx5M?e=YKpIDf)**
 
@@ -50,7 +50,7 @@ Cada grupo podrá crear y organizar libremente las carpetas y archivos que consi
 
 ### 1. Aplicaciones de IA
 
-Se recomienda instalar y explorar **herramientas de Inteligencia Artificial** que puedan asistir, documentar y/o servir de apoyo a las distintas etapas de la investigación. Siempre que sea posible, se sugiere trabajar con las **aplicaciones de escritorio** en lugar de utilizar únicamente los chats de IA disponibles en la web. Estas aplicaciones ofrecen funcionalidades adicionales para trabajar con archivos y carpetas locales, generar y editar documentos `.md`, organizar materiales y, en algunos casos, conectarse con otras plataformas y herramientas como GitHub o Figma.
+Se recomienda instalar y explorar **herramientas de inteligencia artificial** que puedan asistir, documentar y/o servir de apoyo a las distintas etapas de la investigación. Siempre que sea posible, se sugiere trabajar con las **aplicaciones de escritorio** en lugar de utilizar únicamente los chats de IA disponibles en la web. Estas aplicaciones ofrecen funcionalidades adicionales para trabajar con archivos y carpetas locales, generar y editar documentos `.md`, organizar materiales y, en algunos casos, conectarse con otras plataformas y herramientas como GitHub o Figma.
 
 Las siguientes son algunas de las aplicaciones que se recomienda descargar y explorar:
 
@@ -58,22 +58,22 @@ Las siguientes son algunas de las aplicaciones que se recomienda descargar y exp
 La aplicación de escritorio de ChatGPT permite trabajar con archivos y proyectos de investigación, y ofrece distintos modos y herramientas según el tipo de tarea. Además de su uso como asistente para investigar, organizar y documentar información, puede utilizarse para generar y editar archivos Markdown, analizar materiales y colaborar en el desarrollo de la producción del proyecto.
 
 **2. Antigravity (Google)**
-Antigravity es una herramienta orientada al trabajo con proyectos y archivos, que permite interactuar con el contenido de una carpeta utilizando Inteligencia Artificial. Su editor integrado (**Antigravity IDE**) puede resultar especialmente útil para trabajar con archivos Markdown (`.md`), código y otros materiales del repositorio, además de permitir explorar formas de automatizar y organizar parte del trabajo.
+Antigravity es una herramienta orientada al trabajo con proyectos y archivos, que permite interactuar con el contenido de una carpeta utilizando inteligencia artificial. Su editor integrado (**Antigravity IDE**) puede resultar especialmente útil para trabajar con archivos Markdown (`.md`), código y otros materiales del repositorio, además de permitir explorar formas de automatizar y organizar parte del trabajo.
 
 **3. Claude (Anthropic)**
-Claude es otra alternativa para explorar el trabajo con Inteligencia Artificial, particularmente potente para tareas de investigación, escritura, análisis y programación. Además de su interfaz conversacional, ofrece herramientas orientadas al trabajo con archivos, código y proyectos, por lo que puede resultar especialmente interesante para experimentar con distintas formas de colaboración entre el investigador y la IA. **Lamentablemente, esta aplicación no tiene un plan gratuito**.
+Claude es otra alternativa para explorar el trabajo con inteligencia artificial, particularmente potente para tareas de investigación, escritura, análisis y programación. Además de su interfaz conversacional, ofrece herramientas orientadas al trabajo con archivos, código y proyectos, por lo que puede resultar especialmente interesante para experimentar con distintas formas de colaboración entre el investigador y la IA. **Lamentablemente, esta aplicación no tiene un plan gratuito**.
 
 > **Importante:** las herramientas, funcionalidades, modalidades de uso y límites de las versiones gratuitas o de pago pueden cambiar con frecuencia. No es necesario utilizar todas las herramientas propuestas ni contratar un plan de pago. El objetivo es **explorar sus posibilidades y evaluar críticamente qué aporta cada una al proceso de investigación**.
 
 ### 2. Archivos .md
-**Familiarizarse con la sintaxis de los archivos Markdown.** Pedirle a la herramienta de Inteligencia Artificial que hayan instalado que genere una primera versión del archivo `README.md`. Revisar la sintaxis utilizada e intentar realizar algunos cambios manualmente. Explorar las posibilidades que ofrece Markdown para incorporar **imágenes, enlaces, tablas, listas, citas y diferentes opciones de formato**.
+**Familiarizarse con la sintaxis de los archivos Markdown.** Pedirle a la herramienta de inteligencia artificial que hayan instalado que genere una primera versión del archivo `README.md`. Revisar la sintaxis utilizada e intentar realizar algunos cambios manualmente. Explorar las posibilidades que ofrece Markdown para incorporar **imágenes, enlaces, tablas, listas, citas y diferentes opciones de formato**.
 
 Ante cualquier duda, recordar que pueden recurrir a la propia herramienta de IA para consultar cómo utilizar Markdown, solicitar ejemplos, revisar o corregir la sintaxis y resolver dudas sobre su funcionamiento.
 
 ### 3. Investigación
-Realizar una **primera exploración amplia y exploratoria** sobre el tópico asignado. Identificar y analizar posibles subtópicos, conceptos y temas relacionados. Investigar de qué manera la **Inteligencia Artificial se vincula actualmente con ese campo**, qué usos y aplicaciones tiene y qué nuevas posibilidades, transformaciones o problemas plantea.
+Realizar una **primera exploración amplia del tópico asignado**. Identificar y analizar posibles subtópicos, conceptos y temas relacionados. Investigar de qué manera la **inteligencia artificial se vincula actualmente con ese campo**, qué usos y aplicaciones tiene y qué nuevas posibilidades, transformaciones o problemas plantea.
 
-> **Nota:** la investigación no debe realizarse exclusivamente con herramientas de Inteligencia Artificial. Es importante recurrir también a **otras fuentes de información**, como artículos académicos, libros, publicaciones especializadas y materiales provenientes de fuentes reconocidas y autorizadas.
+> **Nota:** la investigación no debe realizarse exclusivamente con herramientas de inteligencia artificial. Es importante recurrir también a **otras fuentes de información**, como artículos académicos, libros, publicaciones especializadas y materiales provenientes de fuentes reconocidas y autorizadas.
 
 ### 4. Recorte y documentación
 A partir de la información recabada y analizada, cada grupo deberá realizar un **recorte del tópico asignado**. Dado que cada tópico constituye un campo amplio, será necesario definir con mayor precisión el **alcance, ámbito o problema particular** que se pretende investigar. Esta definición deberá quedar documentada en el archivo `README.md` dentro de la carpeta compartida de trabajo.

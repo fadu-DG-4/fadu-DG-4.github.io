@@ -8,6 +8,7 @@ const resumenPath = resolve(process.cwd(), "..", "contenidos", "resumen.md");
 const equipoPath = resolve(process.cwd(), "..", "contenidos", "equipo.md");
 const guiaGithubPath = resolve(process.cwd(), "..", "instructivos", "guia-crear-cuenta-github.md");
 const instructivosMediaPath = resolve(process.cwd(), "..", "instructivos", "medios");
+const guiasPath = resolve(process.cwd(), "..", "guias");
 const contenidosPath = resolve(process.cwd(), "..", "contenidos");
 const trabajoPracticoTemplatePath = resolve(process.cwd(), "trabajo-practico-template.html");
 const generatedPagesPath = process.cwd();
@@ -204,6 +205,34 @@ function serveInstructivosMedia(server) {
   });
 }
 
+function serveGuias(server) {
+  server.middlewares.use("/guias", (request, response, next) => {
+    const requestPath = decodeURIComponent((request.url || "").split("?")[0]);
+    const filePath = resolve(guiasPath, `.${requestPath}`);
+
+    if (!filePath.startsWith(guiasPath) || !existsSync(filePath) || statSync(filePath).isDirectory()) {
+      next();
+      return;
+    }
+
+    const contentTypes = {
+      ".html": "text/html; charset=utf-8",
+      ".css": "text/css; charset=utf-8",
+      ".js": "text/javascript; charset=utf-8",
+      ".png": "image/png",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+      ".webp": "image/webp",
+      ".svg": "image/svg+xml",
+    };
+    const extension = filePath.slice(filePath.lastIndexOf(".")).toLowerCase();
+
+    response.statusCode = 200;
+    response.setHeader("Content-Type", contentTypes[extension] || "application/octet-stream");
+    response.end(readFileSync(filePath));
+  });
+}
+
 function serveTrabajoPracticoPages(server) {
   server.middlewares.use(async (request, response, next) => {
     const requestPath = decodeURIComponent((request.url || "").split("?")[0]);
@@ -239,6 +268,7 @@ function markdownContentPlugin() {
     name: "markdown-content",
     configureServer(server) {
       serveInstructivosMedia(server);
+      serveGuias(server);
       serveTrabajoPracticoPages(server);
       [programaPath, resumenPath, equipoPath, guiaGithubPath, ...getTrabajoPracticoEntries().map((entry) => entry.markdownPath)].forEach((contentPath) => {
         server.watcher.add(contentPath);
@@ -279,6 +309,7 @@ function markdownContentPlugin() {
     },
     generateBundle() {
       emitDirectoryAssets(this, instructivosMediaPath, "instructivos/medios");
+      emitDirectoryAssets(this, guiasPath, "guias");
     },
     closeBundle() {
       removeGeneratedPages();

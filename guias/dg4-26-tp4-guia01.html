@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TP4 · Investigación, Diseño & IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f2eee3;
+    --paper-2:#ebe6d8;
+    --ink:#1d3fb8;
+    --ink-2:#4563c9;
+    --ink-soft:rgba(29,63,184,.38);
+    --ink-faint:rgba(29,63,184,.14);
+    --ink-ghost:rgba(29,63,184,.07);
+    --bg:#d9d4c6;
+    --W:1920px; --H:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);overflow:hidden}
+  body{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--ink);-webkit-font-smoothing:antialiased}
+
+  /* ---------- stage ---------- */
+  #viewport{position:fixed;inset:0;overflow:hidden}
+  #stage{position:absolute;left:50%;top:50%;width:var(--W);height:var(--H);transform-origin:center center;
+    background:var(--paper);box-shadow:0 30px 80px rgba(20,30,70,.18), 0 2px 0 rgba(0,0,0,.04)}
+  #stage::before{ /* paper grain */
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:50;opacity:.55;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .5  0 0 0 0 .4  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  .slide{position:absolute;inset:0;padding:56px 64px;opacity:0;visibility:hidden;transition:opacity .45s ease, visibility 0s linear .45s}
+  .slide.active{opacity:1;visibility:visible;transition:opacity .45s ease}
+  .frame{position:absolute;inset:40px 48px;border:1.5px solid var(--ink);pointer-events:none}
+  .inner{position:absolute;inset:40px 48px;display:grid}
+
+  /* ---------- type ---------- */
+  .meta{font-family:"Space Mono",monospace;font-size:20px;letter-spacing:.06em;text-transform:uppercase;line-height:1.5}
+  .meta.sm{font-size:15px}
+  .label{font-family:"Space Mono",monospace;font-size:15px;letter-spacing:.12em;text-transform:uppercase}
+  .h-xl{font-size:118px;font-weight:500;line-height:.95;letter-spacing:-.035em;text-transform:uppercase}
+  .h-l{font-size:78px;font-weight:500;line-height:1;letter-spacing:-.03em;text-transform:uppercase}
+  .h-m{font-size:40px;font-weight:500;line-height:1.1;letter-spacing:-.015em}
+  .h-s{font-size:26px;font-weight:600;line-height:1.2;text-transform:uppercase;letter-spacing:.01em}
+  .body{font-size:23px;line-height:1.5;font-weight:400}
+  .body.sm{font-size:19px;line-height:1.5}
+  .muted{color:var(--ink-2)}
+  .num{font-family:"Space Mono",monospace;font-size:16px;letter-spacing:.08em}
+  em{font-style:italic}
+  b{font-weight:600}
+
+  /* ---------- graphic primitives ---------- */
+  .cell{position:relative;border:1px solid var(--ink-soft);overflow:hidden}
+  .grid-bg{background-image:linear-gradient(var(--ink-faint) 1px,transparent 1px),linear-gradient(90deg,var(--ink-faint) 1px,transparent 1px);background-size:40px 40px}
+  .grid-bg.fine{background-size:20px 20px}
+  .grid-bg.big{background-size:64px 64px;background-image:linear-gradient(var(--ink-soft) 1px,transparent 1px),linear-gradient(90deg,var(--ink-soft) 1px,transparent 1px)}
+  .ghost{position:absolute;color:var(--ink-soft);font-size:12px;line-height:1.6;font-family:"Space Mono",monospace;white-space:pre;pointer-events:none}
+  .h{position:absolute;width:11px;height:11px;background:var(--ink);transform:translate(-50%,-50%);z-index:5}
+  .deco{position:absolute;inset:0}
+  .deco svg{width:100%;height:100%;display:block}
+  .deco svg text{font-family:"Space Mono",ui-monospace,monospace!important}
+  pre{font-family:"IBM Plex Mono",ui-monospace,monospace!important}
+  .tag{display:inline-block;border:1px solid var(--ink);padding:4px 10px;font-family:"Space Mono",monospace;font-size:14px;letter-spacing:.1em;text-transform:uppercase}
+  .tag.fill{background:var(--ink);color:var(--paper)}
+  .rule{height:1.5px;background:var(--ink)}
+  .tick{display:flex;justify-content:space-between;font-family:"Space Mono",monospace;font-size:11px;color:var(--ink-soft)}
+
+  /* header shared */
+  .hdr{display:flex;justify-content:space-between;align-items:flex-start;padding:22px 28px 0}
+  .hdr .meta{font-size:17px}
+
+  code{font-family:"IBM Plex Mono",monospace;background:var(--ink-ghost);border:1px solid var(--ink-faint);padding:0 5px;font-size:.92em}
+  .linkwrap{margin-top:34px;max-width:800px;border:1.5px solid var(--ink);background:var(--paper)}
+  .linksub{display:flex;gap:12px;align-items:baseline;padding:10px 22px;border-top:1px solid var(--ink-soft);font-family:"Space Mono",monospace;font-size:13px;letter-spacing:.04em;color:var(--ink-2)}
+  .linksub a{color:var(--ink-2);text-decoration:underline;text-decoration-color:var(--ink-soft);text-underline-offset:3px}
+  .linksub a:hover{color:var(--ink);text-decoration-color:var(--ink)}
+  .linkbox{display:flex;align-items:center;gap:22px;padding:18px 22px;color:var(--ink);text-decoration:none;background:var(--paper);transition:background .2s,color .2s}
+  .linkbox .arrow{margin-left:auto;font-size:30px;line-height:1}
+  .linkbox:hover{background:var(--ink);color:var(--paper)}
+  .linkbox:hover .tag.fill{background:var(--paper);color:var(--ink)}
+  .linkbox:hover .muted{color:var(--paper)}
+  /* ---------- navigation UI ---------- */
+  #nav{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;z-index:100;
+    font-family:"Space Mono",monospace;font-size:13px;color:var(--ink);background:rgba(242,238,227,.92);border:1px solid var(--ink);padding:6px 8px;opacity:0;transition:opacity .3s}
+  body:hover #nav, #nav:focus-within{opacity:1}
+  #nav button{all:unset;cursor:pointer;padding:4px 10px;border:1px solid transparent}
+  #nav button:hover{border-color:var(--ink)}
+  #nav .dots{display:flex;gap:5px;padding:0 6px}
+  #nav .dots i{width:8px;height:8px;border:1px solid var(--ink);cursor:pointer}
+  #nav .dots i.on{background:var(--ink)}
+  #progress{position:fixed;left:0;top:0;height:3px;background:var(--ink);z-index:100;transition:width .4s}
+  @media (hover:none){ #nav{opacity:1} }
+  @media print{ #nav,#progress{display:none} }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="viewport"><div id="stage">
+
+<!-- ======================= 01 · PORTADA ======================= -->
+<section class="slide" data-title="Portada">
+  <div class="frame"></div>
+  <div class="inner" style="grid-template-columns:930px 1fr;grid-template-rows:1fr">
+    <div style="position:relative;padding:44px 40px 36px;display:flex;flex-direction:column;border-right:1px solid var(--ink-soft)">
+      <div class="label muted">Trabajo práctico 4 — laboratorio de investigación</div>
+      <div style="margin:auto 0">
+        <h1 class="h-xl" style="font-size:106px">Investigación,<br>Diseño<br>&amp; IA</h1>
+      </div>
+      <div class="rule" style="margin:0 0 26px"></div>
+      <div class="meta sm" style="display:flex;gap:40px">
+        <span>Diseño Gráfico 4</span><span>Cátedra Meygide — Carpintero</span><span>FADU / UBA</span>
+      </div>
+    </div>
+    <div style="position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr)">
+      <div class="cell grid-bg fine" style="border-width:0 1px 1px 0"><div class="deco" style="inset:28px" data-deco="gen"></div></div>
+      <div class="cell grid-bg fine" style="border-width:0 0 1px 0"><div class="deco" style="inset:28px" data-deco="a11y"></div></div>
+      <div class="cell grid-bg fine" style="border-width:0 1px 1px 0"><div class="deco" style="inset:28px" data-deco="cube"></div></div>
+      <div class="cell grid-bg fine" style="border-width:0 0 1px 0"><div class="deco" style="inset:28px" data-deco="tokens"></div></div>
+      <div class="cell grid-bg fine" style="border-width:0 1px 1px 0"><div class="deco" style="inset:28px" data-deco="heat"></div></div>
+      <div class="cell grid-bg fine" style="border-width:0 0 1px 0"><div class="deco" style="inset:28px" data-deco="wire"></div></div>
+      <div class="cell grid-bg fine" style="border-width:0 1px 0 0"><div class="deco" style="inset:28px" data-deco="cycle"></div></div>
+      <div class="cell grid-bg fine" style="border-width:0 0 0 0"><div class="deco" style="inset:28px" data-deco="bars"></div></div>
+      <span class="h" style="left:0;top:25%"></span><span class="h" style="left:0;top:50%"></span><span class="h" style="left:0;top:75%"></span><span class="h" style="left:50%;top:25%"></span><span class="h" style="left:50%;top:50%"></span><span class="h" style="left:50%;top:75%"></span><span class="h" style="left:100%;top:25%"></span><span class="h" style="left:100%;top:50%"></span><span class="h" style="left:100%;top:75%"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 02 · PUNTO DE PARTIDA ======================= -->
+<section class="slide" data-title="Punto de partida">
+  <div class="frame"></div>
+  <div class="inner" style="grid-template-rows:auto 1fr">
+    <div class="hdr"><span class="meta">[02] &nbsp;Punto de partida</span><span class="meta">TP 04 · Investigación, Diseño &amp; IA</span></div>
+    <div style="display:grid;grid-template-columns:1.25fr 1fr;gap:0;padding:28px 28px 28px">
+      <div style="padding-right:56px;display:flex;flex-direction:column">
+        <div class="label muted">Introducción</div>
+        <p class="h-m" style="margin-top:26px;max-width:960px">La práctica del diseño de experiencias de usuario cambió drásticamente con la IA.</p>
+        <p class="body" style="margin-top:30px;max-width:900px">No alcanza con pensar el proceso de diseño tradicional al que se le <em>incorpora</em> la IA como herramienta, asistente o automatizador de tareas: la IA está dando forma a <b>nuevas prácticas</b> que alteran sustancialmente el flujo de trabajo habitual.</p>
+        <div style="margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);border-top:1.5px solid var(--ink)">
+          <div style="padding:22px 22px 0 0"><div class="num">/01</div><div class="h-s" style="margin-top:10px">Sin certezas</div><p class="body sm" style="margin-top:8px">Docentes y estudiantes no pretendemos conocer de antemano las respuestas.</p></div>
+          <div style="padding:22px 22px 0;border-left:1px solid var(--ink-soft)"><div class="num">/02</div><div class="h-s" style="margin-top:10px">Explorar</div><p class="body sm" style="margin-top:8px">Investigar qué está ocurriendo hoy en la disciplina.</p></div>
+          <div style="padding:22px 0 0 22px;border-left:1px solid var(--ink-soft)"><div class="num">/03</div><div class="h-s" style="margin-top:10px">Distancia crítica</div><p class="body sm" style="margin-top:8px">Frente a discursos que presentan la innovación como un fin en sí mismo.</p></div>
+        </div>
+      </div>
+      <div style="position:relative;border-left:1px solid var(--ink-soft)">
+        <div class="cell" style="position:absolute;inset:0 0 0 0;border:0">
+          <div class="deco" data-deco="fadu" data-seed="23"></div>
+        </div>
+        <div style="position:absolute;left:40px;bottom:40px;right:40px;background:var(--paper);border:1.5px solid var(--ink);padding:26px 30px">
+          <div class="label" style="font-weight:700">Laboratorio colaborativo</div>
+          <p class="body sm" style="margin-top:12px">Un espacio de investigación compartido para construir preguntas, no para confirmar respuestas.</p>
+        </div>
+        <span class="h" style="left:40px;top:calc(100% - 40px)"></span>
+        <span class="h" style="left:calc(100% - 40px);top:calc(100% - 40px)"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 03 · CONSIGNA ======================= -->
+<section class="slide" data-title="Consigna">
+  <div class="frame"></div>
+  <div class="inner" style="grid-template-rows:auto auto 1fr auto">
+    <div class="hdr"><span class="meta">[03] &nbsp;Consigna</span><span class="meta">TP 04 · Investigación, Diseño &amp; IA</span></div>
+    <div style="padding:30px 28px 34px;display:flex;justify-content:space-between;align-items:flex-end">
+      <h2 class="h-l">Cómo funciona<br>el ejercicio</h2>
+      <div class="deco" style="position:relative;width:640px;height:150px" data-deco="gridonly"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);margin:0 28px">
+      <div class="step" style="padding:30px 30px;border-right:1px solid var(--ink-soft);position:relative">
+        <div class="num">01 —</div>
+        <div style="height:240px;position:relative;margin:22px 0 26px" class="grid-bg"><div class="deco" data-deco="pairs" data-seed="4"></div></div>
+        <div class="h-s">Duplas</div>
+        <p class="body sm" style="margin-top:12px">Los estudiantes trabajan organizados de a dos.</p>
+      </div>
+      <div style="padding:30px 30px;border-right:1px solid var(--ink-soft)">
+        <div class="num">02 —</div>
+        <div style="height:240px;position:relative;margin:22px 0 26px" class="grid-bg"><div class="deco" data-deco="dice" data-seed="8"></div></div>
+        <div class="h-s">Tópico al azar</div>
+        <p class="body sm" style="margin-top:12px">Cada dupla recibe uno de los 8 tópicos de la disciplina y define un recorte.</p>
+      </div>
+      <div style="padding:30px 30px;border-right:1px solid var(--ink-soft)">
+        <div class="num">03 —</div>
+        <div style="height:240px;position:relative;margin:22px 0 26px" class="grid-bg"><div class="deco" data-deco="bars" data-n="10" data-seed="12"></div></div>
+        <div class="h-s">Investigación + producción</div>
+        <p class="body sm" style="margin-top:12px">Una pequeña investigación y una producción que comunique, materialice o ponga a prueba los hallazgos.</p>
+      </div>
+      <div style="padding:30px 30px">
+        <div class="num">04 —</div>
+        <div style="height:240px;position:relative;margin:22px 0 26px" class="grid-bg"><div class="deco" data-deco="network" data-seed="6"></div></div>
+        <div class="h-s">Puesta en común</div>
+        <p class="body sm" style="margin-top:12px">Presentación y discusión colectiva: actualización colaborativa y reflexión conjunta.</p>
+      </div>
+    </div>
+    <div style="padding:26px 28px 24px;display:flex;gap:28px;align-items:center">
+      <span class="tag fill">Objetivo</span>
+      <p class="body sm">No llegar a conclusiones definitivas, sino construir entre todos un <b>mapa provisional</b> de preguntas, hallazgos, tensiones y posibilidades.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 04 · TÓPICOS ======================= -->
+<section class="slide" data-title="Tópicos">
+  <div class="frame"></div>
+  <div class="inner" style="grid-template-rows:auto auto 1fr">
+    <div class="hdr"><span class="meta">[04] &nbsp;Tópicos para la investigación</span><span class="meta">8 campos · asignación al azar</span></div>
+    <div style="padding:26px 28px 26px;display:flex;justify-content:space-between;align-items:flex-end">
+      <h2 class="h-l">8 tópicos</h2>
+      <p class="body sm" style="max-width:720px;text-align:right">Campos amplios del diseño digital. En todos los casos es requisito indagar en los <b>usos, aplicaciones e implicancias de la IA</b>.</p>
+    </div>
+    <div id="topics" style="display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;border-top:1.5px solid var(--ink);margin:0 0 0 0"></div>
+  </div>
+</section>
+
+<!-- ======================= 05 · RECORTE ======================= -->
+<section class="slide" data-title="Recorte">
+  <div class="frame"></div>
+  <div class="inner" style="grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr">
+    <div class="hdr" style="grid-column:1/3"><span class="meta">[05] &nbsp;Del tópico al recorte</span><span class="meta">TP 04 · Investigación, Diseño &amp; IA</span></div>
+    <div style="padding:30px 28px 40px 28px;display:flex;flex-direction:column">
+      <h2 class="h-l">Hacer<br>un recorte</h2>
+      <p class="body" style="margin-top:34px;max-width:780px">Los tópicos son amplios. En las primeras instancias, cada dupla debe definir con precisión el <b>aspecto, problema o ámbito particular</b> que va a abordar.</p>
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:0;border-top:1.5px solid var(--ink)">
+        <div style="display:grid;grid-template-columns:90px 1fr;padding:18px 0;border-bottom:1px solid var(--ink-soft)"><span class="num">A</span><span class="body sm"><b>Tópico</b> — el campo asignado (p. ej. Prototipado).</span></div>
+        <div style="display:grid;grid-template-columns:90px 1fr;padding:18px 0;border-bottom:1px solid var(--ink-soft)"><span class="num">B</span><span class="body sm"><b>Subtópicos</b> — conceptos, prácticas y temas vinculados.</span></div>
+        <div style="display:grid;grid-template-columns:90px 1fr;padding:18px 0;border-bottom:1px solid var(--ink-soft)"><span class="num">C</span><span class="body sm"><b>Recorte</b> — un problema preciso, investigable en el tiempo del TP.</span></div>
+        <div style="display:grid;grid-template-columns:90px 1fr;padding:18px 0"><span class="num">∩ IA</span><span class="body sm">Siempre atravesado por los usos e injerencias de la IA.</span></div>
+      </div>
+    </div>
+    <div style="position:relative;border-left:1px solid var(--ink-soft)">
+      <div class="deco grid-bg" data-deco="funnel" data-seed="14"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 06 · IA DOBLE PERSPECTIVA ======================= -->
+<section class="slide" data-title="IA: objeto y herramienta">
+  <div class="frame"></div>
+  <div class="inner" style="grid-template-rows:auto auto 1fr auto">
+    <div class="hdr"><span class="meta">[06] &nbsp;Doble perspectiva</span><span class="meta">TP 04 · Investigación, Diseño &amp; IA</span></div>
+    <div style="padding:26px 28px 30px"><h2 class="h-l">La IA como objeto<br>y como herramienta</h2></div>
+    <div style="display:grid;grid-template-columns:1fr 360px 1fr;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)">
+      <div style="padding:34px 36px;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between"><span class="tag">Objeto de investigación</span><span class="num">[ A ]</span></div>
+        <p class="h-m" style="margin-top:28px;font-size:34px">¿Qué hace la IA en el campo elegido?</p>
+        <p class="body sm" style="margin-top:18px">Usos, aplicaciones, transformaciones, nuevas posibilidades y problemas que plantea en la práctica del diseño.</p>
+        <div style="flex:1;position:relative;margin-top:24px;min-height:120px"><div class="deco" data-deco="dots" data-n="380" data-seed="31" data-shape="rect"></div></div>
+      </div>
+      <div style="position:relative;border-left:1px solid var(--ink-soft);border-right:1px solid var(--ink-soft)" class="grid-bg">
+        <div class="deco" data-deco="venn" data-seed="1"></div>
+      </div>
+      <div style="padding:34px 36px;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between"><span class="tag">Herramienta de trabajo</span><span class="num">[ B ]</span></div>
+        <p class="h-m" style="margin-top:28px;font-size:34px">¿Cómo nos ayuda a investigar?</p>
+        <p class="body sm" style="margin-top:18px">Formular preguntas, organizar y documentar materiales, contrastar hallazgos, registrar el proceso e incluso producir la entrega final.</p>
+        <div style="margin-top:auto;display:flex;flex-wrap:wrap;gap:10px;padding-top:24px">
+          <span class="tag">ChatGPT</span><span class="tag">Claude</span><span class="tag">Gemini</span><span class="tag">Antigravity</span><span class="tag">…</span>
+        </div>
+      </div>
+    </div>
+    <div style="padding:24px 28px;display:flex;gap:28px;align-items:center">
+      <span class="tag fill">Nota</span>
+      <p class="body sm">La IA no reemplaza el trabajo: forma parte de él. Cómo incorporarla —o cuándo prescindir de ella— también puede ser un <b>hallazgo</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 07 · REPOSITORIO ======================= -->
+<section class="slide" data-title="Repositorio">
+  <div class="frame"></div>
+  <div class="inner" style="grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr">
+    <div class="hdr" style="grid-column:1/3"><span class="meta">[07] &nbsp;Repositorio de trabajo</span><span class="meta">OneDrive · Markdown (.md)</span></div>
+    <div style="padding:30px 28px 36px;display:flex;flex-direction:column">
+      <h2 class="h-l">Todo en<br>Markdown</h2>
+      <p class="body" style="margin-top:30px;max-width:800px">Cada dupla trabaja en una <b>carpeta compartida de OneDrive</b>. En las primeras instancias, todo el material se escribe en archivos <b>.md</b>: texto plano, estructurado y legible por personas y por herramientas de IA.</p>
+      <div class="linkwrap">
+      <a class="linkbox" href="https://faduubaar-my.sharepoint.com/:f:/g/personal/gaston_martino_fadu_uba_ar/IgAMDDHI_GhHRoroEhR3vkCYAbe3uRV9lG7AK32woh2Zx5M?e=YKpIDf" target="_blank" rel="noopener">
+        <span class="tag fill">Link</span>
+        <span><span class="h-s" style="font-size:22px;display:block">Carpeta compartida OneDrive</span>
+        <span class="num muted" style="font-size:13px;display:block;margin-top:6px">faduubaar-my.sharepoint.com · abrir en una pestaña nueva</span></span>
+        <span class="arrow">↗</span>
+      </a>
+        <div class="linksub">
+          <span>Sintaxis de los archivos Markdown:</span>
+          <a href="https://markdown.es/sintaxis-markdown/" target="_blank" rel="noopener">markdown.es/sintaxis-markdown ↗</a>
+        </div>
+      </div>
+      <div style="margin-top:auto;display:grid;grid-template-columns:1fr 1fr;border-top:1.5px solid var(--ink)">
+        <div style="padding:22px 22px 0 0"><div class="num">README.md</div><p class="body sm" style="margin-top:10px">Punto de entrada obligatorio: presenta el tema y documenta el desarrollo.</p></div>
+        <div style="padding:22px 0 0 22px;border-left:1px solid var(--ink-soft)"><div class="num">Estructura libre</div><p class="body sm" style="margin-top:10px">Subcarpetas, archivos .md, imágenes y enlaces entre documentos.</p></div>
+      </div>
+    </div>
+    <div style="position:relative;border-left:1px solid var(--ink-soft);padding:30px 36px;display:grid;grid-template-rows:auto 1fr;gap:26px">
+      <div style="border:1.5px solid var(--ink);background:var(--paper)">
+        <div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--ink-soft)" class="label"><span>/dupla-03</span><span>tree</span></div>
+<pre style="font-family:'IBM Plex Mono';font-size:21px;line-height:1.6;padding:16px 20px;color:var(--ink)">📁 dupla-03/
+├── <b>README.md</b>          ← punto de entrada
+├── investigacion/
+│   ├── fuentes.md
+│   └── entrevistas.md
+├── proceso/
+│   └── registro-ia.md
+└── img/
+    └── mapa-conceptual.png</pre>
+      </div>
+      <div style="border:1.5px solid var(--ink);background:var(--paper);position:relative;overflow:hidden">
+        <div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--ink-soft)" class="label"><span>README.md</span><span>sintaxis</span></div>
+<pre style="font-family:'IBM Plex Mono';font-size:19px;line-height:1.55;padding:14px 20px;color:var(--ink)"><span class="muted"># </span>Prototipado &amp; IA
+<span class="muted">## </span>Recorte
+La IA en el paso de **wireframe** a *HTML*.
+<span class="muted">- </span>[Fuentes](investigacion/fuentes.md)
+<span class="muted">&gt; </span>"Cita de una lectura relevante"
+<span class="muted">![</span>mapa<span class="muted">](img/mapa-conceptual.png)</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 08 · PRÓXIMA CLASE ======================= -->
+<section class="slide" data-title="Tarea para la próxima clase">
+  <div class="frame"></div>
+  <div class="inner" style="grid-template-rows:auto auto 1fr">
+    <div class="hdr"><span class="meta">[08] &nbsp;Tarea para la próxima clase</span><span class="meta">4 pasos</span></div>
+    <div style="padding:26px 28px 30px;display:flex;justify-content:space-between;align-items:flex-end">
+      <h2 class="h-l">Tarea próxima clase</h2>
+      <div class="deco" style="position:relative;width:560px;height:120px" data-deco="timeline" data-seed="2"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);border-top:1.5px solid var(--ink)">
+      <div style="padding:30px 30px 30px 28px;display:flex;flex-direction:column">
+        <div class="h-l" style="font-size:96px">1</div>
+        <div class="h-s" style="margin-top:16px">Aplicaciones de IA</div>
+        <p class="body" style="margin-top:16px;font-size:19px;line-height:1.5">Se recomienda instalar y explorar herramientas de Inteligencia Artificial que puedan asistir, documentar y/o servir de apoyo a las distintas etapas de la investigación. Siempre que sea posible, se sugiere trabajar con las aplicaciones de escritorio en lugar de utilizar únicamente los chats de IA disponibles en la web.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:18px"><span class="tag">ChatGPT</span><span class="tag">Antigravity</span><span class="tag">Claude</span></div>
+        <p class="label muted" style="margin-top:auto">No hace falta un plan pago</p>
+      </div>
+      <div style="padding:30px;border-left:1px solid var(--ink-soft);display:flex;flex-direction:column">
+        <div class="h-l" style="font-size:96px">2</div>
+        <div class="h-s" style="margin-top:16px">Archivos .md</div>
+        <p class="body" style="margin-top:16px;font-size:19px;line-height:1.5">Familiarizarse con la sintaxis de los archivos Markdown. Pedirle a la herramienta de Inteligencia Artificial que hayan instalado que genere una primera versión del archivo <code>README.md</code>. Revisar la sintaxis utilizada e intentar realizar algunos cambios manualmente. Explorar las posibilidades que ofrece Markdown para incorporar imágenes, enlaces, tablas, listas, citas y diferentes opciones de formato.</p>
+        <p class="label muted" style="margin-top:auto">markdown.es/sintaxis-markdown</p>
+      </div>
+      <div style="padding:30px;border-left:1px solid var(--ink-soft);display:flex;flex-direction:column">
+        <div class="h-l" style="font-size:96px">3</div>
+        <div class="h-s" style="margin-top:16px">Investigación</div>
+        <p class="body" style="margin-top:16px;font-size:19px;line-height:1.5">Realizar una primera exploración amplia y exploratoria sobre el tópico asignado. Identificar y analizar posibles subtópicos, conceptos y temas relacionados. Investigar de qué manera la Inteligencia Artificial se vincula actualmente con ese campo, qué usos y aplicaciones tiene y qué nuevas posibilidades, transformaciones o problemas plantea.</p>
+        <p class="label muted" style="margin-top:auto">No solo con IA</p>
+      </div>
+      <div style="padding:30px;border-left:1px solid var(--ink-soft);display:flex;flex-direction:column;background:var(--ink-ghost)">
+        <div class="h-l" style="font-size:96px">4</div>
+        <div class="h-s" style="margin-top:16px">Recorte y documentación</div>
+        <p class="body" style="margin-top:16px;font-size:19px;line-height:1.5">A partir de la información recabada y analizada, cada grupo deberá realizar un recorte del tópico asignado. Dado que cada tópico constituye un campo amplio, será necesario definir con mayor precisión el alcance, ámbito o problema particular que se pretende investigar. Esta definición deberá quedar documentada en el archivo <code>README.md</code> dentro de la carpeta compartida de trabajo.</p>
+        <p class="label muted" style="margin-top:auto">Verificar formato, imágenes y enlaces</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 09 · README ======================= -->
+<section class="slide" data-title="Estructura del README">
+  <div class="frame"></div>
+  <div class="inner" style="grid-template-columns:760px 1fr;grid-template-rows:auto 1fr">
+    <div class="hdr" style="grid-column:1/3"><span class="meta">[09] &nbsp;Estructura del README.md</span><span class="meta">Documento vivo</span></div>
+    <div style="padding:30px 40px 36px 28px;display:flex;flex-direction:column">
+      <h2 class="h-l">README.md</h2>
+      <p class="body" style="margin-top:28px">Una estructura orientativa para la primera entrega. Puede modificarse a medida que avanza la investigación.</p>
+      <div style="flex:1;position:relative;margin-top:34px" class="cell grid-bg">
+        <div class="deco" data-deco="doc" data-seed="5"></div>
+      </div>
+    </div>
+    <div style="border-left:1px solid var(--ink-soft);display:grid;grid-template-rows:repeat(4,1fr)">
+      <div style="display:grid;grid-template-columns:150px 1fr;align-items:center;padding:0 40px;border-bottom:1px solid var(--ink-soft)">
+        <span class="h-l" style="font-size:64px">#1</span>
+        <div><div class="h-s">Introducción</div><p class="body sm" style="margin-top:8px">Tópico asignado, conceptos relevantes, primeros hallazgos, preguntas e intuiciones.</p></div>
+      </div>
+      <div style="display:grid;grid-template-columns:150px 1fr;align-items:center;padding:0 40px;border-bottom:1px solid var(--ink-soft)">
+        <span class="h-l" style="font-size:64px">#2</span>
+        <div><div class="h-s">Recorte</div><p class="body sm" style="margin-top:8px">Definición precisa del aspecto, problema o ámbito que se investigará.</p></div>
+      </div>
+      <div style="display:grid;grid-template-columns:150px 1fr;align-items:center;padding:0 40px;border-bottom:1px solid var(--ink-soft)">
+        <span class="h-l" style="font-size:64px">#3</span>
+        <div><div class="h-s">Contexto actual</div><p class="body sm" style="margin-top:8px">Estado del campo: herramientas, metodologías, prácticas, problemáticas, discusiones y antecedentes.</p></div>
+      </div>
+      <div style="display:grid;grid-template-columns:150px 1fr;align-items:center;padding:0 40px;background:var(--ink-ghost)">
+        <span class="h-l" style="font-size:64px">#4</span>
+        <div><div class="h-s">Objetivos</div><p class="body sm" style="margin-top:8px">2 o 3 objetivos que orienten y encaucen las siguientes etapas del trabajo.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 10 · CIERRE ======================= -->
+<section class="slide" data-title="Cierre">
+  <div class="frame"></div>
+  <div class="inner">
+    <div class="deco" data-deco="pabellon"></div>
+    <div style="position:absolute;left:40px;top:34px;right:40px;display:flex;justify-content:space-between;align-items:flex-start">
+      <h2 class="h-xl" style="font-size:150px;line-height:.85;white-space:nowrap">DG4 - TP4</h2>
+      <span class="meta" style="font-size:26px">2026</span>
+    </div>
+    <div style="position:absolute;left:40px;right:40px;bottom:34px;display:flex;justify-content:space-between;align-items:flex-end">
+      <span class="meta" style="font-size:22px;background:var(--paper);padding:6px 10px 6px 0">Cátedra Meygide-Carpintero</span>
+      <span class="h-l" style="font-size:72px;background:var(--paper);padding:0 0 0 14px">FADU</span>
+    </div>
+  </div>
+</section>
+
+</div></div>
+
+<nav id="nav" aria-label="Navegación">
+  <button id="prev" aria-label="Anterior">←</button>
+  <span class="dots" id="dots"></span>
+  <span id="count">01/10</span>
+  <button id="next" aria-label="Siguiente">→</button>
+  <button id="fs" aria-label="Pantalla completa">⛶</button>
+</nav>
+
+<script>
+/* ---------------- data ---------------- */
+const TOPICS = [
+  ["Sistemas de Diseño","Componentes, variantes, variables y tokens. Nomenclaturas y convenciones. Auto-layout.","tokens"],
+  ["Design Thinking","Metodología y etapas. Diseño centrado en el usuario. Investigación UX. Personas.","cycle"],
+  ["Prototipado","Wireframes, mockups, fidelidades. Handoff. Del prototipo al HTML generado.","wire"],
+  ["Diseño web inclusivo","Pautas WCAG. Tecnologías de asistencia. Diversidad funcional.","a11y"],
+  ["Infografía interactiva","Scrollytelling, diseño de información, esquemática interactiva en la web.","bars"],
+  ["Generatividad","Gráfica e identidades generativas. Imagen y video con IA. Edición y retoque.","gen"],
+  ["Pruebas de usuario / Auditoría UX","Test de usuario, heurísticas, leyes UX. Evaluación con IA.","heat"],
+  ["Interfaces inmersivas & 3D","XR: AR, VR, MR. Interacción, gamificación, gráfica espacial, háptica.","cube"]
+];
+
+/* ---------------- utils ---------------- */
+const NS="http://www.w3.org/2000/svg";
+function rng(seed){let s=seed*9301+49297;return()=>{s=(s*16807)%2147483647;return (s-1)/2147483646}}
+function svg(el){const w=el.clientWidth||400,h=el.clientHeight||300;const s=document.createElementNS(NS,"svg");s.setAttribute("viewBox",`0 0 ${w} ${h}`);s.setAttribute("preserveAspectRatio","none");el.innerHTML="";el.appendChild(s);return [s,w,h]}
+function E(p,tag,a){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e}
+const INK="#1d3fb8", SOFT="rgba(29,63,184,.38)", FAINT="rgba(29,63,184,.16)";
+function gauss(r){return (r()+r()+r()-1.5)/1.5}
+
+/* ---------------- deco painters ---------------- */
+const P = {
+  dots(el){const [s,w,h]=svg(el);const r=rng(+el.dataset.seed||1);const n=+el.dataset.n||300;const shape=el.dataset.shape||"rect";
+    for(let i=0;i<n;i++){let x,y;
+      if(shape==="rect"){x=r()*w;y=r()*h; if(r()<.25 && x>w*.7 && y<h*.3)continue;}
+      else if(shape==="blob"){const a=r()*Math.PI*2, d=Math.abs(gauss(r))*.9; x=w*.5+Math.cos(a)*d*w*.55+Math.sin(a*3)*w*.06; y=h*.48+Math.sin(a)*d*h*.5;}
+      else {const t=r(); x=t*w+gauss(r)*w*.18; y=(1-t)*h+gauss(r)*h*.18;}
+      if(x<2||y<2||x>w-2||y>h-2)continue;
+      E(s,"rect",{x:x.toFixed(1),y:y.toFixed(1),width:r()<.85?2.6:3.6,height:r()<.85?2.6:3.6,fill:INK,opacity:(.55+r()*.45).toFixed(2)});
+    }},
+  lines(el){const [s,w,h]=svg(el);const r=rng(+el.dataset.seed||1);
+    for(let x=0;x<=w;x+=w/16)E(s,"line",{x1:x,y1:0,x2:x,y2:h,stroke:FAINT});
+    for(let y=0;y<=h;y+=h/5)E(s,"line",{x1:0,y1:y,x2:w,y2:y,stroke:FAINT});
+    // filled area chart right
+    let d=`M${w*.52},${h}`;for(let i=0;i<=40;i++){const x=w*.52+i*(w*.48/40);const y=h*.35+Math.sin(i*.5+r()*2)*h*.12+r()*h*.18;d+=` L${x.toFixed(1)},${y.toFixed(1)}`}d+=` L${w},${h} Z`;
+    E(s,"path",{d,fill:INK,opacity:.75});
+    for(let k=0;k<3;k++){let p="";const ph=r()*6,a=.2+r()*.3;for(let i=0;i<=60;i++){const x=i*(w*.5/60);const y=h*.5-Math.sin(i*.18+ph)*h*a*Math.exp(-((i-30-k*8)**2)/400)*2;p+=(i?" L":"M")+x.toFixed(1)+","+y.toFixed(1)}E(s,"path",{d:p,fill:"none",stroke:INK,"stroke-width":k?1:1.6,opacity:k?.6:1})}
+    // gaussian outline
+    let g="";for(let i=0;i<=50;i++){const x=w*.62+i*(w*.14/50);const y=h*.95-Math.exp(-((i-25)**2)/60)*h*.85;g+=(i?" L":"M")+x.toFixed(1)+","+y.toFixed(1)}
+    E(s,"path",{d:g,fill:"none",stroke:"#f2eee3","stroke-width":5,"stroke-dasharray":"2 5"});
+  },
+  bars(el){const [s,w,h]=svg(el);const r=rng(+el.dataset.seed||1);const n=+el.dataset.n||12;const pad=w*.08,bw=(w-pad*2)/n;
+    E(s,"line",{x1:pad,y1:h*.88,x2:w-pad,y2:h*.88,stroke:INK});
+    for(let i=0;i<n;i++){const v=.15+r()*.7;const x=pad+i*bw+bw*.18;const bh=v*h*.72;
+      E(s,"rect",{x,y:h*.88-bh,width:bw*.64,height:bh,fill:r()<.35?"none":INK,stroke:INK,opacity:r()<.4?.55:.9});
+      if(r()<.5)E(s,"rect",{x:x+bw*.64,y:h*.88-bh*.6,width:bw*.18,height:bh*.6,fill:SOFT});}
+  },
+  circle(el){const [s,w,h]=svg(el);const cx=w/2,cy=h/2,R=Math.min(w,h)*.4;
+    const cp=E(s,"clipPath",{id:"cc"+el.dataset.seed});E(cp,"circle",{cx,cy,r:R});
+    const g=E(s,"g",{"clip-path":`url(#cc${el.dataset.seed})`});
+    for(let x=cx-R;x<=cx+R;x+=R/7)E(g,"line",{x1:x,y1:0,x2:x,y2:h,stroke:SOFT});
+    for(let y=cy-R;y<=cy+R;y+=R/7)E(g,"line",{x1:0,y1:y,x2:w,y2:y,stroke:SOFT});
+    E(s,"circle",{cx,cy,r:R,fill:"none",stroke:INK,"stroke-width":1.6});
+    [[cx-R,cy],[cx+R,cy],[cx,cy-R],[cx,cy+R]].forEach(([x,y])=>E(s,"rect",{x:x-5,y:y-5,width:10,height:10,fill:INK}));
+  },
+  pairs(el){const [s,w,h]=svg(el);const r=rng(+el.dataset.seed||1);
+    const a=[w*.36,h*.5],b=[w*.64,h*.5];
+    for(let i=0;i<220;i++){const c=i%2?a:b;const ang=r()*6.28,d=Math.sqrt(r())*h*.36;E(s,"rect",{x:c[0]+Math.cos(ang)*d,y:c[1]+Math.sin(ang)*d,width:2.4,height:2.4,fill:INK,opacity:.8})}
+    E(s,"circle",{cx:a[0],cy:a[1],r:h*.38,fill:"none",stroke:INK});E(s,"circle",{cx:b[0],cy:b[1],r:h*.38,fill:"none",stroke:INK});
+  },
+  dice(el){const [s,w,h]=svg(el);const r=rng(+el.dataset.seed||1);const cols=8,cw=w*.84/cols,y0=h*.3;
+    for(let i=0;i<cols;i++){const x=w*.08+i*cw;const on=i===5;E(s,"rect",{x:x+3,y:y0,width:cw-6,height:cw-6,fill:on?INK:"none",stroke:INK});
+      const t=E(s,"text",{x:x+cw/2,y:y0+cw/2+2,"text-anchor":"middle","dominant-baseline":"middle","font-family":"Space Mono","font-size":Math.min(16,cw*.4),fill:on?"#f2eee3":INK});t.textContent=i+1;}
+    E(s,"path",{d:`M${w*.08+5.5*cw},${y0+cw+8} L${w*.08+5.5*cw},${h*.88}`,stroke:INK,"stroke-dasharray":"3 4"});
+    const t=E(s,"text",{x:w*.08+5.5*cw+10,y:h*.86,"font-family":"Space Mono","font-size":12,fill:INK});t.textContent="random()";
+  },
+  network(el){const [s,w,h]=svg(el);const r=rng(+el.dataset.seed||1);const pts=[];for(let i=0;i<18;i++)pts.push([w*.1+r()*w*.8,h*.12+r()*h*.76]);
+    pts.forEach((p,i)=>pts.forEach((q,j)=>{if(j>i&&Math.hypot(p[0]-q[0],p[1]-q[1])<w*.24)E(s,"line",{x1:p[0],y1:p[1],x2:q[0],y2:q[1],stroke:SOFT})}));
+    pts.forEach((p,i)=>E(s,"rect",{x:p[0]-(i%5?3:5),y:p[1]-(i%5?3:5),width:i%5?6:10,height:i%5?6:10,fill:i%5?INK:"#f2eee3",stroke:INK}));
+  },
+  funnel(el){const [s,w,h]=svg(el);const r=rng(+el.dataset.seed||1);const cx=w*.5,cy=h*.52;const R=[h*.42,h*.29,h*.15];
+    const labels=["A · TÓPICO","B · SUBTÓPICOS","C · RECORTE"];
+    // dots in rings with decreasing density radius
+    for(let i=0;i<1600;i++){const a=r()*6.28;const d=Math.sqrt(r())*R[0];const x=cx+Math.cos(a)*d,y=cy+Math.sin(a)*d;const op=d<R[2]?1:d<R[1]?.7:.4;E(s,"rect",{x,y,width:2.6,height:2.6,fill:INK,opacity:op})}
+    R.forEach((rr,i)=>{E(s,"circle",{cx,cy,r:rr,fill:i===2?"rgba(242,238,227,.0)":"none",stroke:INK,"stroke-width":i===2?2:1,"stroke-dasharray":i===0?"4 5":"none"});
+      E(s,"rect",{x:cx+rr-5,y:cy-5,width:10,height:10,fill:INK});
+      E(s,"line",{x1:cx+rr,y1:cy,x2:w*.94,y2:cy-90+i*0,stroke:"none"});
+      const ty=cy-rr-12;const t=E(s,"text",{x:cx,y:ty,"text-anchor":"middle","font-family":"Space Mono","font-size":15,"letter-spacing":"2",fill:INK});t.textContent=labels[i];
+    });
+    // IA crosshair
+    E(s,"line",{x1:cx,y1:h*.04,x2:cx,y2:h*.98,stroke:INK,"stroke-width":1});
+    E(s,"line",{x1:w*.04,y1:cy,x2:w*.96,y2:cy,stroke:INK,"stroke-width":1});
+    E(s,"rect",{x:cx-26,y:cy-16,width:52,height:32,fill:INK});
+    const t=E(s,"text",{x:cx,y:cy+1,"text-anchor":"middle","dominant-baseline":"middle","font-family":"Space Mono","font-size":16,"font-weight":700,fill:"#f2eee3"});t.textContent="IA";
+  },
+  venn(el){const [s,w,h]=svg(el);const cx=w/2;const R=w*.34;const a=h*.38,b=h*.62;
+    E(s,"circle",{cx,cy:a,r:R,fill:"rgba(29,63,184,.08)",stroke:INK,"stroke-width":1.4});
+    E(s,"circle",{cx,cy:b,r:R,fill:"rgba(29,63,184,.08)",stroke:INK,"stroke-width":1.4});
+    [["A",a-R*.45],["B",b+R*.45]].forEach(([l,y])=>{const t=E(s,"text",{x:cx,y,"text-anchor":"middle","dominant-baseline":"middle","font-family":"Space Mono","font-size":22,fill:INK});t.textContent=l});
+    E(s,"rect",{x:cx-38,y:h/2-15,width:76,height:30,fill:INK});
+    const t=E(s,"text",{x:cx,y:h/2+1,"text-anchor":"middle","dominant-baseline":"middle","font-family":"Space Mono","font-size":15,fill:"#f2eee3"});t.textContent="A ∩ B";
+    [[cx-R,a],[cx+R,a],[cx-R,b],[cx+R,b]].forEach(([x,y])=>E(s,"rect",{x:x-4,y:y-4,width:8,height:8,fill:INK}));
+  },
+  timeline(el){const [s,w,h]=svg(el);const y=h*.55;E(s,"line",{x1:0,y1:y,x2:w,y2:y,stroke:INK,"stroke-width":1.4});
+    for(let i=0;i<=40;i++){E(s,"line",{x1:i*w/40,y1:y-(i%10?5:12),x2:i*w/40,y2:y,stroke:INK})}
+    [.08,.36,.64,.92].forEach((p,i)=>{E(s,"rect",{x:p*w-7,y:y-7,width:14,height:14,fill:i===3?"#f2eee3":INK,stroke:INK});
+      const t=E(s,"text",{x:p*w,y:y+32,"text-anchor":"middle","font-family":"Space Mono","font-size":13,fill:INK});t.textContent="0"+(i+1)});
+    const t=E(s,"text",{x:0,y:y-24,"font-family":"Space Mono","font-size":13,fill:INK});t.textContent="HOY → PRÓXIMA CLASE";
+  },
+  doc(el){const [s,w,h]=svg(el);const r=rng(+el.dataset.seed||1);const x0=w*.1,x1=w*.9;let y=h*.08;
+    const sec=["# Título","## 1 Introducción","## 2 Recorte","## 3 Contexto actual","## 4 Objetivos"];
+    sec.forEach((t,i)=>{const tx=E(s,"text",{x:x0,y:y+16,"font-family":"IBM Plex Mono","font-size":i?17:22,"font-weight":600,fill:INK});tx.textContent=t;y+=i?30:40;
+      const n=i===0?1:2+Math.floor(r()*2);for(let k=0;k<n;k++){const len=(x1-x0)*(.55+r()*.45);E(s,"rect",{x:x0,y,width:len,height:5,fill:SOFT});y+=13}
+      if(i===3){for(let k=0;k<5;k++)E(s,"rect",{x:x0+k*((x1-x0)/5)+4,y:y+6+(1-r())*30,width:(x1-x0)/5-10,height:36-(1-r())*30,fill:INK,opacity:.8});y+=50}
+      y+=i?18:10;});
+    E(s,"rect",{x:x0-16,y:h*.06,width:4,height:y-h*.06-10,fill:INK});
+  },
+  map(el){const [s,w,h]=svg(el);const r=rng(+el.dataset.seed||1);
+    const C=[["PREGUNTAS",.28,.26],["HALLAZGOS",.7,.3],["TENSIONES",.3,.72],["POSIBILIDADES",.72,.7]];
+    C.forEach(([l,px,py])=>{const cx=px*w,cy=py*h;for(let i=0;i<420;i++){const a=r()*6.28,d=Math.abs(gauss(r))*w*.17;E(s,"rect",{x:cx+Math.cos(a)*d,y:cy+Math.sin(a)*d*.9,width:2.5,height:2.5,fill:INK,opacity:(.4+r()*.6).toFixed(2)})}});
+    const mids=C.map(c=>[c[1]*w,c[2]*h]);
+    mids.forEach((p,i)=>mids.forEach((q,j)=>{if(j>i)E(s,"line",{x1:p[0],y1:p[1],x2:q[0],y2:q[1],stroke:INK,"stroke-dasharray":"3 6",opacity:.6})}));
+    C.forEach(([l],i)=>{const [x,y]=mids[i];const tw=l.length*10.5+24;E(s,"rect",{x:x-tw/2,y:y-15,width:tw,height:30,fill:"#f2eee3",stroke:INK,"stroke-width":1.4});
+      const t=E(s,"text",{x,y:y+1,"text-anchor":"middle","dominant-baseline":"middle","font-family":"Space Mono","font-size":15,"letter-spacing":"1.5",fill:INK});t.textContent=l;
+      E(s,"rect",{x:x-tw/2-5,y:y-20,width:10,height:10,fill:INK});});
+    // small person figures
+    E(s,"rect",{x:w/2-7,y:h/2-7,width:14,height:14,fill:INK});
+    const g=E(s,"text",{x:24,y:h-24,"font-family":"Space Mono","font-size":12,fill:INK,opacity:.6});g.textContent="MAPA PROVISIONAL · v0.1 · 2026";
+  },
+
+  fadu(el){const [s,w,h]=svg(el);const PAPER="#f2eee3";
+    const S=58, ex=[S*.94,S*.34], ey=[-S*.34,S*.80], K=S*.62, ox=w*.42, oy=-h*.12;
+    const P=(x,y,z=0)=>[ox+x*ex[0]+y*ey[0], oy+x*ex[1]+y*ey[1]-z*K];
+    const pts=a=>a.map(q=>q.map(v=>v.toFixed(1)).join(",")).join(" ");
+    const defs=E(s,"defs",{});const pat=E(defs,"pattern",{id:"hatch-fadu",width:6,height:6,patternUnits:"userSpaceOnUse",patternTransform:"rotate(-35)"});
+    E(pat,"line",{x1:0,y1:0,x2:0,y2:6,stroke:INK,"stroke-width":.9,opacity:.55});
+    // --- floor tiles
+    const R=[-30,40];
+    for(let i=R[0];i<=R[1];i++){const a=P(i,R[0]),b=P(i,R[1]);E(s,"line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:i%9===4?SOFT:FAINT,"stroke-width":i%9===4?2.2:1})}
+    for(let j=R[0];j<=R[1];j++){const a=P(R[0],j),b=P(R[1],j);E(s,"line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:FAINT})}
+    const floorLayer=E(s,"g",{});
+    // --- stools
+    const st=[];for(let j=-8;j<14;j++)for(let i=-12;i<14;i++){const x=i*3+(j%2?1.5:0)+.4,y=j*2.7+.4;const c=P(x+.5,y+.5,.8);if(c[0]<-80||c[0]>w+80||c[1]<-120||c[1]>h+60)continue;st.push([x,y])}
+    st.sort((a,b)=>P(a[0],a[1])[1]-P(b[0],b[1])[1]);
+    const H=1.55, q=1.0, ins=.07, L=[-.62,-.42]; // light offset per unit height
+    // shadows first
+    st.forEach(([x,y])=>{const sh=(px,py,z)=>P(px+L[0]*z,py+L[1]*z,0);
+      E(s,"polygon",{points:pts([sh(x,y,H),sh(x+q,y,H),sh(x+q,y+q,H),sh(x,y+q,H)]),fill:"url(#hatch-fadu)",stroke:"none"});
+      [[x+ins,y+ins],[x+q-ins,y+ins],[x+q-ins,y+q-ins],[x+ins,y+q-ins]].forEach(([lx,ly])=>{const a=P(lx,ly),b=sh(lx,ly,H);E(s,"line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:SOFT,"stroke-width":1.4})});});
+    st.forEach(([x,y])=>{const g=E(s,"g",{});
+      const legs=[[x+ins,y+ins],[x+q-ins,y+ins],[x+q-ins,y+q-ins],[x+ins,y+q-ins]];
+      const ln=(a,b,sw=1.4)=>E(g,"line",{x1:a[0].toFixed(1),y1:a[1].toFixed(1),x2:b[0].toFixed(1),y2:b[1].toFixed(1),stroke:INK,"stroke-width":sw,"stroke-linecap":"square"});
+      legs.forEach(([lx,ly])=>ln(P(lx,ly,0),P(lx,ly,H-.06),1.8));
+      [.3,.62].forEach((zz,k)=>{const z=H*zz;for(let n=0;n<4;n++){if(k&&n%2)continue;const a=legs[n],b=legs[(n+1)%4];ln(P(a[0],a[1],z),P(b[0],b[1],z),1)}});
+      const T=.07,top=[P(x,y,H),P(x+q,y,H),P(x+q,y+q,H),P(x,y+q,H)],bot=[P(x,y,H-T),P(x+q,y,H-T),P(x+q,y+q,H-T),P(x,y+q,H-T)];
+      E(g,"polygon",{points:pts([top[1],top[2],bot[2],bot[1]]),fill:PAPER,stroke:INK,"stroke-width":1.2});
+      E(g,"polygon",{points:pts([top[3],top[2],bot[2],bot[3]]),fill:PAPER,stroke:INK,"stroke-width":1.2});
+      E(g,"polygon",{points:pts(top),fill:PAPER,stroke:INK,"stroke-width":1.5});
+      // subtle inner seat line
+      const m=.12,it=[P(x+m,y+m,H),P(x+q-m,y+m,H),P(x+q-m,y+q-m,H),P(x+m,y+q-m,H)];
+      E(g,"polygon",{points:pts(it),fill:"none",stroke:FAINT,"stroke-width":1});
+    });
+    // --- texts on the floor plane
+    const fx=[ex[0]/S,ex[1]/S,ey[0]/S,ey[1]/S];
+    const floorTxt=(t,x,y,sz=12,op=.85)=>{const [px,py]=P(x,y);const tx=E(floorLayer,"text",{transform:`matrix(${fx.join(" ")} ${px.toFixed(1)} ${py.toFixed(1)})`,"font-size":sz,"letter-spacing":"2",fill:INK,opacity:op});tx.textContent=t};
+    const words=["DG4","TALLER 207","FADU","UBA","INVESTIGACIÓN","DISEÑO","IA","UX","MEYGIDE-CARPINTERO","TP4"];
+    const r=rng(+el.dataset.seed||1);const used=[];
+    const inView=(x,y)=>{const [px,py]=P(x,y);return px>30&&px<w-30&&py>30&&py<h*.72};
+    const callout=new Set([2,6,9]);let tries=0;
+    words.forEach((wd,k)=>{let ok=false;
+      while(!ok&&tries<8000){tries++;
+        if(callout.has(k)){ // label pinned to a stool seat corner
+          const [x,y]=st[Math.floor(r()*st.length)];const [px,py]=P(x+q,y,H);
+          if(px<40||px>w-170||py<60||py>h*.7)continue;
+          if(used.some(([ux,uy])=>Math.hypot(ux-px,uy-py)<170))continue;
+          used.push([px,py]);E(s,"rect",{x:px-3.5,y:py-3.5,width:7,height:7,fill:INK});
+          E(s,"line",{x1:px,y1:py,x2:px+24,y2:py-24,stroke:INK,"stroke-width":1});
+          const tb=wd.length*8+14;E(s,"rect",{x:px+24,y:py-38,width:tb,height:20,fill:PAPER,stroke:INK,"stroke-width":1});
+          const t=E(s,"text",{x:px+31,y:py-24,"font-size":12,"letter-spacing":"1",fill:INK});t.textContent=wd;ok=true;
+        } else { // text lying on the floor, in the free strip between stool rows
+          const j=Math.floor(r()*16)-4;const y=j*2.7+.4+1.62;const x=Math.round((r()*34-16)*2)/2;const len=wd.length*.15+.3;
+          if(!inView(x,y)||!inView(x+len,y))continue;
+          const [px,py]=P(x,y);if(used.some(([ux,uy])=>Math.hypot(ux-px,uy-py)<150))continue;
+          used.push([px,py]);floorTxt(wd,x,y,12,.9);ok=true;}
+      }});
+  },
+  gridonly(el){const [s,w,h]=svg(el);
+    for(let x=0;x<=w+.5;x+=w/16)E(s,"line",{x1:x,y1:0,x2:x,y2:h,stroke:FAINT});
+    for(let y=0;y<=h+.5;y+=h/5)E(s,"line",{x1:0,y1:y,x2:w,y2:y,stroke:FAINT});},
+
+  pabellon(el){const [s,w,h]=svg(el);
+    // ---- simple pinhole camera, 2-point perspective (verticals stay vertical)
+    const cam=[30,1.7,60], tgt=[-62,1.7,-40], F=w*.60, HZ=h*.75, CX=w*.53;
+    const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]], dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+    const nrm=a=>{const l=Math.hypot(...a);return a.map(v=>v/l)}, cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+    const fw=nrm(sub(tgt,cam)), rt=nrm(cross(fw,[0,1,0])), up=cross(rt,fw);
+    const cs=p=>{const d=sub(p,cam);return [dot(d,rt),dot(d,up),dot(d,fw)]};
+    const pr=c=>[CX+F*c[0]/c[2], HZ-F*c[1]/c[2]];
+    const NEAR=2;
+    const seg=(a,b,st,sw=1,op=1)=>{let A=cs(a),B=cs(b);if(A[2]<NEAR&&B[2]<NEAR)return;
+      if(A[2]<NEAR){const t=(NEAR-A[2])/(B[2]-A[2]);A=A.map((v,i)=>v+(B[i]-v)*t)}
+      if(B[2]<NEAR){const t=(NEAR-B[2])/(A[2]-B[2]);B=B.map((v,i)=>v+(A[i]-v)*t)}
+      const p=pr(A),q=pr(B);E(s,"line",{x1:p[0].toFixed(1),y1:p[1].toFixed(1),x2:q[0].toFixed(1),y2:q[1].toFixed(1),stroke:st,"stroke-width":sw,opacity:op})};
+    const poly=(pts,fill,st,sw=1)=>{E(s,"polygon",{points:pts.map(p=>pr(cs(p)).map(v=>v.toFixed(1)).join(",")).join(" "),fill,stroke:st||"none","stroke-width":sw})};
+    const PAPER="#f2eee3";
+    const W=190, D=125;                    // left face along -x (plane z=0), right face along -z (plane x=0)
+    // ---- ground: pavement joints
+    const G=7;
+    for(let x=-W-14;x<=110;x+=G)seg([x,0,0],[x,0,140],FAINT,1);
+    for(let z=0;z<=140;z+=G)seg([-W-14,0,z],[110,0,z],FAINT,1);
+    for(let x=0;x<=110;x+=G)seg([x,0,-D-14],[x,0,0],FAINT,1);
+    for(let z=-D-14;z<0;z+=G)seg([0,0,z],[110,0,z],FAINT,1);
+    // a few stronger joints, like the cracks/lines of the photo
+    seg([-W-14,0,24],[110,0,24],SOFT,1.6); seg([-30,0,0],[90,0,140],SOFT,1.4); seg([-W-20,0,0],[-60,0,140],SOFT,1.2);
+    // horizon line (far field)
+    E(s,"line",{x1:0,y1:HZ,x2:w,y2:HZ,stroke:SOFT,"stroke-width":1});
+    // ---- building volumes (paper fill to hide ground lines behind)
+    const LV=[5.2,9.4,13.6,17.8,22.0], TOP=26.2, SL=.9, REC=2.2;
+    poly([[-W,0,0],[0,0,0],[0,TOP,0],[-W,TOP,0]],PAPER);
+    poly([[0,0,0],[0,0,-D],[0,TOP,-D],[0,TOP,0]],PAPER);
+    // face helpers: u = distance along face from the corner
+    const L=(u,y,o=0)=>[-u,y,o], R=(u,y,o=0)=>[o,y,-u];
+    const faces=[[L,W],[R,D]];
+    faces.forEach(([P,len])=>{
+      // ground floor: recessed glazing + columns
+      seg(P(0,LV[0]-SL,0),P(len,LV[0]-SL,0),INK,1.4);
+      seg(P(0,.6,-REC),P(len,.6,-REC),SOFT,1);
+      for(let u=0;u<=len;u+=7.5){seg(P(u,0,0),P(u,LV[0]-SL,0),INK,1.5);}
+      for(let u=1.8;u<len;u+=1.8)seg(P(u,.6,-REC),P(u,LV[0]-SL-.3,-REC),FAINT,1);
+      // slab bands
+      [...LV,TOP].forEach((y,k)=>{seg(P(0,y,0),P(len,y,0),INK,1.5);seg(P(0,y-SL,0),P(len,y-SL,0),INK,1.1);});
+      // brise-soleil fins on every upper level
+      for(let k=0;k<LV.length;k++){const y0=LV[k],y1=(k<LV.length-1?LV[k+1]:TOP)-SL;
+        seg(P(0,(y0+y1)/2+.6,-.8),P(len,(y0+y1)/2+.6,-.8),FAINT,1); // window transom behind
+        for(let u=1.5;u<len-.3;u+=1.5){seg(P(u,y0,0),P(u,y1,0),INK,1.1,.9);}
+      }
+      // parapet / roof edge
+      seg(P(0,TOP+.5,0),P(len,TOP+.5,0),INK,1);
+    });
+    // corner and far edges
+    seg([0,0,0],[0,TOP+.5,0],INK,2);seg([-W,0,0],[-W,TOP+.5,0],INK,1.6);seg([0,0,-D],[0,TOP+.5,-D],INK,1.6);
+    // roof plane edges (barely visible from eye level)
+    seg([-W,TOP+.5,0],[-W,TOP+.5,-D*.15],SOFT,1);seg([0,TOP+.5,-D],[-W*.12,TOP+.5,-D],SOFT,1);
+    // small corner handles
+    [[0,0,0],[-W,0,0],[0,0,-D],[0,TOP+.5,0]].forEach(p=>{const q=pr(cs(p));E(s,"rect",{x:q[0]-5,y:q[1]-5,width:10,height:10,fill:INK})});
+  },
+  /* topic icons */
+  tokens(el){const [s,w,h]=svg(el);const n=5;for(let i=0;i<n;i++)for(let j=0;j<3;j++){const sz=Math.min(w,h)*.13;E(s,"rect",{x:w*.12+i*(w*.76/n),y:h*.2+j*(sz*1.6),width:sz,height:sz,fill:INK,opacity:(.25+i*.18).toFixed(2),rx:j*4})}},
+  cycle(el){const [s,w,h]=svg(el);const cx=w/2,cy=h/2,R=Math.min(w,h)*.34;E(s,"circle",{cx,cy,r:R,fill:"none",stroke:INK,"stroke-dasharray":"4 5"});
+    for(let i=0;i<5;i++){const a=-Math.PI/2+i*Math.PI*2/5;E(s,"circle",{cx:cx+Math.cos(a)*R,cy:cy+Math.sin(a)*R,r:R*.22,fill:i===2?INK:"#f2eee3",stroke:INK})}},
+  wire(el){const [s,w,h]=svg(el);const x=w*.18,y=h*.12,W=w*.64,H=h*.76;E(s,"rect",{x,y,width:W,height:H,fill:"none",stroke:INK});
+    E(s,"rect",{x:x+10,y:y+10,width:W-20,height:H*.18,fill:"none",stroke:INK});E(s,"line",{x1:x+10,y1:y+10,x2:x+W-10,y2:y+10+H*.18,stroke:SOFT});E(s,"line",{x1:x+W-10,y1:y+10,x2:x+10,y2:y+10+H*.18,stroke:SOFT});
+    for(let i=0;i<4;i++)E(s,"rect",{x:x+10,y:y+H*.36+i*14,width:(W-20)*(i%2?.7:.9),height:5,fill:SOFT});
+    E(s,"rect",{x:x+10,y:y+H-30,width:W*.36,height:18,fill:INK});},
+  a11y(el){const [s,w,h]=svg(el);const cx=w/2,cy=h/2,R=Math.min(w,h)*.36;E(s,"circle",{cx,cy,r:R,fill:"none",stroke:INK,"stroke-width":1.6});
+    E(s,"circle",{cx,cy:cy-R*.5,r:R*.12,fill:INK});E(s,"path",{d:`M${cx-R*.55},${cy-R*.2} L${cx+R*.55},${cy-R*.2} M${cx},${cy-R*.2} L${cx},${cy+R*.2} L${cx-R*.3},${cy+R*.62} M${cx},${cy+R*.2} L${cx+R*.3},${cy+R*.62}`,stroke:INK,"stroke-width":5,fill:"none","stroke-linecap":"square"});},
+  gen(el){const [s,w,h]=svg(el);const r=rng(9);const c=10,rr=7,cw=w*.76/c,ch=h*.76/rr;for(let i=0;i<c;i++)for(let j=0;j<rr;j++){const x=w*.12+i*cw,y=h*.12+j*ch;const k=r();
+    if(k<.33)E(s,"line",{x1:x,y1:y,x2:x+cw,y2:y+ch,stroke:INK,"stroke-width":1.4});else if(k<.66)E(s,"line",{x1:x+cw,y1:y,x2:x,y2:y+ch,stroke:INK,"stroke-width":1.4});else E(s,"rect",{x:x+cw*.3,y:y+ch*.3,width:cw*.4,height:ch*.4,fill:INK})}},
+  heat(el){const [s,w,h]=svg(el);const r=rng(4);E(s,"rect",{x:w*.15,y:h*.1,width:w*.7,height:h*.8,fill:"none",stroke:INK});
+    for(let i=0;i<260;i++){const a=r()*6.28,d=Math.abs(gauss(r))*w*.18;const cx=i%3?w*.4:w*.62,cy=i%3?h*.32:h*.62;E(s,"rect",{x:cx+Math.cos(a)*d,y:cy+Math.sin(a)*d*.8,width:2.4,height:2.4,fill:INK,opacity:.8})}
+    E(s,"path",{d:`M${w*.7},${h*.7} l0,22 l6,-6 l8,10 l4,-3 l-8,-10 l9,-1 z`,fill:"#f2eee3",stroke:INK,"stroke-width":1.4});},
+  cube(el){const [s,w,h]=svg(el);const cx=w/2,cy=h/2,R=Math.min(w,h)*.32;const p=a=>[cx+Math.cos(a)*R,cy+Math.sin(a)*R*.58];
+    const top=[p(-Math.PI/2),p(-Math.PI/6),p(Math.PI/2),p(Math.PI*7/6)];
+    for(let k=0;k<=6;k++){const t=k/6;E(s,"line",{x1:top[0][0]+(top[3][0]-top[0][0])*t,y1:top[0][1]+(top[3][1]-top[0][1])*t,x2:top[1][0]+(top[2][0]-top[1][0])*t,y2:top[1][1]+(top[2][1]-top[1][1])*t,stroke:SOFT});
+      E(s,"line",{x1:top[0][0]+(top[1][0]-top[0][0])*t,y1:top[0][1]+(top[1][1]-top[0][1])*t,x2:top[3][0]+(top[2][0]-top[3][0])*t,y2:top[3][1]+(top[2][1]-top[3][1])*t,stroke:SOFT})}
+    const d=R*.85;E(s,"polygon",{points:top.map(q=>q.join(",")).join(" "),fill:"none",stroke:INK,"stroke-width":1.4});
+    E(s,"path",{d:`M${top[3][0]},${top[3][1]} l0,${d} L${top[2][0]},${top[2][1]+d} L${top[1][0]},${top[1][1]+d} L${top[1][0]},${top[1][1]} M${top[2][0]},${top[2][1]} l0,${d}`,fill:"none",stroke:INK,"stroke-width":1.4});
+    top.concat([[top[3][0],top[3][1]+d],[top[1][0],top[1][1]+d],[top[2][0],top[2][1]+d]]).forEach(q=>E(s,"rect",{x:q[0]-4,y:q[1]-4,width:8,height:8,fill:INK}));}
+};
+
+/* ---------------- build topics ---------------- */
+const tg=document.getElementById("topics");
+TOPICS.forEach(([t,d,ico],i)=>{const c=document.createElement("div");
+  c.style.cssText=`position:relative;padding:22px 26px;display:grid;grid-template-rows:auto 1fr auto;border-right:${i%4<3?"1px solid var(--ink-soft)":"0"};border-bottom:${i<4?"1px solid var(--ink-soft)":"0"}`;
+  c.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:baseline"><span class="num">T—0${i+1}</span><span class="num muted">[${i+1}/8]</span></div>
+  <div style="position:relative;margin:10px 0" class="grid-bg fine"><div class="deco" data-deco="${ico}"></div></div>
+  <div><div class="h-s" style="font-size:24px;min-height:58px">${t}</div><p class="body sm" style="font-size:16.5px;margin-top:6px;line-height:1.45">${d}</p></div>`;
+  tg.appendChild(c);});
+
+/* ---------------- paint (once, at native size) ---------------- */
+function paintAll(){document.querySelectorAll(".slide").forEach(sl=>{const was=sl.classList.contains("active");sl.style.visibility="visible";
+  sl.querySelectorAll("[data-deco]").forEach(el=>{const f=P[el.dataset.deco];if(f)f(el)});sl.style.visibility="";});}
+
+/* ---------------- stage scaling ---------------- */
+const stage=document.getElementById("stage");
+function fit(){const vw=document.documentElement.clientWidth||innerWidth, vh=document.documentElement.clientHeight||innerHeight;const s=Math.min(vw/1920,vh/1080)*0.98;stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener("resize",fit);fit();
+
+/* ---------------- navigation ---------------- */
+const slides=[...document.querySelectorAll(".slide")];const N=slides.length;
+const dots=document.getElementById("dots"),count=document.getElementById("count"),prog=document.getElementById("progress");
+slides.forEach((s,i)=>{const d=document.createElement("i");d.title=s.dataset.title;d.onclick=()=>go(i);dots.appendChild(d)});
+let cur=0;
+function go(i){cur=Math.max(0,Math.min(N-1,i));slides.forEach((s,k)=>s.classList.toggle("active",k===cur));
+  [...dots.children].forEach((d,k)=>d.classList.toggle("on",k===cur));
+  count.textContent=String(cur+1).padStart(2,"0")+"/"+String(N).padStart(2,"0");prog.style.width=((cur+1)/N*100)+"%";
+  if(location.protocol!=="file:"){try{history.replaceState(null,"","#"+(cur+1))}catch(e){}}}
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.getElementById("fs").onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})};
+addEventListener("keydown",e=>{
+  if(["ArrowRight","PageDown"," ","Enter"].includes(e.key)){e.preventDefault();go(cur+1)}
+  else if(["ArrowLeft","PageUp","Backspace"].includes(e.key)){e.preventDefault();go(cur-1)}
+  else if(e.key==="Home")go(0); else if(e.key==="End")go(N-1);
+  else if(e.key==="f"||e.key==="F")document.getElementById("fs").click();});
+// touch swipe
+let tx=null;addEventListener("touchstart",e=>tx=e.touches[0].clientX,{passive:true});
+addEventListener("touchend",e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>40)go(cur+(dx<0?1:-1));tx=null});
+
+const start=parseInt(location.hash.slice(1))||1;
+(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{paintAll();go(start-1)});
+paintAll();go(start-1);
+</script>
+</body>
+</html>

@@ -8,6 +8,7 @@ on:
       - "portal/**"
       - "contenidos/**"
       - "instructivos/**"
+      - "guias/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 

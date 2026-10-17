@@ -1,54 +1,23 @@
 # Diseño Gráfico 4
 
-Portal de la asignatura **Diseño Gráfico 4, Cátedra Meygide-Carpintero**, FADU, UBA.
+## Propósito
 
-El portal presenta el programa de Nivel 4 y reúne los ejes de trabajo vinculados con el diseño de productos digitales, interfaces de usuario y experiencias de usuario.
+Este repositorio reúne los contenidos, materiales y recursos de la asignatura Diseño Gráfico 4, Cátedra Meygide-Carpintero, FADU, UBA. Su objetivo es organizar y publicar el programa de la materia, los trabajos prácticos, los instructivos y otros materiales de apoyo para la cursada.
 
-## Contenido del portal
+![Vista previa del portal de Diseño Gráfico 4](assets/fadu-dg4-portal.png)
 
-### Nivel 4
+## Contenidos
 
-En Diseño Gráfico 4 exploramos en profundidad el diseño de productos digitales, poniendo el foco en la construcción de interfaces de usuario (UI) para la Web y el proceso de diseño de aplicaciones móviles como ejes claves dentro del campo de Diseño de Experiencias de Usuario (UX).
+| Carpeta | Contenido |
+| --- | --- |
+| `contenidos/` | Archivos Markdown que funcionan como fuente de contenido para las páginas del portal: resumen, programa, equipo docente y trabajos prácticos. |
+| `guias/` | Guías, presentaciones, artículos y otros materiales HTML independientes, publicados sin compartir los estilos ni la navegación del portal. |
+| `instructivos/` | Instructivos en Markdown y sus recursos asociados, como la guía para crear una cuenta en GitHub y sus imágenes. |
+| `portal/` | Proyecto web desarrollado con Vite que transforma parte de los contenidos Markdown en un sitio navegable y visual. Incluye su código fuente, estilos, plantilla, configuración y documentación. |
+| `.github/` | Configuración de GitHub Actions para compilar y publicar automáticamente el portal en GitHub Pages. |
 
-### Scrollytelling
+## Portal
 
-**Objetivo del ejercicio:** construcción del discurso narrativo digital interactivo: adecuación conceptual, discursiva, visual y gráfica.
+Aunque muchos materiales se publican como archivos Markdown o como documentos HTML independientes, el repositorio también incluye un portal web para acceder a los contenidos de la asignatura de una manera más amigable, visual y ordenada.
 
-El scrolling como herramienta narrativa en la web.
-
-Recursos para la narrativa digital:
-
-- Gramática del Scrollytelling.
-- Diseño Editorial Web.
-
-### Diseño Editorial Web
-
-**Objetivo del ejercicio:** ¿Cómo diseñar piezas editoriales cuando hay tantos tamaños de páginas como pantallas de dispositivos?
-
-- Tipografía en la web.
-- Diferencias respecto del diseño gráfico tradicional.
-- Tipos de layouts y grillas flexibles.
-- Diseño responsive: breakpoints y rangos de viewports.
-
-### Diseño UI / UX / Diseño de Sitio Web
-
-**Objetivo del ejercicio:** ¿Qué rol debe asumir el Diseño de Experiencias de Usuario (UX) en la actualidad para construir entornos digitales más transparentes, más inclusivos y más equitativos?
-
-- Diseño atómico y sistemas de diseño.
-- Usabilidad y accesibilidad.
-- Multimedia.
-- Diseño de interacciones macro y micro.
-- Prototipos interactivos y videos de simulación de interfaces de usuario.
-
-### Diseño UI / UX / Diseño de App
-
-**Objetivo del ejercicio:** empatía e inclusión como ejes claves del diseño en proyectos de tecnología e innovación.
-
-- Metodologías ágiles en el Diseño UX.
-- Design Thinking.
-- Investigación UX.
-- Arquitectura de la información.
-- Flujos de tareas.
-- Wireframes y wireflows.
-- Auditoría UX.
-- Validación de prototipos.
+> Para conocer cómo se construye el portal, qué archivos alimentan cada página y cómo instalarlo o ejecutarlo localmente, consultá el [README del portal](portal/README.md).

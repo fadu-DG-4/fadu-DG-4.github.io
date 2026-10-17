@@ -1,59 +1,74 @@
-# Diseño Gráfico 4
+# Portal de Diseño Gráfico 4
 
-Portal de la asignatura **Diseño Gráfico 4**, Cátedra Meygide-Carpintero, FADU, UBA.
+Portal web de la asignatura **Diseño Gráfico 4**, Cátedra Meygide-Carpintero, FADU, UBA.
 
-El portal presenta el programa de Nivel 4 y reúne los ejes de trabajo vinculados con el diseño de productos digitales, interfaces de usuario y experiencias de usuario.
+El portal reúne el programa de la materia, los trabajos prácticos, el equipo docente y los instructivos de trabajo. Su contenido se mantiene separado de la estructura y de los estilos del sitio para facilitar su actualización.
 
-## Contenido del portal
+![Portada del portal de Diseño Gráfico 4](assets/fadu-dg4-portal-cover.png)
 
-### Nivel 4
+## De dónde se obtiene el contenido
 
-En Diseño Gráfico 4 exploramos en profundidad el diseño de productos digitales, poniendo el foco en la construcción de interfaces de usuario (UI) para la Web y el proceso de diseño de aplicaciones móviles como ejes claves dentro del campo de Diseño de Experiencias de Usuario (UX).
+La carpeta raíz del repositorio contiene las fuentes de contenido:
 
-### Scrollytelling
+```text
+contenidos/
+├── resumen.md
+├── programa.md
+├── equipo.md
+└── trabajo-practico-N.md
+```
 
-**Objetivo del ejercicio:** construcción del discurso narrativo digital interactivo: adecuación conceptual, discursiva, visual y gráfica.
+- `contenidos/resumen.md` alimenta los textos de la portada: el texto destacado inicial y el cierre de la home.
+- `contenidos/programa.md` alimenta la sección Programa de la home. También define qué trabajos prácticos existen y qué página corresponde a cada uno mediante comentarios como:
 
-El scrolling como herramienta narrativa en la web.
+  ```md
+  <!-- página: trabajo-practico-5.md -->
+  ```
 
-Recursos para la narrativa digital:
+- `contenidos/equipo.md` alimenta la sección Equipo de la home.
+- Cada `contenidos/trabajo-practico-N.md` alimenta su propia página. Las páginas HTML se generan automáticamente a partir de una plantilla; no es necesario crear un HTML nuevo para cada trabajo práctico.
+- `instructivos/guia-crear-cuenta-github.md` alimenta la página HTML de la guía para crear una cuenta en GitHub. Las imágenes utilizadas por esa guía se encuentran en `instructivos/medios/`.
 
-- Gramática del Scrollytelling.
-- Diseño Editorial Web.
+## Guías & materiales
 
-### Diseño Editorial Web
+Las guías, presentaciones, artículos y otros materiales independientes se mantienen fuera de la estructura visual del portal. Los archivos HTML ubicados en `guias/` se publican directamente, sin compartir los estilos ni la navegación del portal. Por ejemplo, `guias/dg4-26-tp4-guia01.html` queda disponible bajo `/guias/dg4-26-tp4-guia01.html`.
 
-**Objetivo del ejercicio:** ¿Cómo diseñar piezas editoriales cuando hay tantos tamaños de páginas como pantallas de dispositivos?
+Otros materiales independientes pueden incorporarse en esa carpeta y conservar su propia estructura, estilos y recursos.
 
-- Tipografía en la web.
-- Diferencias respecto del diseño gráfico tradicional.
-- Tipos de layouts y grillas flexibles.
-- Diseño responsive: breakpoints y rangos de viewports.
+![Portada de las guías de Diseño Gráfico 4](assets/fadu-dg4-guias-cover.jpg)
 
-### Diseño UI / UX / Diseño de Sitio Web
+## Qué archivos modificar
 
-**Objetivo del ejercicio:** ¿Qué rol debe asumir el Diseño de Experiencias de Usuario (UX) en la actualidad para construir entornos digitales más transparentes, más inclusivos y más equitativos?
+Para modificar contenidos, editar principalmente los archivos Markdown de la carpeta raíz:
 
-- Diseño atómico y sistemas de diseño.
-- Usabilidad y accesibilidad.
-- Multimedia.
-- Diseño de interacciones macro y micro.
-- Prototipos interactivos y videos de simulación de interfaces de usuario.
+- Portada: `contenidos/resumen.md`.
+- Programa y enlaces a los trabajos prácticos: `contenidos/programa.md`.
+- Equipo docente: `contenidos/equipo.md`.
+- Trabajos prácticos: `contenidos/trabajo-practico-N.md`.
+- Guía de GitHub: `instructivos/guia-crear-cuenta-github.md`.
+- Guías HTML independientes: los archivos correspondientes dentro de `guias/`.
 
-### Diseño UI / UX / Diseño de App
+Los archivos HTML de `portal/` contienen la estructura de las páginas. La plantilla de los trabajos prácticos es `portal/trabajo-practico-template.html`.
 
-**Objetivo del ejercicio:** empatía e inclusión como ejes claves del diseño en proyectos de tecnología e innovación.
+Para modificar la apariencia visual, editar `portal/src/style.css`. Para modificar interacciones —por ejemplo, la navegación móvil— editar `portal/src/main.js`. La configuración de lectura de Markdown, generación de páginas y copia de archivos estáticos se encuentra en `portal/vite.config.js`.
 
-- Metodologías ágiles en el Diseño UX.
-- Design Thinking.
-- Investigación UX.
-- Arquitectura de la información.
-- Flujos de tareas.
-- Wireframes y wireflows.
-- Auditoría UX.
-- Validación de prototipos.
+## Tecnologías
 
-## Instalación & desarrollo local
+- HTML, CSS y JavaScript.
+- [Vite](https://vite.dev/) como servidor de desarrollo y herramienta de compilación.
+- [Marked](https://marked.js.org/) para convertir Markdown en HTML.
+- GitHub Pages para la publicación.
+- GitHub Actions para ejecutar automáticamente el build y el deploy.
+
+## Instalación y desarrollo local
+
+Requiere Node.js y npm.
+
+Desde la raíz del repositorio, entrar en la carpeta del portal:
+
+```bash
+cd portal
+```
 
 Instalar las dependencias:
 
@@ -67,14 +82,20 @@ Iniciar el servidor de desarrollo:
 npm run dev
 ```
 
-Generar la versión de producción:
+Vite mostrará en la terminal la dirección local, normalmente `http://localhost:5173/`.
+
+Para generar la versión de producción:
 
 ```bash
 npm run build
 ```
 
-La versión compilada se genera en `dist/`.
+El resultado se genera en `portal/dist/`. Para previsualizar ese resultado localmente:
+
+```bash
+npm run preview
+```
 
 ## Publicación
 
-El proyecto se publica automáticamente en GitHub Pages mediante GitHub Actions cuando se hace `push` a la rama `main` con cambios en `portal/`.
+El workflow `.github/workflows/deploy-pages.yml` construye el portal y publica `portal/dist` en GitHub Pages. El deploy se activa al hacer `push` a la rama `main` cuando cambian archivos de `portal/`, `contenidos/`, `instructivos/`, `guias/` o el propio workflow.

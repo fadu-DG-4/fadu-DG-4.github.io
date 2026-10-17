@@ -46,7 +46,7 @@ El punto de entrada de cada proyecto de investigación deberá ser un archivo de
 
 Cada grupo podrá crear y organizar libremente las carpetas y archivos que considere necesarios para estructurar y documentar los contenidos de su repositorio.
 
-## Tarea para la próxima clase
+## Tarea para la clase del 22/10/26
 
 ### 1. Aplicaciones de IA
 
@@ -93,6 +93,57 @@ Se espera, además, que los documentos mantengan una **estructura y jerarquía d
 
 > **Nota:** el archivo `README.md`, las carpetas, los documentos adicionales y las imágenes deberán estar **subidos y correctamente organizados en la carpeta compartida correspondiente a cada grupo**. Una vez cargados los materiales, revisar los archivos `.md` para verificar que **mantengan su formato, las imágenes se visualicen correctamente y todos los enlaces funcionen**.
 
+## Tarea para la clase del 29/10/26
+
+### 1. Definición de objetivos e investigación del recorte
+
+Definir los objetivos concretos del trabajo y delimitar el recorte de la investigación. Luego, investigar los conceptos, herramientas y/o procedimientos vinculados con el tema elegido.
+
+Explorar también posibles formas de mostrar su aplicación, para poder compartir los resultados con el resto de la clase durante la presentación final (ver el punto 3).
+
+Registrar y documentar el proceso de investigación mediante archivos *Markdown* en las carpetas compartidas asignadas.
+
+### 2. Primer borrador del informe de investigación
+
+Explorar distintas posibilidades para la presentación visual del informe final. Se recomienda que el cuerpo de la investigación, documentado en archivos *Markdown*, se presente como un sitio web funcional. Para más información, consultar la sección **Entrega final del trabajo práctico**.
+
+### 3. Ejemplos y referencias
+
+**La investigación no consiste únicamente en presentar conceptos teóricos**. También es necesario mostrar sus resultados aplicados en ejemplos concretos que permitan ilustrar las ideas investigadas o funcionen como demostración.
+
+Buscar referencias y proponer posibles ejemplos de piezas que puedan acompañar la investigación y utilizarse durante la presentación. No es necesario diseñar ni producir ninguna pieza gráfica en esta instancia, simplemente armar un **mosaico o tablero de referencias y/o ejemplos**. Para esto, se puede crear un tablero en Figma, Miro u otra plataforma similar, e incluir el enlace dentro del archivo *Markdown* principal (`README.md`) para que el resto del grupo y docentes pueda acceder a él.
 
 
+## Entrega final del trabajo práctico
 
+### 1. Informe
+
+El informe final de la investigación —organizado en diferentes páginas y compuesto por secciones, diagramas, imágenes, destacados, ejemplos e interacciones— deberá entregarse como un **sitio web funcional**, es decir, como un conjunto de páginas HTML navegables.
+
+Se recomienda utilizar alguna herramienta de inteligencia artificial para transformar los resultados de la investigación, documentados en archivos *Markdown*, en un sitio web. En el **Anexo A** se incluyen sugerencias de *prompts* para crear un sitio con inteligencia artificial.
+
+> **Nota 1:** El uso de herramientas de inteligencia artificial no es obligatorio. Como alternativa al sitio web, el informe final también puede presentarse como una **wiki**, utilizando cualquier herramienta gratuita disponible para su creación. En el **Anexo B** se incluye un ejemplo de creación de páginas wiki con GitHub.
+
+### 2. Presentación
+
+Se deberá preparar un conjunto de diapositivas que sirva como apoyo para la presentación que cada grupo realizará ante sus compañeros como cierre del trabajo.
+
+Las diapositivas deberán sintetizar y organizar los aspectos principales de la investigación, de manera que faciliten su exposición oral.
+
+> **Nota 2:** La presentación puede realizarse en Figma —por ejemplo, mediante un archivo de Figma Slides—, Google Slides o como un archivo PDF. También puede desarrollarse con inteligencia artificial en HTML, manteniendo los mismos criterios visuales definidos para el sitio web. En el **Anexo A** se incluyen prompts de ejemplo.
+
+### 3. Producción de pieza (o piezas)
+
+La investigación deberá estar acompañada por la producción de una o más piezas que permitan ilustrar o ejemplificar el trabajo realizado, especialmente durante la presentación.
+
+No se trata únicamente de exponer conceptos teóricos en las diapositivas, sino de mostrarlos aplicados mediante un ejemplo concreto. Ese es el propósito de la pieza o las piezas a producir.
+
+Debido a la amplitud de los temas y a la diversidad de recortes posibles, no se establece un formato obligatorio. Algunos ejemplos posibles son:
+
+- una pieza audiovisual o video;
+- un prototipo interactivo en Figma;
+- una pieza gráfica o una serie de piezas vinculadas con el tema investigado;
+- un objeto 3D diseñado e impreso;
+- u otros formatos pertinentes.
+
+> **Nota 3:** La definición de la pieza o las piezas a presentar será discutida con cada grupo durante las tutorías con los docentes. Estas piezas pueden pensarse como piezas cerradas independientes o como ejemplos que ayuden a conducir la presentación o demostración de los puntos investigados.

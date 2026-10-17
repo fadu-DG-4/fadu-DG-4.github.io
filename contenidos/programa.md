@@ -4,7 +4,7 @@ Cuatro ejercicios para abordar la experiencia de usuario desde la narrativa, la 
 
 ## Scrollytelling — Narrativa
 
-<!-- página: trabajo-practico-1.md -->
+<!-- página: tp-scrollytelling.md -->
 
 Construcción del discurso narrativo digital interactivo: adecuación conceptual, discursiva, visual y gráfica. El scrolling como herramienta narrativa en la web.
 
@@ -13,7 +13,7 @@ Construcción del discurso narrativo digital interactivo: adecuación conceptual
 
 ## Diseño Editorial Web — Editorial
 
-<!-- página: trabajo-practico-2.md -->
+<!-- página: tp-editorial-web.md -->
 
 ¿Cómo diseñar piezas editoriales cuando hay tantos tamaños de páginas como pantallas de dispositivos?
 
@@ -24,7 +24,7 @@ Construcción del discurso narrativo digital interactivo: adecuación conceptual
 
 ## Diseño Web — UI / UX
 
-<!-- página: trabajo-practico-3.md -->
+<!-- página: tp-sitio-web.md -->
 
 ¿Qué rol debe asumir el Diseño de Experiencias de Usuario (UX) en la actualidad para construir entornos digitales más transparentes, más inclusivos y más equitativos?
 
@@ -34,22 +34,9 @@ Construcción del discurso narrativo digital interactivo: adecuación conceptual
 - Diseño de interacciones macro y micro
 - Prototipos interactivos y videos de simulación
 
-## Diseño de Aplicaciones — Mobile First
-
-<!-- página: trabajo-practico-4.md -->
-
-Empatía e inclusión como ejes claves del diseño en proyectos de tecnología e innovación.
-
-- Metodologías ágiles en el Diseño UX
-- Design Thinking
-- Investigación UX
-- Arquitectura de la información
-- Flujos de tareas, wireframes y wireflows
-- Auditoría UX y validación de prototipos
-
 ## Investigación, Diseño & IA — Investigación
 
-<!-- página: trabajo-practico-5.md -->
+<!-- página: tp-investigacion-ia.md -->
 
 ¿Realmente se están desarrollando herramientas de IA para los diseñadores o simplemente las compañías de tecnología que las promueven ven el proceso de diseño como un mero procedimiento susceptible de —y destinado a— ser intervenido por la inteligencia artificial?
 

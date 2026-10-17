@@ -15,19 +15,26 @@ contenidos/
 ├── resumen.md
 ├── programa.md
 ├── equipo.md
-└── trabajo-practico-N.md
+└── tp-*.md
 ```
 
 - `contenidos/resumen.md` alimenta los textos de la portada: el texto destacado inicial y el cierre de la home.
 - `contenidos/programa.md` alimenta la sección Programa de la home. También define qué trabajos prácticos existen y qué página corresponde a cada uno mediante comentarios como:
 
   ```md
-  <!-- página: trabajo-practico-5.md -->
+  <!-- página: tp-investigacion-ia.md -->
   ```
 
 - `contenidos/equipo.md` alimenta la sección Equipo de la home.
-- Cada `contenidos/trabajo-practico-N.md` alimenta su propia página. Las páginas HTML se generan automáticamente a partir de una plantilla; no es necesario crear un HTML nuevo para cada trabajo práctico.
-- `instructivos/guia-crear-cuenta-github.md` alimenta la página HTML de la guía para crear una cuenta en GitHub. Las imágenes utilizadas por esa guía se encuentran en `instructivos/medios/`.
+- Cada `contenidos/tp-*.md` alimenta su propia página. Las páginas HTML se generan automáticamente a partir de una plantilla; no es necesario crear un HTML nuevo para cada trabajo práctico.
+- `instructivos/instructivos.md` define los instructivos que aparecen en la página de contenidos y vincula cada título con su archivo Markdown mediante comentarios como:
+
+  ```md
+  ## ¿Cómo crear una cuenta en GitHub?
+  <!-- página: guia-crear-cuenta-github.md -->
+  ```
+
+  Cada archivo Markdown vinculado alimenta una página HTML generada automáticamente a partir de `portal/instructivo-template.html`. Las imágenes utilizadas por los instructivos se encuentran en `instructivos/medios/`.
 
 ## Guías & materiales
 
@@ -44,8 +51,9 @@ Para modificar contenidos, editar principalmente los archivos Markdown de la car
 - Portada: `contenidos/resumen.md`.
 - Programa y enlaces a los trabajos prácticos: `contenidos/programa.md`.
 - Equipo docente: `contenidos/equipo.md`.
-- Trabajos prácticos: `contenidos/trabajo-practico-N.md`.
-- Guía de GitHub: `instructivos/guia-crear-cuenta-github.md`.
+- Trabajos prácticos: los archivos `contenidos/tp-*.md` correspondientes.
+- Lista de instructivos y sus enlaces: `instructivos/instructivos.md`.
+- Contenido de cada instructivo: el archivo Markdown indicado en `instructivos/instructivos.md`.
 - Guías HTML independientes: los archivos correspondientes dentro de `guias/`.
 
 Los archivos HTML de `portal/` contienen la estructura de las páginas. La plantilla de los trabajos prácticos es `portal/trabajo-practico-template.html`.

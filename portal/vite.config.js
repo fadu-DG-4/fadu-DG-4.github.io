@@ -14,6 +14,7 @@ const contenidosPath = resolve(process.cwd(), "..", "contenidos");
 const trabajoPracticoTemplatePath = resolve(process.cwd(), "trabajo-practico-template.html");
 const instructivoTemplatePath = resolve(process.cwd(), "instructivo-template.html");
 const generatedPagesPath = process.cwd();
+const internalGuideStyleReferences = new Set(["estilos-guia.md", "estilos-guia-claude.md"]);
 
 function getTrabajoPracticoEntries() {
   const markdown = readFileSync(programaPath, "utf8");
@@ -196,6 +197,7 @@ function renderInstructivo(markdown) {
 
 function emitDirectoryAssets(pluginContext, directory, outputPrefix) {
   for (const entry of readdirSync(directory)) {
+    if (directory === guiasPath && internalGuideStyleReferences.has(entry)) continue;
     const sourcePath = resolve(directory, entry);
     const outputPath = `${outputPrefix}/${entry}`;
 
@@ -265,6 +267,10 @@ function serveInstructivosMedia(server) {
 function serveGuias(server) {
   server.middlewares.use("/guias", (request, response, next) => {
     const requestPath = decodeURIComponent((request.url || "").split("?")[0]);
+    if (internalGuideStyleReferences.has(requestPath.slice(1))) {
+      next();
+      return;
+    }
     const filePath = resolve(guiasPath, `.${requestPath}`);
 
     if (!filePath.startsWith(guiasPath) || !existsSync(filePath) || statSync(filePath).isDirectory()) {

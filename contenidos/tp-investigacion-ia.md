@@ -120,9 +120,13 @@ Buscar referencias y proponer posibles ejemplos de piezas que puedan acompañar 
 
 El informe final de la investigación —organizado en diferentes páginas y compuesto por secciones, diagramas, imágenes, destacados, ejemplos e interacciones— deberá entregarse como un **sitio web funcional**, es decir, como un conjunto de páginas HTML navegables.
 
-Se recomienda utilizar alguna herramienta de inteligencia artificial para transformar los resultados de la investigación, documentados en archivos *Markdown*, en un sitio web. En el **Anexo A** se incluyen sugerencias de *prompts* para crear un sitio con inteligencia artificial.
+No es necesario incluir absolutamente todos los temas o ejes explorados. El informe debe ser una síntesis concisa, clara y cuidadosamente revisada por los integrantes del grupo, centrada en el recorte de investigación realizado y en su aplicación mediante ejemplos o demostraciones concretas.
 
-> **Nota 1:** El uso de herramientas de inteligencia artificial no es obligatorio. Como alternativa al sitio web, el informe final también puede presentarse como una **wiki**, utilizando cualquier herramienta gratuita disponible para su creación. En el **Anexo B** se incluye un ejemplo de creación de páginas wiki con GitHub.
+Idealmente, el desarrollo debería organizarse en cuatro o cinco capítulos o secciones de extensión moderada, además de una página de inicio o portada.
+
+Para su construcción, se recomienda utilizar alguna herramienta de inteligencia artificial que permita transformar los resultados de la investigación, documentados en archivos *Markdown*, en un portal web. En el **Anexo A** se incluyen sugerencias para generar este tipo de piezas con las herramientas actuales de inteligencia artificial.
+
+> **Nota 1:** El uso de herramientas de inteligencia artificial no es obligatorio. Como alternativa al sitio web, el informe final también puede presentarse utilizando alguna plataforma gratuita para wikis modernas como [**Notion**](https://notion.so/) o [**GitHub Wiki**](https://docs.github.com/es/communities/documenting-your-project-with-wikis/about-wikis).
 
 ### 2. Presentación
 
@@ -130,13 +134,13 @@ Se deberá preparar un conjunto de diapositivas que sirva como apoyo para la pre
 
 Las diapositivas deberán sintetizar y organizar los aspectos principales de la investigación, de manera que faciliten su exposición oral.
 
-> **Nota 2:** La presentación puede realizarse en Figma —por ejemplo, mediante un archivo de Figma Slides—, Google Slides o como un archivo PDF. También puede desarrollarse con inteligencia artificial en HTML, manteniendo los mismos criterios visuales definidos para el sitio web. En el **Anexo A** se incluyen prompts de ejemplo.
+> **Nota 2:** La presentación puede realizarse en Figma —por ejemplo, mediante un archivo de Figma Slides—, Google Slides o como un archivo PDF. También puede desarrollarse con inteligencia artificial en HTML, manteniendo los mismos criterios visuales definidos para el sitio web. En el **Anexo A** se mencionan sugerencias para generar este tipo de piezas con las herramientas actuales de inteligencia artificial.
 
 ### 3. Producción de pieza (o piezas)
 
 La investigación deberá estar acompañada por la producción de una o más piezas que permitan ilustrar o ejemplificar el trabajo realizado, especialmente durante la presentación.
 
-No se trata únicamente de exponer conceptos teóricos en las diapositivas, sino de mostrarlos aplicados mediante un ejemplo concreto. Ese es el propósito de la pieza o las piezas a producir.
+No se trata únicamente de exponer conceptos teóricos en las diapositivas, sino de mostrarlos aplicados mediante un ejemplo concreto. Ese es el propósito de la pieza (o las piezas) a producir. Deben ayudar a comunicar, materializar o poner a prueba los hallazgos de la investigación.
 
 Debido a la amplitud de los temas y a la diversidad de recortes posibles, no se establece un formato obligatorio. Algunos ejemplos posibles son:
 
@@ -147,3 +151,20 @@ Debido a la amplitud de los temas y a la diversidad de recortes posibles, no se 
 - u otros formatos pertinentes.
 
 > **Nota 3:** La definición de la pieza o las piezas a presentar será discutida con cada grupo durante las tutorías con los docentes. Estas piezas pueden pensarse como piezas cerradas independientes o como ejemplos que ayuden a conducir la presentación o demostración de los puntos investigados.
+
+
+---
+
+# Anexo A
+## Generación de Portales Web con IA
+
+### Sitio Web
+Las herramientas actuales de inteligencia artificial permiten generar sitios web funcionales y presentaciones de diapositivas a partir de una descripción o *prompt*.
+Los archivos *Markdown* que contienen los resultados de la investigación pueden transformarse en un **sitio web estático**, es decir, un conjunto de archivos HTML, CSS y JavaScript que no requiere una instalación compleja ni dependencias externas para funcionar.
+
+- [**¿Cómo generar un sitio web estático con IA?**](/guia-promptear-sitio-html.html)
+
+### Presentaciones Web
+Del mismo modo, las presentaciones pueden desarrollarse como sitios web reutilizando las mismas definiciones visuales (o estilos) que se hayan empleado para la construcción del sitio web. Este formato (el HTML/CSS/JavaScript) ofrece mayor flexibilidad para incorporar animaciones, transiciones e interacciones más elaboradas.
+
+- [**¿Cómo generar una presentación como un sitio web estático con IA?**](/guia-promptear-slides-html.html)

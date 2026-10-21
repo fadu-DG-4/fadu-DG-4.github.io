@@ -38,8 +38,6 @@ Construcción del discurso narrativo digital interactivo: adecuación conceptual
 
 <!-- página: tp-investigacion-ia.md -->
 
-¿Realmente se están desarrollando herramientas de IA para los diseñadores o simplemente las compañías de tecnología que las promueven ven el proceso de diseño como un mero procedimiento susceptible de —y destinado a— ser intervenido por la inteligencia artificial?
-
 Este ejercicio es un trabajo colaborativo de investigación y reflexión sobre temas vinculados a la práctica del diseño de experiencias de usuario, atravesadas por la emergencia de la "Inteligencia Artificial" y su impacto en el flujo de trabajo del diseñador. Algunos de los ejes a explorar son:
 - Sistemas de diseño
 - Design Thinking

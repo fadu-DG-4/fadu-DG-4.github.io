@@ -1,0 +1,2433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Presentación de diapositivas del informe de investigación sobre árboles nativos de la Argentina · DG4 FADU UBA.">
+  <title>Presentación · Árboles nativos de la Argentina</title>
+  <style>
+    /* ==========================================================================
+       VARIABLES Y SISTEMA DE DISEÑO (Consistente con css/estilos.css)
+       ========================================================================== */
+    :root {
+      --color-canvas: #f6f5ee;
+      --color-canvas-alt: #eceae1;
+      --color-surface: #ffffff;
+      --color-ink: #141414;
+      --color-ink-muted: #4e4d47;
+      --color-ink-faint: #8a8880;
+      --color-border: #141414;
+      --color-border-subtle: #d0cebd;
+      --color-accent: #9e2a2b;
+      --color-accent-bg: #fdf2f2;
+      --color-backdrop: #0d0d0d;
+
+      --font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "SF Mono", "Segoe UI Mono", "Roboto Mono", Menlo, Consolas, "Courier New", monospace;
+    }
+
+    /* ==========================================================================
+       RESETEO Y ESCENARIO 16:9 (LETTERBOX CENTRADO)
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--color-backdrop);
+      color: var(--color-ink);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+    }
+
+    /* Contenedor fijo de proporción 16:9 escalado con JS */
+    #stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1920px;
+      height: 1080px;
+      background-color: var(--color-canvas);
+      overflow: hidden;
+      transform-origin: center center;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Barra de progreso superior */
+    #progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 5px;
+      background-color: var(--color-accent);
+      width: 10%;
+      z-index: 100;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Cada slide ocupa todo el lienzo 1920x1080 */
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 44px 70px 84px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+      background-color: var(--color-canvas);
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.35s ease;
+    }
+
+    /* ==========================================================================
+       CABECERA TÉCNICA DE CADA SLIDE
+       ========================================================================== */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--color-border);
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-ink);
+      margin-bottom: 34px;
+      flex-shrink: 0;
+    }
+
+    .slide-header .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slide-header .slide-badge {
+      background-color: var(--color-ink);
+      color: var(--color-canvas);
+      padding: 3px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+
+    .slide-header .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      color: var(--color-ink-muted);
+      font-size: 13px;
+    }
+
+    .slide-header .cross-marker {
+      color: var(--color-accent);
+      font-weight: 900;
+    }
+
+    /* Área central de contenido de la slide */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      min-height: 0;
+    }
+
+    /* Pie técnico de slide */
+    .slide-footer-meta {
+      position: absolute;
+      bottom: 24px;
+      left: 70px;
+      right: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--color-ink-faint);
+      border-top: 1px dashed var(--color-border-subtle);
+      padding-top: 8px;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       COMPONENTES TÉCNICOS Y ESTILOS DE CONTENIDO
+       ========================================================================== */
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      color: var(--color-ink);
+      line-height: 1.1;
+    }
+
+    .slide-title-hero {
+      font-size: 58px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+
+    .slide-title-large {
+      font-size: 46px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 18px;
+    }
+
+    .slide-subtitle {
+      font-size: 22px;
+      line-height: 1.45;
+      color: var(--color-ink-muted);
+      max-width: 1400px;
+      margin-bottom: 28px;
+    }
+
+    /* Cajas y marcos wireframe técnicos con cruces */
+    .wireframe-box {
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      box-shadow: 4px 4px 0px var(--color-border);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wireframe-header {
+      background-color: var(--color-canvas-alt);
+      border-bottom: 1px solid var(--color-border);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--color-ink);
+    }
+
+    .wireframe-header .tab-close {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .corner-cross {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--color-ink);
+      line-height: 1;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .corner-cross.tl { top: 6px; left: 6px; }
+    .corner-cross.tr { top: 6px; right: 6px; }
+    .corner-cross.bl { bottom: 6px; left: 6px; }
+    .corner-cross.br { bottom: 6px; right: 6px; }
+
+    /* Snippet de código algorítmico */
+    .code-snippet-box {
+      background-color: var(--color-canvas-alt);
+      border-left: 3px solid var(--color-accent);
+      padding: 12px 18px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--color-ink);
+    }
+    .code-snippet-box pre {
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    .sn-kw { color: var(--color-accent); font-weight: 700; }
+    .sn-fn { color: var(--color-ink); font-weight: 700; }
+    .sn-str { color: var(--color-accent); }
+    .sn-com { color: var(--color-ink-faint); font-style: italic; }
+
+    /* Ficha técnica de especificaciones superpuesta */
+    .spec-callout {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      box-shadow: 2px 2px 0px var(--color-border);
+      padding: 10px 16px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .spec-kw { font-weight: 700; color: var(--color-ink); }
+    .spec-val { color: var(--color-accent); font-weight: 600; }
+    .spec-fn { color: var(--color-accent); text-decoration: underline; }
+
+    /* Tags y pastillas */
+    .tag-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border: 1px solid var(--color-border);
+      display: inline-block;
+    }
+    .tag-pill.accent {
+      background-color: var(--color-accent);
+      color: #ffffff;
+      border-color: var(--color-accent);
+    }
+    .tag-pill.green {
+      background-color: #eaf5ea;
+      color: #1b5e20;
+      border-color: #2e7d32;
+    }
+    .tag-pill.ochre {
+      background-color: #fdf2e9;
+      color: #b73e00;
+      border-color: #d35400;
+    }
+
+    /* ==========================================================================
+       ESTILOS ESPECÍFICOS POR SLIDE
+       ========================================================================== */
+
+    /* ---------- SLIDE 1: PORTADA ---------- */
+    .slide-cover-layout {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 50px;
+      align-items: center;
+      height: 100%;
+    }
+
+    .cover-left {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .cover-meta-badge {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--color-ink-muted);
+    }
+
+    .cover-title {
+      font-size: 82px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.92;
+      text-transform: uppercase;
+    }
+
+    .cover-title .title-accent {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--color-accent);
+      vertical-align: middle;
+      margin-left: 14px;
+    }
+
+    .cover-desc {
+      font-size: 24px;
+      line-height: 1.45;
+      color: var(--color-ink-muted);
+      border-left: 3px solid var(--color-border);
+      padding-left: 20px;
+    }
+
+    .cover-right {
+      position: relative;
+      height: 780px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cover-specimen-frame {
+      width: 620px;
+      height: 720px;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      box-shadow: 10px 10px 0px var(--color-border);
+      position: relative;
+    }
+
+    .cover-specimen-img {
+      position: absolute;
+      top: -45px;
+      bottom: -55px;
+      left: -45px;
+      right: -45px;
+      width: calc(100% + 90px);
+      height: calc(100% + 100px);
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+
+    .cover-caption-box {
+      position: absolute;
+      bottom: -28px;
+      right: -24px;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      box-shadow: 4px 4px 0px var(--color-border);
+      padding: 14px 24px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      z-index: 10;
+    }
+
+    /* ---------- SLIDE 2: PREGUNTA CENTRAL ---------- */
+    .slide-q-layout {
+      display: grid;
+      grid-template-columns: 1.35fr 0.85fr;
+      gap: 70px;
+      align-items: center;
+      height: 100%;
+    }
+
+    .quote-huge {
+      background-color: var(--color-surface);
+      border: 2px solid var(--color-border);
+      box-shadow: 6px 6px 0px var(--color-border);
+      padding: 48px 52px;
+      position: relative;
+    }
+
+    .quote-huge-text {
+      font-size: 44px;
+      font-weight: 500;
+      line-height: 1.28;
+      color: var(--color-ink);
+      font-family: var(--font-display);
+      margin-bottom: 24px;
+    }
+
+    .quote-huge-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-accent);
+      border-top: 1px solid var(--color-border-subtle);
+      padding-top: 18px;
+    }
+
+    .q-side-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .card-context {
+      padding: 24px 28px;
+    }
+    .card-context h3 {
+      font-size: 20px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: 0.04em;
+    }
+    .card-context p {
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--color-ink-muted);
+    }
+
+    /* ---------- SLIDE 3: DEFINICIONES CLAVE ---------- */
+    .cols-3-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 36px;
+      flex: 1;
+      margin-top: 10px;
+    }
+
+    .def-card {
+      padding: 0;
+      height: 100%;
+    }
+    .def-card-body {
+      padding: 30px 32px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 40px);
+    }
+    .def-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-accent);
+      margin-bottom: 14px;
+      letter-spacing: 0.08em;
+    }
+    .def-title {
+      font-size: 34px;
+      font-weight: 800;
+      text-transform: uppercase;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .def-text {
+      font-size: 20px;
+      line-height: 1.5;
+      color: var(--color-ink);
+      margin-bottom: 16px;
+    }
+
+    .def-icon-area {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 6px 0;
+      position: relative;
+      min-height: 80px;
+    }
+
+    .def-icon-area svg {
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      opacity: 0.32;
+    }
+
+    .def-icon-area .region-micro-code {
+      font-size: 10px;
+    }
+
+    .def-highlight {
+      margin-top: auto;
+      padding: 14px 18px;
+      background-color: var(--color-canvas-alt);
+      border-left: 3px solid var(--color-border);
+      font-size: 16px;
+      line-height: 1.45;
+      color: var(--color-ink-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* ---------- SLIDE 4: POR QUÉ IMPORTAN (ECOSISTEMA) ---------- */
+    .split-benefits-layout {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 50px;
+      align-items: center;
+      height: 100%;
+    }
+
+    .benefit-item {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+      align-items: flex-start;
+    }
+
+    .benefit-num {
+      width: 48px;
+      height: 48px;
+      background-color: var(--color-ink);
+      color: var(--color-canvas);
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .benefit-content h3 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .benefit-content p {
+      font-size: 19px;
+      line-height: 1.45;
+      color: var(--color-ink-muted);
+    }
+
+    /* Escenario de cuadros superpuestos escalonados */
+    .dual-node-stage {
+      position: relative;
+      height: 720px;
+      width: 100%;
+    }
+
+    .node-preview-box {
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      position: absolute;
+      transition: transform var(--transition-fast, 0.2s);
+    }
+
+    /* Cuadro superior: Canopia / Fauna / Picaflor */
+    .node-preview-box.node-canopia {
+      top: 10px;
+      right: 20px;
+      width: 500px;
+      z-index: 2;
+      box-shadow: 6px 6px 0px var(--color-border);
+    }
+
+    /* Cuadro inferior: Sustrato / Vereda / Cazuela - Superpuesto en diagonal */
+    .node-preview-box.node-sustrato {
+      bottom: 20px;
+      left: 20px;
+      width: 510px;
+      z-index: 5;
+      box-shadow: 8px 8px 0px var(--color-border);
+    }
+
+    .node-img-wrap {
+      height: 310px;
+      position: relative;
+      background-color: #ffffff;
+      overflow: hidden;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .node-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      mix-blend-mode: multiply;
+      display: block;
+    }
+
+    .node-caption {
+      padding: 14px 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background-color: var(--color-canvas-alt);
+    }
+    .node-caption .node-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-accent);
+      margin-bottom: 4px;
+    }
+    .node-caption .node-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-ink);
+    }
+
+    /* Conector flotante justo en la intersección de superposición */
+    .node-overlap-connector {
+      position: absolute;
+      top: 310px;
+      left: 360px;
+      z-index: 10;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      box-shadow: 4px 4px 0px var(--color-border);
+      padding: 10px 18px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    /* ---------- SLIDE 5: REGIONES FITOGEOGRÁFICAS ---------- */
+    .regions-grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      margin-top: 12px;
+      flex: 1;
+    }
+
+    .region-card {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      box-shadow: 3px 3px 0px var(--color-border);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .region-card-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-accent);
+      margin-bottom: 14px;
+    }
+
+    .region-name {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      min-height: 60px;
+    }
+
+    .region-env {
+      font-size: 16px;
+      color: var(--color-ink-muted);
+      line-height: 1.4;
+      margin-bottom: 24px;
+    }
+
+    .region-icon-area {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0;
+      position: relative;
+    }
+
+    .region-icon-area svg {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      opacity: 0.32;
+    }
+
+    .region-micro-code {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      line-height: 1.4;
+      color: var(--color-ink-faint);
+      white-space: pre;
+      pointer-events: none;
+    }
+
+    .region-micro-code .mc-kw { color: var(--color-accent); font-weight: 700; }
+    .region-micro-code .mc-fn { color: var(--color-ink); font-weight: 700; }
+
+    .region-specimen-box {
+      margin-top: auto;
+      border-top: 1px solid var(--color-border-subtle);
+      padding-top: 16px;
+    }
+
+    .specimen-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--color-ink-faint);
+      margin-bottom: 4px;
+    }
+
+    .specimen-species {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-ink);
+    }
+
+    .gradient-bar {
+      margin-top: 28px;
+      background: linear-gradient(90deg, #1b5e20 0%, #d4ac0d 50%, #9e2a2b 100%);
+      height: 10px;
+      border: 1px solid var(--color-border);
+    }
+
+    .gradient-legend {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-ink-muted);
+    }
+
+    /* ---------- SLIDE 6: ESQUEMA DE RELACIONES (OCUPACIÓN HORIZONTAL TOTAL) ---------- */
+    .diagram-slide-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      position: relative;
+    }
+
+    .diagram-topbar-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      background-color: var(--color-canvas-alt);
+      border: 1px solid var(--color-border);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .diagram-large-view {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+      min-height: 0;
+    }
+
+    .diagram-large-view img {
+      width: 100%;
+      max-width: 1720px;
+      height: 600px;
+      object-fit: contain;
+      display: block;
+      filter: contrast(1.02);
+    }
+
+    .diagram-meta-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      border-top: 2px solid var(--color-border);
+      padding-top: 14px;
+    }
+
+    .diagram-meta-strip .meta-col {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      box-shadow: 3px 3px 0px var(--color-border);
+      padding: 12px 18px;
+      font-size: 16px;
+      line-height: 1.45;
+      color: var(--color-ink);
+    }
+
+    .diagram-meta-strip .meta-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--color-accent);
+      margin-bottom: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ---------- SLIDE 7: REGIÓN PAMPEANA ---------- */
+    .pampa-split-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 70px;
+      align-items: center;
+      height: 100%;
+    }
+
+    .pampa-left h2 {
+      font-size: 54px;
+      font-weight: 900;
+      line-height: 1.05;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .pampa-left p {
+      font-size: 22px;
+      line-height: 1.5;
+      color: var(--color-ink);
+      margin-bottom: 24px;
+    }
+
+    .pampa-comparative-box {
+      border: 2px solid var(--color-border);
+      background-color: var(--color-surface);
+      box-shadow: 6px 6px 0px var(--color-border);
+      padding: 36px 38px;
+    }
+
+    .comp-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 24px;
+      border-bottom: 1px dashed var(--color-border-subtle);
+      padding-bottom: 18px;
+    }
+    .comp-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .comp-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-accent);
+      letter-spacing: 0.05em;
+    }
+
+    .comp-value {
+      font-size: 21px;
+      line-height: 1.4;
+      color: var(--color-ink);
+    }
+
+    /* ---------- SLIDE 8: CEIBO (ZOOM MULTIESCALAR) ---------- */
+    .ceibo-slide-layout {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 50px;
+      align-items: center;
+      height: 100%;
+    }
+
+    .ceibo-info-col h2 {
+      font-size: 64px;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 0.95;
+    }
+    .ceibo-scientific {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      color: var(--color-accent);
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .ceibo-desc {
+      font-size: 20px;
+      line-height: 1.5;
+      color: var(--color-ink-muted);
+      margin-bottom: 24px;
+    }
+
+    .ceibo-scales-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .scale-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      padding: 12px 16px;
+      font-size: 16px;
+    }
+    .scale-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 8px;
+      color: #ffffff;
+      background-color: var(--color-ink);
+    }
+
+    /* Visual stage con las tres fotos integradas sin contraformas */
+    .ceibo-visual-stage {
+      position: relative;
+      height: 640px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide-branch-box {
+      width: 100%;
+      height: 480px;
+      border: 1px solid var(--color-border);
+      background-color: #ffffff;
+      box-shadow: 8px 8px 0px var(--color-border);
+      position: relative;
+      overflow: hidden;
+    }
+    .slide-branch-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      mix-blend-mode: multiply;
+      display: block;
+    }
+
+    .floating-macro-box {
+      position: absolute;
+      bottom: -20px;
+      right: 30px;
+      width: 310px;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      box-shadow: 6px 6px 0px var(--color-border);
+      z-index: 10;
+    }
+    .macro-img-wrap {
+      height: 175px;
+      background-color: #ffffff;
+      overflow: hidden;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .macro-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      mix-blend-mode: multiply;
+      display: block;
+    }
+
+    .floating-tree-box {
+      position: absolute;
+      top: -20px;
+      right: 40px;
+      width: 300px;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      box-shadow: 6px 6px 0px var(--color-border);
+      z-index: 10;
+    }
+    .tree-img-wrap {
+      height: 175px;
+      background-color: #ffffff;
+      overflow: hidden;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .tree-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      mix-blend-mode: multiply;
+      display: block;
+    }
+
+    /* ---------- SLIDE 9: LAPACHO Y ALGARROBO ---------- */
+    .duo-species-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      height: 100%;
+      align-items: stretch;
+    }
+
+    .species-column-card {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      box-shadow: 6px 6px 0px var(--color-border);
+      padding: 40px 44px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .species-scientific {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      color: var(--color-accent);
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .species-feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .species-feature-list li {
+      font-size: 19px;
+      line-height: 1.45;
+      padding-left: 28px;
+      position: relative;
+    }
+    .species-feature-list li::before {
+      content: "■";
+      position: absolute;
+      left: 0;
+      color: var(--color-accent);
+      font-size: 12px;
+      top: 3px;
+    }
+
+    .species-callout-bottom {
+      margin-top: auto;
+      padding: 18px 20px;
+      background-color: var(--color-canvas-alt);
+      border-left: 3px solid var(--color-border);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    /* ---------- SLIDE 10: CONCLUSIONES Y CIERRE ---------- */
+    .conclusions-3col-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.95fr 0.9fr;
+      gap: 36px;
+      height: 100%;
+      align-items: stretch;
+    }
+
+    .conclusions-box {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      box-shadow: 4px 4px 0px var(--color-border);
+      padding: 32px 34px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .conclusions-box h3 {
+      font-family: var(--font-mono);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      margin-bottom: 22px;
+      color: var(--color-ink);
+      border-bottom: 2px solid var(--color-border);
+      padding-bottom: 10px;
+    }
+
+    .findings-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .findings-list li {
+      display: flex;
+      gap: 14px;
+      font-size: 18px;
+      line-height: 1.45;
+    }
+    .findings-num {
+      font-family: var(--font-mono);
+      font-weight: 900;
+      color: var(--color-accent);
+      flex-shrink: 0;
+    }
+
+    .final-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px;
+      background-color: var(--color-ink);
+      color: var(--color-canvas);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-top: auto;
+      border: 1px solid var(--color-border);
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .final-link-btn:hover {
+      background-color: var(--color-accent);
+      color: #ffffff;
+    }
+
+    /* ==========================================================================
+       BARRA FLOTANTE DE NAVEGACIÓN Y CONTROLES
+       ========================================================================== */
+    #nav-controls {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background-color: rgba(246, 245, 238, 0.95);
+      border: 1px solid var(--color-border);
+      box-shadow: 4px 4px 0px var(--color-border);
+      padding: 8px 18px;
+      border-radius: 4px;
+      z-index: 1000;
+      backdrop-filter: blur(8px);
+    }
+
+    .nav-btn {
+      background: none;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      color: var(--color-ink);
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: bold;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.15s, transform 0.1s;
+    }
+
+    .nav-btn:hover {
+      background-color: var(--color-ink);
+      color: var(--color-canvas);
+    }
+
+    .nav-btn:active {
+      transform: translateY(1px);
+    }
+
+    .dots-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot-btn {
+      width: 22px;
+      height: 22px;
+      background: transparent;
+      border: 1px solid var(--color-border-subtle);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--color-ink-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .dot-btn:hover {
+      border-color: var(--color-ink);
+      color: var(--color-ink);
+    }
+
+    .dot-btn.active {
+      background-color: var(--color-ink);
+      color: var(--color-canvas);
+      border-color: var(--color-ink);
+    }
+
+    .counter-display {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--color-ink);
+      padding: 0 8px;
+    }
+
+    /* Modo Impresión */
+    @media print {
+      body, html {
+        overflow: visible !important;
+        height: auto !important;
+        background: #ffffff !important;
+      }
+      #stage {
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        height: auto !important;
+        box-shadow: none !important;
+      }
+      .slide {
+        position: static !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        page-break-after: always;
+        height: 100vh !important;
+        padding: 40px !important;
+      }
+      #nav-controls, #progress-bar {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Escenario principal fijo 16:9 -->
+  <main id="stage" aria-label="Presentación de diapositivas">
+
+    <!-- Barra de progreso superior -->
+    <div id="progress-bar" aria-hidden="true"></div>
+
+    <!-- ====================================================================
+         SLIDE 01: PORTADA
+         ==================================================================== -->
+    <section class="slide active" data-title="01 · Portada" aria-label="1 de 10: Portada">
+      <header class="slide-header">
+        <div class="header-left">
+          <span class="slide-badge">SLIDE // 01</span>
+          <span>Árboles nativos de la Argentina</span>
+        </div>
+        <div class="header-right">
+          <span>INVESTIGACIÓN DG4 · FADU UBA</span>
+          <span class="cross-marker">[+]</span>
+        </div>
+      </header>
+
+      <div class="slide-body">
+        <div class="slide-cover-layout">
+          <!-- Columna textual izquierda -->
+          <div class="cover-left">
+            <div class="cover-meta-badge">
+              <span class="tag-pill accent">DOC.REF // AR-NAT-2026</span>
+              <span>CÁTEDRA MEYGIDE-CARPINTERO</span>
+            </div>
+
+            <h1 class="cover-title">
+              Árboles<br>
+              Nativos <span class="title-accent">// AR</span><br>
+              de la Argentina
+            </h1>
+
+            <p class="cover-desc">
+              Informe sobre árboles autóctonos, regiones fitogeográficas y su incorporación estratégica en el diseño de los espacios públicos urbanos.
+            </p>
+
+            <div class="code-snippet-box">
+              <pre><span class="sn-kw">clase</span> <span class="sn-fn">Investigación_Arbolado</span> {
+  <span class="sn-kw">método</span> <span class="sn-fn">relevar_territorio</span>(región) {
+    <span class="sn-kw">retorno</span> [biodiversidad, identidad, adaptación];
+  }
+}</pre>
+            </div>
+          </div>
+
+          <!-- Columna visual derecha con espécimen botánico -->
+          <div class="cover-right">
+            <div class="cover-specimen-frame">
+              <span class="corner-cross tl">+</span>
+              <span class="corner-cross tr">+</span>
+              <span class="corner-cross bl">+</span>
+              <span class="corner-cross br">+</span>
+
+              <div class="wireframe-header">
+                <span>espécimen_01 // flor_ceibo.raw</span>
+                <span class="tab-close">✕</span>
+              </div>
+
+              <!-- Flor de ceibo desbordante con blend multiply -->
+              <img src="img/flor-ceibo.jpg" 
+                   alt="Espécimen botánico de la flor de ceibo desbordando el marco" 
+                   class="cover-specimen-img">
+
+              <div class="cover-caption-box">
+                <div style="font-weight:bold; color:var(--color-ink);">Erythrina crista-galli</div>
+                <div style="font-size:11px; color:var(--color-accent);">// FLOR NACIONAL ARGENTINA (1942)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-footer-meta">
+        <span>FADU UBA · DISEÑO GRÁFICO 4 · 2026</span>
+        <span>SLIDE 01 DE 10</span>
+      </footer>
+    </section>
+
+    <!-- ====================================================================
+         SLIDE 02: PREGUNTA CENTRAL DE INVESTIGACIÓN
+         ==================================================================== -->
+    <section class="slide" data-title="02 · Pregunta central" aria-label="2 de 10: Pregunta central">
+      <header class="slide-header">
+        <div class="header-left">
+          <span class="slide-badge">SLIDE // 02</span>
+          <span>Marco Conceptual</span>
+        </div>
+        <div class="header-right">
+          <span>HIPÓTESIS DE TRABAJO</span>
+          <span class="cross-marker">[+]</span>
+        </div>
+      </header>
+
+      <div class="slide-body">
+        <div class="slide-q-layout">
+          <div class="quote-huge">
+            <span class="corner-cross tl">+</span>
+            <span class="corner-cross tr">+</span>
+            <span class="corner-cross bl">+</span>
+            <span class="corner-cross br">+</span>
+
+            <div style="font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--color-ink-muted); margin-bottom:16px;">
+              // PREGUNTA CENTRAL DE INVESTIGACIÓN
+            </div>
+
+            <blockquote class="quote-huge-text">
+              ¿Qué lugar ocupan los árboles nativos en los paisajes urbanos argentinos y qué los diferencia de las especies exóticas que hoy predominan en calles y plazas?
+            </blockquote>
+
+            <div class="quote-huge-meta">
+              <span class="tag-pill">MARCO METODOLÓGICO</span>
+              <span>OBSERVACIÓN BARRIAL + REVISIÓN BIBLIOGRÁFICA</span>
+            </div>
+          </div>
+
+          <div class="q-side-cards">
+            <div class="wireframe-box card-context">
+              <span class="corner-cross tl">+</span>
+              <span class="corner-cross tr">+</span>
+              <h3>// Objetivos del informe</h3>
+              <p>Construir una mirada integral que permita reconocer especies representativas, analizar su distribución fitogeográfica y fundamentar su recuperación en el espacio urbano.</p>
+            </div>
+
+            <div class="wireframe-box card-context">
+              <span class="corner-cross tl">+</span>
+              <span class="corner-cross tr">+</span>
+              <h3>// Enfoque proyectual</h3>
+              <p>Abordar el problema desde el diseño de información: organizar, sintetizar y hacer accesible el conocimiento botánico para la toma de decisiones ciudadanas.</p>
+            </div>
+
+            <div class="spec-callout">
+              <div><span class="spec-kw">foco</span> : <span class="spec-fn">arbolado_urbano</span>;</div>
+              <div><span class="spec-kw">alcance</span> : especies autóctonas vs. introducidas;</div>
+              <div><span class="spec-val">criterio = sustentabilidad + identidad local</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-footer-meta">
+        <span>FADU UBA · DISEÑO GRÁFICO 4 · 2026</span>
+        <span>SLIDE 02 DE 10</span>
+      </footer>
+    </section>
+
+    <!-- ====================================================================
+         SLIDE 03: DEFINICIONES CLAVE (Capítulo 1)
+         ==================================================================== -->
+    <section class="slide" data-title="03 · Definiciones" aria-label="3 de 10: Definiciones clave">
+      <header class="slide-header">
+        <div class="header-left">
+          <span class="slide-badge">SLIDE // 03</span>
+          <span>Capítulo 1 · Introducción</span>
+        </div>
+        <div class="header-right">
+          <span>CRITERIOS TAXONÓMICOS Y BIOGEOGRÁFICOS</span>
+          <span class="cross-marker">[+]</span>
+        </div>
+      </header>
+
+      <div class="slide-body">
+        <h2 class="slide-title-large">Qué entendemos por especie nativa</h2>
+        <p class="slide-subtitle">
+          Distinguir el origen biogeográfico y el comportamiento ecológico resulta esencial para planificar el arbolado urbano sin confusiones terminológicas.
+        </p>
+
+        <div class="cols-3-grid">
+          <!-- Columna 1: Nativa -->
+          <div class="wireframe-box def-card">
+            <div class="wireframe-header">
+              <span>01 // ORIGEN NATIVO</span>
+              <span class="tab-close">✕</span>
+            </div>
+            <div class="def-card-body">
+              <span class="def-badge">[ AUTÓCTONA ]</span>
+              <h3 class="def-title">Especie Nativa</h3>
+              <p class="def-text">
+                Especie que se originó y evolucionó en una región determinada, sin intervención humana. Se encuentra adaptada al clima, precipitaciones y suelo local.
+              </p>
+              <div class="def-icon-area">
+                <!-- Nativa: tree with deep roots anchored in soil -->
+                <svg viewBox="0 0 140 120" fill="none" stroke="#141414" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <!-- Crown -->
+                  <ellipse cx="70" cy="28" rx="38" ry="24"/>
+                  <!-- Trunk -->
+                  <line x1="70" y1="52" x2="70" y2="78"/>
+                  <!-- Ground line -->
+                  <line x1="16" y1="78" x2="124" y2="78" stroke-dasharray="4 3" opacity="0.4"/>
+                  <!-- Deep roots -->
+                  <path d="M70 78 Q60 88, 44 100"/>
+                  <path d="M70 78 Q80 90, 96 102"/>
+                  <path d="M70 78 Q68 92, 70 108"/>
+                  <!-- Root tips -->
+                  <circle cx="44" cy="100" r="2" fill="#141414" stroke="none"/>
+                  <circle cx="96" cy="102" r="2" fill="#141414" stroke="none"/>
+                  <circle cx="70" cy="108" r="2" fill="#141414" stroke="none"/>
+                  <!-- Location pin -->
+                  <circle cx="70" cy="22" r="4" fill="#141414" stroke="none" opacity="0.25"/>
+                </svg>
+                <span class="region-micro-code" style="top:0; right:0;"><span class="mc-kw">origin</span> == <span class="mc-fn">"local"</span></span>
+                <span class="region-micro-code" style="bottom:0; left:0;"><span class="mc-kw">adaptación</span>: true</span>
+              </div>
+              <div class="def-highlight">
+                <strong>Principio territorial:</strong> Que sea nativa de la Argentina no significa que sea nativa de <em>cualquier</em> lugar del país. Se analiza por ecorregión.
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna 2: Exótica -->
+          <div class="wireframe-box def-card">
+            <div class="wireframe-header">
+              <span>02 // INTRODUCCIÓN</span>
+              <span class="tab-close">✕</span>
+            </div>
+            <div class="def-card-body">
+              <span class="def-badge">[ INTRODUCIDA ]</span>
+              <h3 class="def-title">Especie Exótica</h3>
+              <p class="def-text">
+                Proveniente de otras partes del mundo (Europa, Asia, América del Norte). Introducida de forma deliberada o accidental por actividades humanas.
+              </p>
+              <div class="def-icon-area">
+                <!-- Exótica: tree arriving via transport arrow -->
+                <svg viewBox="0 0 140 120" fill="none" stroke="#141414" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <!-- Incoming arrow from left -->
+                  <line x1="8" y1="60" x2="48" y2="60" stroke-dasharray="5 4"/>
+                  <polyline points="40,54 48,60 40,66" fill="none"/>
+                  <!-- Tree (slightly offset right) -->
+                  <ellipse cx="86" cy="32" rx="32" ry="22"/>
+                  <line x1="86" y1="54" x2="86" y2="80"/>
+                  <!-- Pot/container (not rooted in ground) -->
+                  <rect x="72" y="80" width="28" height="16" rx="2"/>
+                  <!-- Small globe hint -->
+                  <circle cx="20" cy="38" r="10" stroke-dasharray="3 3" opacity="0.35"/>
+                  <path d="M20 28 Q26 38, 20 48" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.35"/>
+                </svg>
+                <span class="region-micro-code" style="bottom:2px; right:0;"><span class="mc-kw">import</span> <span class="mc-fn">sp</span> <span class="mc-kw">from</span> "EU"</span>
+                <span class="region-micro-code" style="top:2px; left:0;"><span class="mc-kw">src</span>: <span class="mc-fn">overseas</span></span>
+              </div>
+              <div class="def-highlight">
+                <strong>Valor patrimonial:</strong> Muchas especies exóticas cumplen funciones valiosas en la ciudad (sombra densa estival), por lo que no se plantea erradicarlas en bloque.
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna 3: Invasora -->
+          <div class="wireframe-box def-card">
+            <div class="wireframe-header">
+              <span>03 // IMPACTO AMBIENTAL</span>
+              <span class="tab-close">✕</span>
+            </div>
+            <div class="def-card-body">
+              <span class="def-badge" style="color:var(--color-accent);">[ ALERTA ECOLÓGICA ]</span>
+              <h3 class="def-title">Especie Invasora</h3>
+              <p class="def-text">
+                Especie exótica que además de haber sido introducida, se reproduce sin control y coloniza ambientes naturales, desplazando activamente a la flora local.
+              </p>
+              <div class="def-icon-area">
+                <!-- Invasora: aggressive spread with warning -->
+                <svg viewBox="0 0 140 120" fill="none" stroke="#141414" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <!-- Central aggressive plant -->
+                  <line x1="70" y1="70" x2="70" y2="44"/>
+                  <ellipse cx="70" cy="32" rx="20" ry="16"/>
+                  <!-- Spreading runners/stolons outward -->
+                  <path d="M70 70 Q48 72, 26 64"/>
+                  <path d="M70 70 Q92 72, 114 64"/>
+                  <path d="M70 70 Q44 80, 20 90"/>
+                  <path d="M70 70 Q96 80, 120 90"/>
+                  <!-- Arrow tips on runners -->
+                  <polyline points="30,60 26,64 32,66" fill="none" stroke-width="2"/>
+                  <polyline points="110,60 114,64 108,66" fill="none" stroke-width="2"/>
+                  <polyline points="24,86 20,90 26,92" fill="none" stroke-width="2"/>
+                  <polyline points="116,86 120,90 114,92" fill="none" stroke-width="2"/>
+                  <!-- Small clone sprouts at ends -->
+                  <circle cx="26" cy="60" r="4" opacity="0.3" fill="#141414"/>
+                  <circle cx="114" cy="60" r="4" opacity="0.3" fill="#141414"/>
+                  <circle cx="20" cy="86" r="3" opacity="0.3" fill="#141414"/>
+                  <circle cx="120" cy="86" r="3" opacity="0.3" fill="#141414"/>
+                  <!-- Warning triangle -->
+                  <polygon points="70,4 60,20 80,20" stroke-width="2" opacity="0.5"/>
+                  <line x1="70" y1="9" x2="70" y2="15" stroke-width="2" opacity="0.5"/>
+                  <circle cx="70" cy="17" r="1" fill="#141414" stroke="none" opacity="0.5"/>
+                </svg>
+                <span class="region-micro-code" style="top:4px; right:0;"><span class="mc-kw">throw</span> <span class="mc-fn">"invasive"</span></span>
+                <span class="region-micro-code" style="bottom:0; left:0;"><span class="mc-kw">spread</span>.rate(∞)</span>
+              </div>
+              <div class="def-highlight">
+                <strong>Diferenciación:</strong> No toda especie exótica es invasora, pero algunas de las más difundidas en ciudades sí manifiestan ese riesgo.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-footer-meta">
+        <span>FADU UBA · DISEÑO GRÁFICO 4 · 2026</span>
+        <span>SLIDE 03 DE 10</span>
+      </footer>
+    </section>
+
+    <!-- ====================================================================
+         SLIDE 04: BENEFICIOS ECOLÓGICOS (Capítulo 1)
+         ==================================================================== -->
+    <section class="slide" data-title="04 · Beneficios ecológicos" aria-label="4 de 10: Beneficios ecológicos">
+      <header class="slide-header">
+        <div class="header-left">
+          <span class="slide-badge">SLIDE // 04</span>
+          <span>Capítulo 1 · Beneficios Urbanos</span>
+        </div>
+        <div class="header-right">
+          <span>INTERACCIÓN CANOPIA - INFRAESTRUCTURA</span>
+          <span class="cross-marker">[+]</span>
+        </div>
+      </header>
+
+      <div class="slide-body">
+        <div class="split-benefits-layout">
+          <!-- Columna izquierda: lista de beneficios -->
+          <div>
+            <h2 class="slide-title-large">Por qué importan en la ciudad</h2>
+            
+            <div class="benefit-item">
+              <div class="benefit-num">01</div>
+              <div class="benefit-content">
+                <h3>Adaptación climática e hídrica</h3>
+                <p>Evolucionadas con el régimen de lluvias local, requieren sustancialmente menor riego y cuidados en comparación con especies exóticas exigentes.</p>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-num">02</div>
+              <div class="benefit-content">
+                <h3>Sustento de la fauna local</h3>
+                <p>Proporcionan néctar, follaje y refugio específico para picaflores, abejas nativas, orugas y mariposas que no reconocen a las especies foráneas.</p>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-num">03</div>
+              <div class="benefit-content">
+                <h3>Identidad y corredores biológicos</h3>
+                <p>Reconstruyen el paisaje autóctono y transforman veredas y plazas aisladas en tramas vivas de conectividad ecológica urbana.</p>
+              </div>
+            </div>
+
+            <div class="code-snippet-box">
+              <pre><span class="sn-kw">def</span> <span class="sn-fn">conectar_estratos</span>(aéreo, basal):
+    <span class="sn-kw">return</span> { <span class="sn-str">"función"</span>: aéreo.polinización, <span class="sn-str">"drenaje"</span>: basal.permeabilidad }</pre>
+            </div>
+          </div>
+
+          <!-- Columna derecha: composición de nodos fotográficos superpuestos -->
+          <div class="dual-node-stage">
+            <!-- Nodo 01: Canopia / Fauna (Ubicado más arriba a la derecha) -->
+            <div class="node-preview-box node-canopia">
+              <span class="corner-cross tl">+</span>
+              <span class="corner-cross tr">+</span>
+              <span class="corner-cross bl">+</span>
+              <span class="corner-cross br">+</span>
+              <div class="wireframe-header">
+                <span>nodo_01 // canopia_fauna.raw</span>
+                <span class="tab-close">✕</span>
+              </div>
+              <div class="node-img-wrap">
+                <img src="img/ceibo-fauna-picaflor.jpg" alt="Picaflor libando flor de ceibo">
+              </div>
+              <div class="node-caption">
+                <div class="node-tag">[ ESTRATO AÉREO // POLINIZACIÓN ]</div>
+                <div class="node-title">Ceibo + Picaflor común</div>
+              </div>
+            </div>
+
+            <!-- Conector técnico en la sección de superposición -->
+            <div class="node-overlap-connector">
+              <span class="corner-cross tl">+</span>
+              <span class="corner-cross tr">+</span>
+              <div><span class="spec-kw">relación</span> : <span class="spec-fn">intercambio_trófico</span>;</div>
+              <div><span class="spec-kw">vector</span> : canopia ➔ sustrato [Δz = +3.20m];</div>
+              <div class="spec-val">polinizadores ➔ suelo permeable</div>
+            </div>
+
+            <!-- Nodo 02: Sustrato / Vereda (Ubicado más abajo a la izquierda, superpuesto) -->
+            <div class="node-preview-box node-sustrato">
+              <span class="corner-cross tl">+</span>
+              <span class="corner-cross tr">+</span>
+              <span class="corner-cross bl">+</span>
+              <span class="corner-cross br">+</span>
+              <div class="wireframe-header">
+                <span>nodo_02 // sustrato_vereda.raw</span>
+                <span class="tab-close">✕</span>
+              </div>
+              <div class="node-img-wrap">
+                <img src="img/ceibo-vereda-sustrato.jpg" alt="Tronco de ceibo en cazuela permeable">
+              </div>
+              <div class="node-caption">
+                <div class="node-tag">[ ESTRATO BASAL // INFRAESTRUCTURA ]</div>
+                <div class="node-title">Cazuela permeable + Vereda</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-footer-meta">
+        <span>FADU UBA · DISEÑO GRÁFICO 4 · 2026</span>
+        <span>SLIDE 04 DE 10</span>
+      </footer>
+    </section>
+
+    <!-- ====================================================================
+         SLIDE 05: REGIONES FITOGEOGRÁFICAS (Capítulo 2)
+         ==================================================================== -->
+    <section class="slide" data-title="05 · Regiones y ambientes" aria-label="5 de 10: Regiones y ambientes">
+      <header class="slide-header">
+        <div class="header-left">
+          <span class="slide-badge">SLIDE // 05</span>
+          <span>Capítulo 2 · Regiones y Paisajes</span>
+        </div>
+        <div class="header-right">
+          <span>DIVERSIDAD FITOGEOGRÁFICA NACIONAL</span>
+          <span class="cross-marker">[+]</span>
+        </div>
+      </header>
+
+      <div class="slide-body">
+        <h2 class="slide-title-large">Una gran diversidad de ambientes</h2>
+        <p class="slide-subtitle">
+          El territorio argentino presenta un pronunciado gradiente bioclimático: la humedad disminuye de noreste a sudoeste, definiendo biomas claramente contrastantes.
+        </p>
+
+        <div class="regions-grid-5">
+          <!-- 1 -->
+          <div class="region-card">
+            <span class="region-card-num">REGIÓN // 01</span>
+            <h3 class="region-name">Selva Paranaense</h3>
+            <p class="region-env">Selva subtropical húmeda, suelo rojo ferralítico y precipitaciones constantes.</p>
+            <div class="region-icon-area">
+              <!-- Lapacho rosado: broad crown with trumpet-shaped flowers -->
+              <svg viewBox="0 0 160 140" fill="none" stroke="#141414" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Trunk -->
+                <line x1="80" y1="138" x2="80" y2="82"/>
+                <line x1="80" y1="110" x2="68" y2="96"/>
+                <line x1="80" y1="102" x2="94" y2="88"/>
+                <!-- Crown mass — layered rounded shapes -->
+                <ellipse cx="80" cy="50" rx="52" ry="38"/>
+                <ellipse cx="58" cy="56" rx="28" ry="22"/>
+                <ellipse cx="104" cy="52" rx="26" ry="20"/>
+                <ellipse cx="80" cy="34" rx="30" ry="20"/>
+                <!-- Trumpet flowers (3 small ones) -->
+                <path d="M62 32 c-3,-8 3,-12 6,-6"/>
+                <path d="M92 28 c2,-9 8,-10 6,-2"/>
+                <path d="M78 18 c-2,-8 4,-12 6,-4"/>
+                <circle cx="62" cy="32" r="2.5" fill="#141414" stroke="none"/>
+                <circle cx="92" cy="28" r="2.5" fill="#141414" stroke="none"/>
+                <circle cx="78" cy="18" r="2.5" fill="#141414" stroke="none"/>
+              </svg>
+              <span class="region-micro-code" style="top:4px; left:0;"><span class="mc-kw">let</span> <span class="mc-fn">bioma</span> = <span class="mc-kw">"subtropical"</span>;</span>
+              <span class="region-micro-code" style="bottom:2px; right:0;"><span class="mc-kw">flora</span>.density(1400);</span>
+            </div>
+            <div class="region-specimen-box">
+              <div class="specimen-label">Especie representativa</div>
+              <div class="specimen-species">Lapacho rosado</div>
+            </div>
+          </div>
+
+          <!-- 2 -->
+          <div class="region-card">
+            <span class="region-card-num">REGIÓN // 02</span>
+            <h3 class="region-name">Yungas</h3>
+            <p class="region-env">Selva nublada de montaña con pisos altitudinales de gran riqueza botánica.</p>
+            <div class="region-icon-area">
+              <!-- Cedro salteño: tall pyramidal/columnar conifer -->
+              <svg viewBox="0 0 160 140" fill="none" stroke="#141414" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Trunk -->
+                <line x1="80" y1="138" x2="80" y2="52"/>
+                <!-- Layered horizontal branches -->
+                <line x1="80" y1="120" x2="50" y2="116"/>
+                <line x1="80" y1="120" x2="110" y2="114"/>
+                <line x1="80" y1="106" x2="46" y2="100"/>
+                <line x1="80" y1="106" x2="114" y2="98"/>
+                <line x1="80" y1="92" x2="52" y2="84"/>
+                <line x1="80" y1="92" x2="108" y2="82"/>
+                <line x1="80" y1="78" x2="58" y2="70"/>
+                <line x1="80" y1="78" x2="102" y2="68"/>
+                <line x1="80" y1="64" x2="64" y2="56"/>
+                <line x1="80" y1="64" x2="96" y2="54"/>
+                <!-- Conical outline -->
+                <polyline points="38,126 80,12 122,126" stroke-dasharray="4 4" opacity="0.4"/>
+                <!-- Top marker -->
+                <circle cx="80" cy="12" r="3" fill="#141414" stroke="none"/>
+              </svg>
+              <span class="region-micro-code" style="bottom:0; left:0;"><span class="mc-kw">altitude</span>.range(600, 3200);</span>
+              <span class="region-micro-code" style="top:6px; right:0;"><span class="mc-kw">fn</span> <span class="mc-fn">niebla</span>()</span>
+            </div>
+            <div class="region-specimen-box">
+              <div class="specimen-label">Especie representativa</div>
+              <div class="specimen-species">Cedro salteño</div>
+            </div>
+          </div>
+
+          <!-- 3 -->
+          <div class="region-card">
+            <span class="region-card-num">REGIÓN // 03</span>
+            <h3 class="region-name">Chaco</h3>
+            <p class="region-env">Bosque seco con marcado déficit hídrico invernal y vegetación xerófila.</p>
+            <div class="region-icon-area">
+              <!-- Quebracho colorado: dense hard trunk, compact irregular crown -->
+              <svg viewBox="0 0 160 140" fill="none" stroke="#141414" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Heavy trunk with taper -->
+                <path d="M74 138 L76 90 Q76 82, 80 78"/>
+                <path d="M86 138 L84 90 Q84 82, 80 78"/>
+                <!-- Buttress roots -->
+                <path d="M74 138 Q68 136, 62 138"/>
+                <path d="M86 138 Q92 136, 98 138"/>
+                <!-- Dense, compact angular crown -->
+                <polygon points="80,18 42,48 34,72 52,86 80,82 108,86 126,72 118,48" stroke-width="3"/>
+                <!-- Interior texture lines (wood grain feel) -->
+                <line x1="56" y1="52" x2="68" y2="66" stroke-dasharray="3 3" opacity="0.5"/>
+                <line x1="104" y1="50" x2="92" y2="64" stroke-dasharray="3 3" opacity="0.5"/>
+                <line x1="80" y1="28" x2="80" y2="60" stroke-dasharray="3 3" opacity="0.5"/>
+                <!-- Small cross marks (botanical-technical) -->
+                <g opacity="0.6">
+                  <line x1="48" y1="58" x2="48" y2="66"/><line x1="44" y1="62" x2="52" y2="62"/>
+                  <line x1="112" y1="56" x2="112" y2="64"/><line x1="108" y1="60" x2="116" y2="60"/>
+                </g>
+              </svg>
+              <span class="region-micro-code" style="top:2px; right:0;"><span class="mc-kw">const</span> <span class="mc-fn">dureza</span> = 1220;</span>
+              <span class="region-micro-code" style="bottom:4px; left:0;"><span class="mc-kw">clima</span>.<span class="mc-fn">seco</span>(true);</span>
+            </div>
+            <div class="region-specimen-box">
+              <div class="specimen-label">Especie representativa</div>
+              <div class="specimen-species">Quebracho colorado</div>
+            </div>
+          </div>
+
+          <!-- 4 -->
+          <div class="region-card">
+            <span class="region-card-num">REGIÓN // 04</span>
+            <h3 class="region-name">Espinal</h3>
+            <p class="region-env">Bosque bajo xerófilo y pastizal de transición en el centro del país.</p>
+            <div class="region-icon-area">
+              <!-- Algarrobo: spreading flat-top umbrella shape with pods -->
+              <svg viewBox="0 0 160 140" fill="none" stroke="#141414" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Trunk splits into Y -->
+                <line x1="80" y1="138" x2="80" y2="94"/>
+                <path d="M80 94 Q76 80, 64 68"/>
+                <path d="M80 94 Q84 80, 96 68"/>
+                <!-- Wide flat canopy -->
+                <path d="M24 58 Q40 22, 80 20 Q120 22, 136 58" stroke-width="3"/>
+                <path d="M24 58 Q30 70, 50 72 Q64 74, 80 70 Q96 74, 110 72 Q130 70, 136 58"/>
+                <!-- Small compound leaves (paired dots on branches) -->
+                <g opacity="0.5">
+                  <circle cx="52" cy="46" r="2" fill="#141414"/><circle cx="56" cy="42" r="2" fill="#141414"/>
+                  <circle cx="108" cy="44" r="2" fill="#141414"/><circle cx="104" cy="48" r="2" fill="#141414"/>
+                  <circle cx="78" cy="32" r="2" fill="#141414"/><circle cx="84" cy="32" r="2" fill="#141414"/>
+                </g>
+                <!-- Hanging pods -->
+                <path d="M62 72 c0,6 -2,16 -1,22" stroke-width="2"/>
+                <path d="M98 72 c0,5 2,14 1,20" stroke-width="2"/>
+                <ellipse cx="61" cy="94" rx="2" ry="5" fill="#141414" opacity="0.3"/>
+                <ellipse cx="99" cy="92" rx="2" ry="5" fill="#141414" opacity="0.3"/>
+              </svg>
+              <span class="region-micro-code" style="top:50%; right:0; transform:translateY(-50%);"><span class="mc-kw">yield</span> <span class="mc-fn">vaina</span>(n)</span>
+              <span class="region-micro-code" style="bottom:0; left:0;"><span class="mc-kw">pH</span> = 7.2 <span class="mc-kw">//</span> alcalino</span>
+            </div>
+            <div class="region-specimen-box">
+              <div class="specimen-label">Especie representativa</div>
+              <div class="specimen-species">Algarrobo</div>
+            </div>
+          </div>
+
+          <!-- 5 -->
+          <div class="region-card">
+            <span class="region-card-num">REGIÓN // 05</span>
+            <h3 class="region-name">Bosques Patagónicos</h3>
+            <p class="region-env">Bosque frío andino, nevadas invernales y coníferas adaptadas a baja temperatura.</p>
+            <div class="region-icon-area">
+              <!-- Pehuén (araucaria): distinctive umbrella-like silhouette with upward curved branches -->
+              <svg viewBox="0 0 160 140" fill="none" stroke="#141414" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Tall straight trunk -->
+                <line x1="80" y1="138" x2="80" y2="24"/>
+                <!-- Lower bare branch stubs (dead lower branches typical of araucaria) -->
+                <line x1="80" y1="120" x2="66" y2="124" stroke-dasharray="2 3" opacity="0.35"/>
+                <line x1="80" y1="120" x2="94" y2="123" stroke-dasharray="2 3" opacity="0.35"/>
+                <line x1="80" y1="108" x2="64" y2="113" stroke-dasharray="2 3" opacity="0.35"/>
+                <line x1="80" y1="108" x2="96" y2="112" stroke-dasharray="2 3" opacity="0.35"/>
+                <!-- Mid branches curving upward -->
+                <path d="M80 92 Q60 96, 48 86 Q42 80, 44 72" stroke-width="2.8"/>
+                <path d="M80 92 Q100 96, 112 86 Q118 80, 116 72" stroke-width="2.8"/>
+                <path d="M80 76 Q56 80, 42 68 Q36 60, 40 52" stroke-width="2.8"/>
+                <path d="M80 76 Q104 80, 118 68 Q124 60, 120 52" stroke-width="2.8"/>
+                <!-- Top umbrella dome -->
+                <path d="M80 60 Q52 64, 38 50 Q30 40, 36 30" stroke-width="2.8"/>
+                <path d="M80 60 Q108 64, 122 50 Q130 40, 124 30" stroke-width="2.8"/>
+                <path d="M36 30 Q56 10, 80 8 Q104 10, 124 30" stroke-width="3"/>
+                <!-- Crown top -->
+                <circle cx="80" cy="8" r="3" fill="#141414" stroke="none"/>
+              </svg>
+              <span class="region-micro-code" style="top:4px; left:0;"><span class="mc-kw">temp</span>.max(<span class="mc-fn">-8</span>°C)</span>
+              <span class="region-micro-code" style="bottom:2px; right:0;"><span class="mc-kw">age</span> &gt; 1000 <span class="mc-kw">//</span> años</span>
+            </div>
+            <div class="region-specimen-box">
+              <div class="specimen-label">Especie representativa</div>
+              <div class="specimen-species">Pehuén (araucaria)</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="gradient-bar"></div>
+          <div class="gradient-legend">
+            <span>[ + ] MÁXIMA HUMEDAD // NORESTE (LITORAL)</span>
+            <span>GRADIENTE FITOGEOGRÁFICO DECRECIENTE</span>
+            <span>[ - ] ARIDEZ // SUDOESTE (ESTEPA)</span>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-footer-meta">
+        <span>FADU UBA · DISEÑO GRÁFICO 4 · 2026</span>
+        <span>SLIDE 05 DE 10</span>
+      </footer>
+    </section>
+
+    <!-- ====================================================================
+         SLIDE 06: ESQUEMA DE RELACIONES (Capítulo 2)
+         ==================================================================== -->
+    <section class="slide" data-title="06 · Esquema de relaciones" aria-label="6 de 10: Esquema de relaciones">
+      <header class="slide-header">
+        <div class="header-left">
+          <span class="slide-badge">SLIDE // 06</span>
+          <span>Capítulo 2 · Esquema Analítico</span>
+        </div>
+        <div class="header-right">
+          <span>FIG. 02 · MODELO RELACIONAL</span>
+          <span class="cross-marker">[+]</span>
+        </div>
+      </header>
+
+      <div class="slide-body">
+        <div class="diagram-slide-wrap">
+          <div class="diagram-frame">
+            <span class="corner-cross tl">+</span>
+            <span class="corner-cross tr">+</span>
+            <span class="corner-cross bl">+</span>
+            <span class="corner-cross br">+</span>
+
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-family:var(--font-mono); font-size:13px; font-weight:700;">
+              <span>// ESQUEMA: REGIONES ➔ ESPECIES NATIVAS ➔ USOS URBANOS POSIBLES</span>
+              <span class="tag-pill">DIAGRAMA RELACIONAL</span>
+            </div>
+
+            <!-- Imagen SVG del esquema de relaciones -->
+            <img src="img/esquema-regiones-especies.svg" alt="Esquema que vincula regiones, especies y usos urbanos">
+          </div>
+
+          <div style="margin-top:20px; display:flex; gap:20px; width:100%; max-width:1480px;">
+            <div class="spec-callout" style="flex:1;">
+              <span class="spec-kw">regla_proyectual</span> : Los usos urbanos (alineación, plazas, costaneras) deben seleccionarse a partir de la adaptabilidad biológica de cada especie, no de modas estéticas.
+            </div>
+            <div class="spec-callout" style="flex:1;">
+              <span class="spec-kw">validación</span> : Relaciones formuladas en base a Cabrera (1976) y arbolado de referencia del Cono Sur.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-footer-meta">
+        <span>FADU UBA · DISEÑO GRÁFICO 4 · 2026</span>
+        <span>SLIDE 06 DE 10</span>
+      </footer>
+    </section>
+
+    <!-- ====================================================================
+         SLIDE 07: EL CASO DE LA REGIÓN PAMPEANA (Capítulo 2)
+         ==================================================================== -->
+    <section class="slide" data-title="07 · Región pampeana" aria-label="7 de 10: Región pampeana">
+      <header class="slide-header">
+        <div class="header-left">
+          <span class="slide-badge">SLIDE // 07</span>
+          <span>Capítulo 2 · Singularidad Local</span>
+        </div>
+        <div class="header-right">
+          <span>PARADOJA DEL PAISAJE BONAERENSE</span>
+          <span class="cross-marker">[+]</span>
+        </div>
+      </header>
+
+      <div class="slide-body">
+        <div class="pampa-split-layout">
+          <div class="pampa-left">
+            <span class="tag-pill accent" style="margin-bottom:14px;">ESTUDIO DE CASO</span>
+            <h2>El caso de la región pampeana</h2>
+            <p>
+              En la llanura pampeana el ecosistema dominante original era el <strong>pastizal</strong> continuo: los árboles eran naturalmente escasos y se restringían a especies adaptadas como el <strong>tala</strong> y el <strong>ombú</strong>.
+            </p>
+            <p>
+              Esta configuración ecológica explica por qué en ciudades como Buenos Aires, La Plata o Rosario el paisaje arbolado que hoy se percibe como "natural" fue construido casi exclusivamente con especies exóticas importadas en los siglos XIX y XX.
+            </p>
+
+            <div class="code-snippet-box">
+              <pre><span class="sn-kw">const</span> <span class="sn-fn">paisaje_actual</span> = {
+  <span class="sn-str">"percepción"</span> : <span class="sn-str">"bosque urbano consolidado"</span>,
+  <span class="sn-str">"realidad_ecológica"</span> : <span class="sn-str">"pastizal modificado con flora exótica"</span>
+};</pre>
+            </div>
+          </div>
+
+          <div class="pampa-comparative-box">
+            <span class="corner-cross tl">+</span>
+            <span class="corner-cross tr">+</span>
+            <span class="corner-cross bl">+</span>
+            <span class="corner-cross br">+</span>
+
+            <div class="comp-row">
+              <div class="comp-label">// 01 · PAISAJE HISTÓRICO ORIGINAL</div>
+              <div class="comp-value">Estepa herbácea abierta sin estrato arbóreo continuo. Árboles aislados en lomadas y albardones ribereños.</div>
+            </div>
+
+            <div class="comp-row">
+              <div class="comp-label">// 02 · INTRODUCCIÓN URBANA MASIVA</div>
+              <div class="comp-value">Plátanos, fresnos europeos, ligustros y paraísos incorporados por diseño higienista de avenidas.</div>
+            </div>
+
+            <div class="comp-row">
+              <div class="comp-label">// 03 · PARADIGMA CONTEMPORÁNEO</div>
+              <div class="comp-value">Reincorporar especies de la ribera platense y del espinal como primera opción en nuevas plantaciones urbanas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-footer-meta">
+        <span>FADU UBA · DISEÑO GRÁFICO 4 · 2026</span>
+        <span>SLIDE 07 DE 10</span>
+      </footer>
+    </section>
+
+    <!-- ====================================================================
+         SLIDE 08: ESPECIE DESTACADA: CEIBO (Capítulo 3)
+         ==================================================================== -->
+    <section class="slide" data-title="08 · Ceibo" aria-label="8 de 10: Ceibo">
+      <header class="slide-header">
+        <div class="header-left">
+          <span class="slide-badge">SLIDE // 08</span>
+          <span>Capítulo 3 · Especies Destacadas</span>
+        </div>
+        <div class="header-right">
+          <span>DESGLOSE MULTIESCALAR BOTÁNICO</span>
+          <span class="cross-marker">[+]</span>
+        </div>
+      </header>
+
+      <div class="slide-body">
+        <div class="ceibo-slide-layout">
+          <!-- Columna descriptiva -->
+          <div class="ceibo-info-col">
+            <span class="tag-pill green">ESPECIE EMBLEMÁTICA</span>
+            <h2>Ceibo</h2>
+            <span class="ceibo-scientific">Erythrina crista-galli · Fabaceae</span>
+
+            <p class="ceibo-desc">
+              Árbol de tamaño mediano (5 a 10 m), de tronco tortuoso y corteza corchosa agrietada. Crece de manera silvestre en riberas y zonas húmedas del litoral. Su floración roja estival fue consagrada como <strong>Flor Nacional</strong> en 1942.
+            </p>
+
+            <div class="ceibo-scales-list">
+              <div class="scale-row">
+                <span class="scale-badge">2:1 MICRO</span>
+                <span><strong>Brote y folíolo:</strong> Hoja trifoliada caduca con acúleos defensivos y venación pinada.</span>
+              </div>
+              <div class="scale-row">
+                <span class="scale-badge">1:10 MESO</span>
+                <span><strong>Rama florífera:</strong> Inflorescencias en racimos carmín adaptadas a aves polinizadoras.</span>
+              </div>
+              <div class="scale-row">
+                <span class="scale-badge">1:100 MACRO</span>
+                <span><strong>Porte arbóreo:</strong> Copa aparasolada que provee sombra tamizada en parques y riberas.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Composición visual multiescalar con las fotos generadas -->
+          <div class="ceibo-visual-stage">
+            <!-- Ventana flotante Zoom In (Macro) -->
+            <div class="floating-macro-box">
+              <div class="wireframe-header">
+                <span>zoom_in // brote.raw</span>
+                <span class="tag-pill green">2:1</span>
+              </div>
+              <div class="macro-img-wrap">
+                <img src="img/ceibo-detalle-hoja-brote.jpg" alt="Detalle macro de hoja y brote">
+              </div>
+            </div>
+
+            <!-- Ventana flotante Zoom Out (Árbol completo) -->
+            <div class="floating-tree-box">
+              <div class="wireframe-header">
+                <span>zoom_out // porte.raw</span>
+                <span class="tag-pill ochre">1:100</span>
+              </div>
+              <div class="tree-img-wrap">
+                <img src="img/ceibo-arbol-habito.jpg" alt="Árbol de ceibo completo">
+              </div>
+            </div>
+
+            <!-- Ventana principal: Rama en diagonal -->
+            <div class="slide-branch-box">
+              <span class="corner-cross tl">+</span>
+              <span class="corner-cross tr">+</span>
+              <span class="corner-cross bl">+</span>
+              <span class="corner-cross br">+</span>
+              <img src="img/ceibo-rama-diagonal.jpg" alt="Rama de ceibo en floración">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-footer-meta">
+        <span>FADU UBA · DISEÑO GRÁFICO 4 · 2026</span>
+        <span>SLIDE 08 DE 10</span>
+      </footer>
+    </section>
+
+    <!-- ====================================================================
+         SLIDE 09: LAPACHO Y ALGARROBO (Capítulo 3)
+         ==================================================================== -->
+    <section class="slide" data-title="09 · Lapacho y Algarrobo" aria-label="9 de 10: Lapacho y Algarrobo">
+      <header class="slide-header">
+        <div class="header-left">
+          <span class="slide-badge">SLIDE // 09</span>
+          <span>Capítulo 3 · Especies Destacadas</span>
+        </div>
+        <div class="header-right">
+          <span>ESPECIES ORNAMENTALES Y FORESTALES</span>
+          <span class="cross-marker">[+]</span>
+        </div>
+      </header>
+
+      <div class="slide-body">
+        <h2 class="slide-title-large">Lapacho rosado y Algarrobo</h2>
+        <p class="slide-subtitle">
+          Dos arquetipos nativos con aptitudes sobresalientes para resolver problemáticas urbanas específicas: floración pre-foliar y resistencia a la sequía.
+        </p>
+
+        <div class="duo-species-grid">
+          <!-- Columna Lapacho -->
+          <div class="species-column-card">
+            <span class="corner-cross tl">+</span>
+            <span class="corner-cross tr">+</span>
+            
+            <div class="wireframe-header" style="margin:-40px -44px 28px;">
+              <span>espécimen_04 // lapacho_rosado.spec</span>
+              <span class="tag-pill">SELVA PARANAENSE</span>
+            </div>
+
+            <h3 style="font-size:42px; font-weight:800; text-transform:uppercase;">Lapacho Rosado</h3>
+            <div class="species-scientific">Handroanthus heptaphyllus (Bignoniaceae)</div>
+
+            <ul class="species-feature-list">
+              <li><strong>Floración invernal espectacular:</strong> Florece profusamente a fines del invierno, ocurriendo antes de que brote el follaje.</li>
+              <li><strong>Desarrollo estructural:</strong> Supera los 20 metros de altura en ambiente selvático natural; en aceras urbanas desarrolla portes más contenidos.</li>
+              <li><strong>Uso paisajístico recomendado:</strong> Una de las especies autóctonas más elegidas para bulevares y arbolado de alineación por su impactante valor escénico.</li>
+            </ul>
+
+            <div class="species-callout-bottom">
+              <strong>Adaptabilidad:</strong> Tolera suelos urbanos y clima templado bonaerense con gran vigor.
+            </div>
+          </div>
+
+          <!-- Columna Algarrobo -->
+          <div class="species-column-card">
+            <span class="corner-cross tl">+</span>
+            <span class="corner-cross tr">+</span>
+
+            <div class="wireframe-header" style="margin:-40px -44px 28px;">
+              <span>espécimen_05 // algarrobo.spec</span>
+              <span class="tag-pill">CHACO Y ESPINAL</span>
+            </div>
+
+            <h3 style="font-size:42px; font-weight:800; text-transform:uppercase;">Algarrobo</h3>
+            <div class="species-scientific">Neltuma alba / nigra (Fabaceae)</div>
+
+            <ul class="species-feature-list">
+              <li><strong>Tolerancia al estrés hídrico:</strong> Raíz pivotante profunda y follaje micrófilo que tolera sequías severas con nulo requerimiento de riego.</li>
+              <li><strong>Sombra y microclima:</strong> Desarrolla copas amplias que mitigan la isla de calor urbana en ciudades de veranos tórridos.</li>
+              <li><strong>Valor cultural ancestral:</strong> Sus vainas leguminosas fueron alimento nutricional básico de pueblos originarios (arrope, patay).</li>
+            </ul>
+
+            <div class="species-callout-bottom">
+              <strong>Sustentabilidad:</strong> Ideal para plazas secas y corredores con limitaciones hídricas críticas.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-footer-meta">
+        <span>FADU UBA · DISEÑO GRÁFICO 4 · 2026</span>
+        <span>SLIDE 09 DE 10</span>
+      </footer>
+    </section>
+
+    <!-- ====================================================================
+         SLIDE 10: CONCLUSIONES Y CIERRE (Capítulo 4 & Marco)
+         ==================================================================== -->
+    <section class="slide" data-title="10 · Conclusiones" aria-label="10 de 10: Conclusiones y cierre">
+      <header class="slide-header">
+        <div class="header-left">
+          <span class="slide-badge">SLIDE // 10</span>
+          <span>Capítulo 4 · Conclusiones y Marco</span>
+        </div>
+        <div class="header-right">
+          <span>SÍNTESIS FINAL DEL INFORME</span>
+          <span class="cross-marker">[+]</span>
+        </div>
+      </header>
+
+      <div class="slide-body">
+        <h2 class="slide-title-large">Conclusiones y líneas abiertas</h2>
+
+        <div class="conclusions-3col-grid">
+          <!-- Columna 1: Hallazgos principales -->
+          <div class="conclusions-box">
+            <h3>// 01 · HALLAZGOS PRINCIPALES</h3>
+            <ul class="findings-list">
+              <li>
+                <span class="findings-num">[1]</span>
+                <span>La mayoría del arbolado urbano metropolitano corresponde a especies exóticas introducidas.</span>
+              </li>
+              <li>
+                <span class="findings-num">[2]</span>
+                <span>Existen especies autóctonas aptas para el uso en veredas, parques y plazas en prácticamente todas las regiones del país.</span>
+              </li>
+              <li>
+                <span class="findings-num">[3]</span>
+                <span>Incorporarlas aporta beneficios de resiliencia ecológica, ahorro hídrico y recuperación de identidad cultural.</span>
+              </li>
+            </ul>
+
+            <div class="spec-callout" style="margin-top:auto;">
+              <span class="spec-kw">conclusión</span> : Proponer a las especies nativas como <strong>primera opción</strong> al planificar nuevas plantaciones urbanas.
+            </div>
+          </div>
+
+          <!-- Columna 2: Preguntas de diseño -->
+          <div class="conclusions-box">
+            <h3>// 02 · PREGUNTAS DE DISEÑO</h3>
+            <p style="font-size:18px; line-height:1.45; color:var(--color-ink); margin-bottom:18px;">
+              Desde la disciplina del diseño de información se abren dos interrogantes centrales:
+            </p>
+            <div style="display:flex; flex-direction:column; gap:16px;">
+              <div class="wireframe-box" style="padding:14px 16px; background-color:var(--color-canvas-alt);">
+                <strong>¿Qué criterios morfológicos y ecológicos</strong> deben guiar la elección de especies en el espacio público?
+              </div>
+              <div class="wireframe-box" style="padding:14px 16px; background-color:var(--color-canvas-alt);">
+                <strong>¿Cómo comunicar el valor</strong> de la flora nativa a la comunidad mediante guías, señalética y recorridos urbanos interactivos?
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna 3: Créditos y regreso al sitio -->
+          <div class="conclusions-box">
+            <h3>// 03 · CRÉDITOS Y REFERENCIAS</h3>
+            <div style="font-size:15px; line-height:1.5; color:var(--color-ink-muted); margin-bottom:16px;">
+              <p><strong>Cabrera, A. L. (1976).</strong> <em>Regiones fitogeográficas argentinas</em>. Buenos Aires: ACME.</p>
+              <p style="margin-top:8px;"><strong>Instituto Darwinion.</strong> <em>Flora del Cono Sur</em>. www.darwin.edu.ar</p>
+            </div>
+
+            <div style="border-top:1px solid var(--color-border-subtle); padding-top:14px; font-size:14px; color:var(--color-ink); margin-bottom:16px;">
+              <div><strong>Investigación TP4 // 2026</strong></div>
+              <div>Diseño Gráfico 4 · Cátedra Meygide-Carpintero</div>
+              <div>FADU · Universidad de Buenos Aires</div>
+            </div>
+
+            <a href="index.html" class="final-link-btn">
+              <span>← Explorar el sitio web interactivo</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <footer class="slide-footer-meta">
+        <span>FADU UBA · DISEÑO GRÁFICO 4 · 2026</span>
+        <span>SLIDE 10 DE 10 · FIN DE LA PRESENTACIÓN</span>
+      </footer>
+    </section>
+
+  </main>
+
+  <!-- ====================================================================
+       CONTROLES DE NAVEGACIÓN FLOTANTES
+       ==================================================================== -->
+  <nav id="nav-controls" aria-label="Controles de navegación de la presentación">
+    <button id="btn-prev" class="nav-btn" type="button" aria-label="Diapositiva anterior (Flecha izquierda)">←</button>
+
+    <div class="dots-container" id="dots-wrap" role="tablist" aria-label="Índice de diapositivas"></div>
+
+    <span id="counter" class="counter-display" aria-live="polite">01 / 10</span>
+
+    <button id="btn-next" class="nav-btn" type="button" aria-label="Diapositiva siguiente (Flecha derecha)">→</button>
+    <button id="btn-fs" class="nav-btn" type="button" aria-label="Pantalla completa (Tecla F)">⛶</button>
+  </nav>
+
+  <!-- ====================================================================
+       SCRIPT STANDALONE DE ESCALADO Y NAVEGACIÓN
+       ==================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      const stage = document.getElementById('stage');
+      const progressBar = document.getElementById('progress-bar');
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const dotsWrap = document.getElementById('dots-wrap');
+      const counter = document.getElementById('counter');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+      const btnFs = document.getElementById('btn-fs');
+
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+
+      /* ----------------------------------------------------------------------
+         1. ESCALADO EXACTO 16:9 EN TIEMPO REAL (LETTERBOX CENTRADO)
+         ---------------------------------------------------------------------- */
+      function fitStage() {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const scale = Math.min(vw / 1920, vh / 1080);
+        stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      }
+
+      window.addEventListener('resize', fitStage);
+      fitStage();
+
+      /* ----------------------------------------------------------------------
+         2. CONSTRUCCIÓN DE BOTONES DE NAVEGACIÓN DIRECTA (DOTS / PILLS)
+         ---------------------------------------------------------------------- */
+      slides.forEach((slide, index) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'dot-btn' + (index === 0 ? ' active' : '');
+        btn.textContent = (index + 1).toString().padStart(2, '0');
+        btn.title = slide.getAttribute('data-title') || `Slide ${index + 1}`;
+        btn.setAttribute('aria-label', `Ir a diapositiva ${index + 1}: ${btn.title}`);
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+        btn.addEventListener('click', () => goToSlide(index));
+        dotsWrap.appendChild(btn);
+      });
+
+      const dotButtons = Array.from(dotsWrap.querySelectorAll('.dot-btn'));
+
+      /* ----------------------------------------------------------------------
+         3. TRANSICIÓN Y ACTIVACIÓN DE DIAPOSITIVAS
+         ---------------------------------------------------------------------- */
+      function goToSlide(index) {
+        currentIndex = Math.max(0, Math.min(totalSlides - 1, index));
+
+        slides.forEach((slide, i) => {
+          const isActive = (i === currentIndex);
+          slide.classList.toggle('active', isActive);
+          slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+        });
+
+        dotButtons.forEach((btn, i) => {
+          const isActive = (i === currentIndex);
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+
+        const curNum = (currentIndex + 1).toString().padStart(2, '0');
+        const totNum = totalSlides.toString().padStart(2, '0');
+        counter.textContent = `${curNum} / ${totNum}`;
+
+        // Barra de progreso
+        const progressPercent = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progressPercent}%`;
+      }
+
+      btnPrev.addEventListener('click', () => goToSlide(currentIndex - 1));
+      btnNext.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+      /* ----------------------------------------------------------------------
+         4. PANTALLA COMPLETA
+         ---------------------------------------------------------------------- */
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          }
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          }
+        }
+      }
+
+      btnFs.addEventListener('click', toggleFullscreen);
+
+      /* ----------------------------------------------------------------------
+         5. NAVEGACIÓN POR TECLADO
+         ---------------------------------------------------------------------- */
+      window.addEventListener('keydown', (e) => {
+        // Si el foco está en un elemento interactivo, Enter y Espacio ejecutan ese elemento
+        const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+        if ((e.key === 'Enter' || e.key === ' ') && (activeTag === 'a' || activeTag === 'button')) {
+          return;
+        }
+
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault();
+          goToSlide(currentIndex + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          goToSlide(currentIndex - 1);
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          goToSlide(0);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          goToSlide(totalSlides - 1);
+        } else if (e.key === 'f' || e.key === 'F') {
+          toggleFullscreen();
+        }
+      });
+
+      /* ----------------------------------------------------------------------
+         6. NAVEGACIÓN TÁCTIL (SWIPE GESTURES)
+         ---------------------------------------------------------------------- */
+      let touchStartX = null;
+      let touchStartY = null;
+
+      window.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches.length > 0) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', (e) => {
+        if (touchStartX === null) return;
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+
+        // Validar que el gesto sea preponderantemente horizontal
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+          if (diffX < 0) {
+            goToSlide(currentIndex + 1); // Swipe hacia la izquierda -> Siguiente
+          } else {
+            goToSlide(currentIndex - 1); // Swipe hacia la derecha -> Anterior
+          }
+        }
+        touchStartX = null;
+        touchStartY = null;
+      });
+
+      // Inicialización en la primera diapositiva
+      goToSlide(0);
+    })();
+  </script>
+</body>
+</html>

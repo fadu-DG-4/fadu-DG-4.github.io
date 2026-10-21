@@ -1431,46 +1431,45 @@ figcaption strong {
   margin: var(--space-1) 0 0;
 }
 
-/* Miscelánea técnica de conexión con repetición de iconos botánico-vectoriales */
-.miscelanea-conector {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-1);
+/* Snippet de código decorativo como conector entre nodos */
+.conector-snippet {
   margin: var(--space-1) 0;
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-canvas-alt);
+  border-left: 2px solid #9e2a2b;
   position: relative;
   z-index: 3;
+  max-width: 380px;
+  margin-left: auto;
 }
 
-.miscelanea-pista {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.miscelanea-pista .pista-nodo {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-ink);
-  opacity: 0.85;
-}
-
-.miscelanea-pista .pista-linea {
-  display: inline-block;
-  width: 20px;
-  height: 1px;
-  background-color: var(--color-ink);
-  opacity: 0.4;
-}
-
-.miscelanea-tag {
+.conector-snippet pre {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  letter-spacing: 0.06em;
+  line-height: 1.55;
   color: var(--color-ink-muted);
-  white-space: nowrap;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.conector-snippet .sn-kw {
+  color: #9e2a2b;
+  font-weight: 700;
+}
+
+.conector-snippet .sn-fn {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+.conector-snippet .sn-str {
+  color: #9e2a2b;
+}
+
+.conector-snippet .sn-num {
+  color: var(--color-ink);
+  font-weight: 600;
 }
 
 /* Caja de especificaciones superpuesta sobre el marco inferior */
@@ -1515,6 +1514,76 @@ figcaption strong {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   box-shadow: 2px 2px 0px var(--color-border);
+}
+
+/* --------------------------------------------------------------------------
+   COMPOSICIÓN ABIERTA DE ESQUEMA (Capítulo 2 - Regiones y paisajes)
+   -------------------------------------------------------------------------- */
+.composicion-esquema {
+  margin: var(--space-8) 0 var(--space-10);
+  position: relative;
+  max-width: 100%;
+}
+
+.esquema-snippet {
+  margin-left: 0;
+  margin-bottom: var(--space-2);
+  max-width: 520px;
+}
+
+.esquema-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-canvas-alt);
+  border: var(--border-width) solid var(--color-border);
+  border-bottom: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--color-ink);
+}
+
+.esquema-badge {
+  background-color: var(--color-ink);
+  color: var(--color-canvas);
+  padding: 1px 6px;
+  font-size: var(--text-2xs);
+}
+
+.esquema-cuerpo {
+  border: var(--border-width) solid var(--color-border);
+  background-color: var(--color-canvas);
+  padding: var(--space-4) var(--space-3);
+  position: relative;
+  overflow: visible;
+}
+
+.esquema-cuerpo img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.esquema-overlay-spec {
+  position: relative;
+  margin-top: -24px;
+  margin-left: auto;
+  margin-right: var(--space-4);
+  z-index: 10;
+  width: fit-content;
+  max-width: 400px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 2px 2px 0px var(--color-border);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  line-height: 1.5;
 }
 
 /* --------------------------------------------------------------------------
@@ -1863,11 +1932,9 @@ figcaption strong {
     height: 220px;
   }
 
-  .miscelanea-conector {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-1);
-    margin: var(--space-2) 0;
+  .conector-snippet {
+    max-width: 100%;
+    margin-left: 0;
   }
 
   .conector-spec.superpuesto {
@@ -1876,6 +1943,32 @@ figcaption strong {
     width: 100%;
     max-width: 100%;
     margin-bottom: -16px;
+  }
+
+  .esquema-topbar {
+    font-size: 9px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .esquema-cuerpo {
+    padding: var(--space-2);
+    overflow-x: auto;
+  }
+
+  .esquema-cuerpo img {
+    min-width: 600px;
+  }
+
+  .esquema-overlay-spec {
+    margin-top: var(--space-2);
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .esquema-snippet {
+    max-width: 100%;
   }
 }
 

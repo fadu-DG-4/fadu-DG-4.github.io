@@ -98,14 +98,8 @@
               <li>Forman parte de la identidad cultural y del paisaje de cada lugar.</li>
             </ul>
 
-            <!-- Composición analítica con múltiples cuadros conectados y desborde gráfico -->
+            <!-- Composición analítica con múltiples cuadros conectados (sin marco exterior) -->
             <figure class="composicion-conectada" aria-label="Esquema analítico de interacción del ceibo en el espacio urbano">
-              <!-- Barra superior técnica -->
-              <div class="composicion-topbar">
-                <span>// FIG.01 · ANÁLISIS DE INTERACCIÓN URBANO-BOTÁNICA</span>
-                <span>[ MODELO DE RELACIONES ]</span>
-                <span class="comp-badge">FADU DG4</span>
-              </div>
 
               <div class="cuadros-grid">
                 <!-- CUADRO 1: Nivel superior - Fauna urbana y polinización -->
@@ -115,13 +109,13 @@
                       <span>nodo_01 // canopia_fauna.raw</span>
                       <span class="cuadro-ctrl" aria-hidden="true">✕</span>
                     </div>
-                    <div class="cuadro-cuerpo">
+                    <div class="cuadro-cuerpo cuerpo-fauna">
                       <span class="corner-cross top-left" aria-hidden="true">+</span>
                       <span class="corner-cross top-right" aria-hidden="true">+</span>
                       <span class="corner-cross bottom-left" aria-hidden="true">+</span>
                       <span class="corner-cross bottom-right" aria-hidden="true">+</span>
 
-                      <!-- Imagen sobre fondo blanco con desborde físico y fusión multiply -->
+                      <!-- Imagen con desborde físico y fusión multiply -->
                       <img src="img/ceibo-fauna-picaflor.jpg" 
                            alt="Flor de ceibo y picaflor común en vuelo libando néctar" 
                            class="cuadro-img-desborde fauna-img"
@@ -138,21 +132,18 @@
                   </div>
                 </div>
 
-                <!-- Conector visual y código técnico de relación -->
-                <div class="conector-central" aria-hidden="true">
-                  <div class="linea-conexion">
-                    <svg viewBox="0 0 140 60" width="100%" height="60" preserveAspectRatio="none">
-                      <line x1="10" y1="15" x2="130" y2="45" stroke="#141414" stroke-width="1.5" stroke-dasharray="4,3"/>
-                      <circle cx="10" cy="15" r="3.5" fill="#141414"/>
-                      <polygon points="130,45 118,40 122,48" fill="#141414"/>
-                    </svg>
-                  </div>
-                  
-                  <div class="conector-spec">
-                    <div><span class="spec-kw">relación</span> : <span class="spec-fn">intercambio_trófico</span>;</div>
-                    <div><span class="spec-kw">vector</span> : fauna_urbana ➔ suelo;</div>
-                    <div><span class="spec-val">Δz = +3.20m</span> // cota estrato</div>
-                  </div>
+                <!-- Snippet de código decorativo como conector entre nodos -->
+                <div class="conector-snippet" aria-hidden="true">
+<pre><span class="sn-kw">def</span> <span class="sn-fn">vincular_estratos</span>(canopia, sustrato):
+    <span class="sn-kw">return</span> { <span class="sn-str">"vector"</span>: canopia.fauna → sustrato.raíz,
+             <span class="sn-str">"Δz"</span>: <span class="sn-num">+3.20</span>, <span class="sn-str">"tipo"</span>: <span class="sn-str">"trófico"</span> }</pre>
+                </div>
+
+                <!-- Caja spec superpuesta sobre el borde superior del cuadro inferior -->
+                <div class="conector-spec superpuesto">
+                  <div><span class="spec-kw">relación</span> : <span class="spec-fn">intercambio_trófico</span>;</div>
+                  <div><span class="spec-kw">vector</span> : fauna_urbana ➔ suelo;</div>
+                  <div><span class="spec-val">Δz = +3.20m</span> // cota estrato</div>
                 </div>
 
                 <!-- CUADRO 2: Nivel inferior - Sustrato, vereda y drenaje urbano -->
@@ -162,16 +153,16 @@
                       <span>nodo_02 // sustrato_vereda.raw</span>
                       <span class="cuadro-ctrl" aria-hidden="true">✕</span>
                     </div>
-                    <div class="cuadro-cuerpo">
+                    <div class="cuadro-cuerpo cuerpo-sustrato">
                       <span class="corner-cross top-left" aria-hidden="true">+</span>
                       <span class="corner-cross top-right" aria-hidden="true">+</span>
                       <span class="corner-cross bottom-left" aria-hidden="true">+</span>
                       <span class="corner-cross bottom-right" aria-hidden="true">+</span>
 
-                      <!-- Imagen sobre fondo blanco con desborde físico y fusión multiply -->
+                      <!-- Imagen encajada dentro del marco, sin desborde -->
                       <img src="img/ceibo-vereda-sustrato.jpg" 
                            alt="Base del tronco de ceibo con cazuela permeable de adoquines en vereda urbana" 
-                           class="cuadro-img-desborde sustrato-img"
+                           class="cuadro-img-encajada"
                            width="640" 
                            height="480">
                     </div>

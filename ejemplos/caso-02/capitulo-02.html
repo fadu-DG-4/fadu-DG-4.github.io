@@ -132,17 +132,36 @@
 
             <p>Para organizar la información relevada, el siguiente esquema vincula cada región con algunas de sus especies representativas y con los posibles usos de esas especies en la ciudad.</p>
 
-            <!-- Ventana de figura técnica -->
-            <figure class="ventana-figura">
-              <div class="ventana-header">
-                <span class="ventana-titulo">esquema-regiones-especies.svg</span>
-                <span class="ventana-controles" aria-hidden="true">✕</span>
+            <!-- Composición abierta del esquema de relaciones -->
+            <figure class="composicion-esquema" aria-label="Esquema de relaciones entre regiones, especies y usos urbanos">
+
+              <!-- Snippet de código decorativo como encabezado -->
+              <div class="conector-snippet esquema-snippet" aria-hidden="true">
+<pre><span class="sn-kw">import</span> { regiones, especies, usos } <span class="sn-kw">from</span> <span class="sn-str">"fitogeografia_ar"</span>;
+<span class="sn-kw">const</span> <span class="sn-fn">esquema</span> = regiones.<span class="sn-fn">map</span>(r => r.<span class="sn-fn">vincular</span>(especies, usos));</pre>
               </div>
-              <div class="ventana-cuerpo">
-                <img src="img/esquema-regiones-especies.svg" alt="Esquema de tres columnas que conecta regiones, especies nativas y usos urbanos posibles, con un gradiente de humedad en la parte superior" width="800" height="440">
+
+              <!-- Cabezal técnico inline -->
+              <div class="esquema-topbar" aria-hidden="true">
+                <span>// FIG.02 · ESQUEMA DE RELACIONES</span>
+                <span>REGIONES ➔ ESPECIES ➔ USOS URBANOS</span>
+                <span class="esquema-badge">REV-03</span>
               </div>
-              <figcaption>
-                <strong>Figura 2.</strong> Esquema preliminar: relaciones entre regiones, especies nativas y usos urbanos posibles. Las relaciones deberán validarse con las fuentes.
+
+              <!-- El diagrama SVG a ancho completo -->
+              <div class="esquema-cuerpo">
+                <img src="img/esquema-regiones-especies.svg" alt="Esquema de tres columnas que conecta regiones, especies nativas y usos urbanos posibles, con un gradiente de humedad en la parte superior" width="820" height="430">
+              </div>
+
+              <!-- Caja de texto superpuesta -->
+              <div class="esquema-overlay-spec">
+                <div><span class="spec-kw">n_regiones</span> : <span class="spec-val">4</span>;</div>
+                <div><span class="spec-kw">n_especies</span> : <span class="spec-val">6</span>;</div>
+                <div><span class="spec-kw">tipo</span> : <span class="spec-fn">vinculación_directa</span> | <span class="spec-fn">adaptabilidad_cruzada</span>;</div>
+              </div>
+
+              <figcaption class="composicion-caption">
+                <strong>Figura 2.</strong> Esquema preliminar: relaciones entre regiones, especies nativas y usos urbanos posibles. Las conexiones punteadas indican adaptabilidad cruzada entre regiones. Las relaciones deberán validarse con las fuentes.
               </figcaption>
             </figure>
           </section>

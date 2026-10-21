@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bibliografía y fuentes documentales consultadas para la investigación sobre árboles nativos y arbolado urbano en Argentina.">
+  <title>Referencias — Árboles nativos de la Argentina</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <script src="js/nav.js" defer></script>
+</head>
+<body>
+  <!-- Enlace accesible de salto al contenido principal -->
+  <a href="#main-content" class="skip-link">Saltar al contenido</a>
+
+  <!-- Barra superior móvil -->
+  <header class="mobile-header">
+    <a href="index.html" class="mobile-brand">Árboles nativos // AR</a>
+    <button id="menu-toggle" class="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    </button>
+  </header>
+
+  <!-- Panel lateral deslizable para dispositivos móviles -->
+  <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop" aria-hidden="true"></div>
+  <aside id="mobile-drawer" class="mobile-drawer" aria-label="Menú de navegación móvil">
+    <div class="mobile-drawer-header">
+      <span>arboles_nativos.org</span>
+      <button id="mobile-drawer-close" class="mobile-drawer-close" type="button" aria-label="Cerrar menú">✕</button>
+    </div>
+    <div id="mobile-nav-content"></div>
+  </aside>
+
+  <!-- Estructura principal -->
+  <div class="app-container">
+    <!-- Menú lateral fijo de escritorio -->
+    <aside class="site-sidebar" aria-label="Navegación principal">
+      <div class="sidebar-window-header">
+        <span class="sidebar-tab-cutout">arboles_nativos</span>
+        <span class="sidebar-window-controls" aria-hidden="true">▼ ✕</span>
+      </div>
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-title">
+          <a href="index.html">Árboles nativos de la Argentina</a>
+        </div>
+        <div class="sidebar-brand-meta">// INFORME DG4 · FADU UBA</div>
+      </div>
+      
+      <!-- Menú inyectado dinámicamente por nav.js -->
+      <nav id="site-nav" aria-label="Menú de secciones"></nav>
+
+      <!-- Respaldo accesible sin JavaScript -->
+      <noscript>
+        <div style="padding: 1rem; font-family: monospace; font-size: 0.85rem; border-top: 1px solid #141414;">
+          <p><a href="capitulo-04.html">← Capítulo 04 · Conclusiones</a></p>
+          <p><a href="acerca.html">Acerca del proyecto →</a></p>
+        </div>
+      </noscript>
+
+      <div class="sidebar-footer">
+        <div>INVESTIGACIÓN DG4 // 2026</div>
+        <div>CÁTEDRA MEYGIDE-CARPINTERO</div>
+      </div>
+    </aside>
+
+    <!-- Área de contenido a la derecha -->
+    <div class="site-main-wrapper">
+      <div class="content-layout">
+        <!-- Regla lateral técnica de números de línea -->
+        <div id="technical-ruler" class="technical-ruler" aria-hidden="true"></div>
+
+        <main id="main-content" class="site-main" tabindex="-1">
+          <!-- Migas de pan inyectadas por nav.js -->
+          <div id="breadcrumbs"></div>
+
+          <h1>Referencias</h1>
+
+          <ul class="lista-referencias">
+            <li>
+              Cabrera, A. L. (1976). <em>Regiones fitogeográficas argentinas</em>. Buenos Aires: ACME.
+            </li>
+            <li>
+              Instituto de Botánica Darwinion. <em>Flora del Cono Sur</em>. <a href="https://www.darwin.edu.ar" target="_blank" rel="noopener">www.darwin.edu.ar</a>
+            </li>
+          </ul>
+
+          <p>Las fuentes se ampliarán a medida que avance la investigación. Se priorizarán publicaciones académicas y organismos especializados en botánica y arbolado urbano.</p>
+
+          <!-- Navegación Anterior / Siguiente inyectada por nav.js -->
+          <div id="pager"></div>
+
+          <div>
+            <a href="#main-content" class="back-to-top">↑ Volver arriba</a>
+          </div>
+        </main>
+      </div>
+
+      <!-- Pie de página general -->
+      <footer class="site-footer">
+        <div>Árboles nativos de la Argentina · Trabajo Práctico 4 (DG4 - FADU - UBA, 2026)</div>
+        <div>
+          <a href="index.html">Inicio</a> · 
+          <a href="referencias.html">Referencias</a> · 
+          <a href="acerca.html">Acerca del proyecto</a>
+        </div>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

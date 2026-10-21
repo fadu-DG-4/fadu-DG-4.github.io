@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" width="100%" height="100%" style="background:#fbfaf6; font-family:'SF Mono',Consolas,monospace;">
+  <defs>
+    <pattern id="dotgrid" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="0.75" fill="#dedcd0" />
+    </pattern>
+  </defs>
+
+  <!-- Cuadrícula de puntos técnica de fondo -->
+  <rect width="800" height="460" fill="url(#dotgrid)" />
+  
+  <!-- Marco exterior -->
+  <rect x="15" y="15" width="770" height="430" fill="none" stroke="#141414" stroke-width="1"/>
+  
+  <!-- Cabezal técnico interno -->
+  <text x="30" y="40" font-size="11" fill="#141414" font-weight="bold" letter-spacing="1">ILUSTRACIÓN BOTÁNICA // ERYTHRINA CRISTA-GALLI (CEIBO)</text>
+  <text x="730" y="40" font-size="11" fill="#888" text-anchor="end">[FLOR NACIONAL ARGENTINA]</text>
+  <line x1="15" y1="50" x2="785" y2="50" stroke="#141414" stroke-width="1"/>
+
+  <!-- Tallo / Rama con espinas -->
+  <path d="M80,360 C180,320 260,280 340,240 C420,200 480,180 560,150" fill="none" stroke="#141414" stroke-width="2.5"/>
+  <path d="M260,280 C290,320 330,360 370,390" fill="none" stroke="#141414" stroke-width="2"/>
+  <path d="M340,240 C370,180 390,140 430,110" fill="none" stroke="#141414" stroke-width="1.75"/>
+
+  <!-- Espinas cónicas en la rama -->
+  <polygon points="190,305 205,300 195,315" fill="#141414"/>
+  <polygon points="280,265 295,258 285,273" fill="#141414"/>
+  <polygon points="360,225 375,218 367,232" fill="#141414"/>
+  <polygon points="300,320 310,335 295,328" fill="#141414"/>
+  <text x="210" y="305" font-size="9" fill="#555">← ACÚLEO (ESPINA)</text>
+
+  <!-- Hojas trifoliadas (3 folíolos característicos del ceibo) -->
+  <!-- Grupo folíolo 1 -->
+  <g transform="translate(140, 240)">
+    <!-- Pecíolo -->
+    <line x1="0" y1="70" x2="40" y2="20" stroke="#141414" stroke-width="1.25"/>
+    <!-- Folíolo central -->
+    <path d="M40,20 C30,-30 80,-50 90,-10 C95,20 60,35 40,20 Z" fill="#faf9f2" stroke="#141414" stroke-width="1.25"/>
+    <line x1="40" y1="20" x2="80" y2="-20" stroke="#141414" stroke-width="0.75" stroke-dasharray="2,1"/>
+    <!-- Folíolo lateral izquierdo -->
+    <path d="M25,35 C0,15 10,-20 35,-10 C45,5 35,25 25,35 Z" fill="#faf9f2" stroke="#141414" stroke-width="1.25"/>
+    <!-- Folíolo lateral derecho -->
+    <path d="M50,15 C80,10 90,45 65,55 C45,60 40,35 50,15 Z" fill="#faf9f2" stroke="#141414" stroke-width="1.25"/>
+    <text x="-40" y="55" font-size="9" fill="#141414" font-weight="bold">HOJA TRIFOLIADA →</text>
+  </g>
+
+  <!-- Racimo de flores de ceibo en el extremo de la rama -->
+  <!-- Flor 1 -->
+  <path d="M480,165 C510,135 540,140 550,175 C520,185 490,180 480,165 Z" fill="#ede8dc" stroke="#141414" stroke-width="1.5"/>
+  <path d="M550,175 C570,160 590,170 580,190 C550,195 530,190 550,175 Z" fill="#141414" fill-opacity="0.15" stroke="#141414" stroke-width="1.25"/>
+  <!-- Flor 2 -->
+  <path d="M530,135 C565,105 595,110 605,145 C575,155 545,150 530,135 Z" fill="#ede8dc" stroke="#141414" stroke-width="1.5"/>
+  <!-- Flor 3 (terminal) -->
+  <path d="M570,100 C610,75 640,85 645,120 C615,130 585,125 570,100 Z" fill="#ede8dc" stroke="#141414" stroke-width="1.5"/>
+  <text x="590" y="65" font-size="9" fill="#141414" font-weight="bold">RACIMO FLORAL TERMINAL ↓</text>
+
+  <!-- Recuadro técnico: Ventana de detalle de la flor (estilo de ventana del póster) -->
+  <g transform="translate(470, 210)">
+    <rect x="0" y="0" width="280" height="200" fill="#ffffff" stroke="#141414" stroke-width="1.5"/>
+    <!-- Cabezal de la sub-ventana -->
+    <rect x="0" y="0" width="280" height="24" fill="#eceae1" stroke="#141414" stroke-width="1"/>
+    <text x="10" y="16" font-size="10" font-weight="bold" fill="#141414">DETALLE // flor_pentamera.svg</text>
+    <text x="265" y="16" font-size="11" font-weight="bold" fill="#141414">✕</text>
+    
+    <!-- Flor ampliada -->
+    <!-- Estandarte grande carnoso (pétalo principal) -->
+    <path d="M40,160 C50,80 130,50 180,70 C230,90 240,150 190,175 C140,190 70,185 40,160 Z" fill="#f5f2e9" stroke="#141414" stroke-width="2"/>
+    <!-- Quilla (aloja los estambres) -->
+    <path d="M70,155 C110,140 160,150 170,165 C130,175 90,170 70,155 Z" fill="#141414" stroke="#141414" stroke-width="1.25"/>
+    <text x="175" y="160" font-size="9" fill="#555">← Quilla</text>
+    <!-- Cáliz campanulado -->
+    <path d="M25,160 C35,145 50,150 45,175 C30,180 20,170 25,160 Z" fill="#eceae1" stroke="#141414" stroke-width="1.5"/>
+    <text x="10" y="140" font-size="9" fill="#555">Cáliz ↑</text>
+    <text x="180" y="60" font-size="9" fill="#555">Estandarte carnoso ↓</text>
+    
+    <text x="10" y="190" font-size="9" fill="#888" font-family="'SF Mono',monospace">ESCALA 2:1 // POLINIZACIÓN POR PICAFIORES</text>
+  </g>
+
+  <!-- Pie con metadatos técnicos -->
+  <line x1="15" y1="420" x2="785" y2="420" stroke="#141414" stroke-width="1"/>
+  <text x="30" y="440" font-size="10" fill="#555">// NOTA: COLOR PENDIENTE DE VECTORIZACIÓN EN VERSIÓN DEFINITIVA (COROLA ROJO CARMÍN).</text>
+  <text x="730" y="440" font-size="10" fill="#141414" text-anchor="end" font-weight="bold">TP4 · DG4</text>
+</svg>

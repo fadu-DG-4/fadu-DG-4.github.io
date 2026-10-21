@@ -101,7 +101,9 @@ Definir los objetivos concretos del trabajo y delimitar el recorte de la investi
 
 Explorar también posibles formas de mostrar su aplicación, para poder compartir los resultados con el resto de la clase durante la presentación final (ver el punto 3).
 
-Registrar y documentar el proceso de investigación mediante archivos *Markdown* en las carpetas compartidas asignadas.
+Registrar y documentar el proceso de investigación mediante archivos *Markdown* en las carpetas compartidas asignadas. 
+> **Importante**:
+> Si bien se espera una investigación profunda sobre el recorte elegido, el trabajo no debe limitarse a producir documentos Markdown mediante inteligencia artificial sin un proceso posterior de selección, revisión y elaboración. En esta etapa, se espera que cada grupo ya comience a realizar una curaduría responsable de los materiales, defina cuáles formarán parte del informe final y determine de qué manera pueden ejemplificarse, demostrarse o aplicarse en una producción propia y concreta.
 
 ### 2. Primer borrador del informe de investigación
 

@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Cómo generar una presentación como un sitio web estático con IA?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f2eee3;
+    --ink:#1d3fb8;
+    --ink-2:#4563c9;
+    --ink-soft:rgba(29,63,184,.38);
+    --ink-faint:rgba(29,63,184,.14);
+    --ink-ghost:rgba(29,63,184,.07);
+    --bg:#d9d4c6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--bg)}
+  body{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--ink);-webkit-font-smoothing:antialiased;
+    padding:40px 24px 80px;line-height:1.6}
+  ::selection{background:var(--ink);color:var(--paper)}
+
+  /* ---------- sheet ---------- */
+  .sheet{position:relative;max-width:1180px;margin:0 auto;background:var(--paper);
+    box-shadow:0 30px 80px rgba(20,30,70,.16),0 2px 0 rgba(0,0,0,.04);padding:48px}
+  .sheet::before{ /* paper grain */
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .5  0 0 0 0 .4  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+  .frame{position:relative;border:1.5px solid var(--ink)}
+  .band{height:150px;border-bottom:1px solid var(--ink-soft);position:relative;
+    background-image:linear-gradient(var(--ink-faint) 1px,transparent 1px),linear-gradient(90deg,var(--ink-faint) 1px,transparent 1px);
+    background-size:40px 40px;background-position:-1px -1px}
+  .band.bottom{height:80px;border-bottom:0;border-top:1px solid var(--ink-soft)}
+  .h{position:absolute;width:11px;height:11px;background:var(--ink);transform:translate(-50%,-50%);z-index:2}
+  .md{position:relative;padding:56px 72px 72px}
+
+  .export{position:absolute;right:28px;top:50%;transform:translateY(-50%);z-index:3;display:inline-flex;align-items:center;gap:12px;
+    font-family:"Space Mono",monospace;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper);background:var(--ink);
+    border:1.5px solid var(--ink);padding:12px 18px;cursor:pointer;transition:background .2s,color .2s}
+  .export:hover{background:var(--paper);color:var(--ink)}
+  .export:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .export .ic{font-size:18px;line-height:1}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);
+    font-family:"Space Mono",monospace;font-size:13px;letter-spacing:.06em;padding:10px 16px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:10}
+  .toast.on{opacity:1}
+  /* ---------- markdown typography ---------- */
+  .md > *:first-child{margin-top:0}
+  .md h1{font-size:96px;font-weight:500;line-height:.98;letter-spacing:-.035em;text-transform:uppercase;margin:0 0 48px}
+  .md h2{font-size:44px;font-weight:500;line-height:1.05;letter-spacing:-.025em;text-transform:uppercase;
+    margin:84px 0 28px;padding-top:26px;border-top:1.5px solid var(--ink);position:relative}
+  .md h2::before{content:"";position:absolute;left:0;top:-1px;width:11px;height:11px;background:var(--ink);transform:translate(-50%,-50%)}
+  .md h2::after{content:"";position:absolute;right:0;top:-1px;width:11px;height:11px;background:var(--ink);transform:translate(50%,-50%)}
+  .md h3{font-size:25px;font-weight:600;line-height:1.25;text-transform:uppercase;letter-spacing:.01em;margin:56px 0 18px}
+  .md p{font-size:19px;line-height:1.65;margin:0 0 20px;max-width:920px}
+  .md strong{font-weight:600}
+  .md em{font-style:italic}
+  .md a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--ink-soft);text-underline-offset:4px;text-decoration-thickness:1px;word-break:break-word}
+  .md a:hover{text-decoration-color:var(--ink);background:var(--ink-ghost)}
+  .md code{font-family:"IBM Plex Mono",monospace;background:var(--ink-ghost);border:1px solid var(--ink-faint);padding:0 5px;font-size:.92em}
+
+  /* blockquotes: boxed, like the slides' callouts */
+  .md blockquote{position:relative;border:1.5px solid var(--ink);background:var(--paper);padding:26px 32px;margin:30px 0 34px;max-width:960px}
+  .md blockquote::before,.md blockquote::after{content:"";position:absolute;bottom:0;width:11px;height:11px;background:var(--ink);transform:translateY(50%)}
+  .md blockquote::before{left:0;transform:translate(-50%,50%)}
+  .md blockquote::after{right:0;transform:translate(50%,50%)}
+  .md blockquote p{font-size:18px;margin:0}
+  .md blockquote p + p{margin-top:14px}
+  .md > blockquote:first-of-type{border-width:0 0 0 6px;padding:6px 0 6px 30px;background:none;margin:0 0 20px}
+  .md > blockquote:first-of-type::before,.md > blockquote:first-of-type::after{display:none}
+  .md > blockquote:first-of-type p{font-size:24px;line-height:1.5}
+
+  /* lists */
+  .md ul,.md ol{margin:0 0 22px;padding:0;max-width:920px;border-top:1.5px solid var(--ink)}
+  .md ul{list-style:none}
+  .md li{font-size:19px;line-height:1.6;padding:14px 0 14px 34px;border-bottom:1px solid var(--ink-soft);position:relative}
+  .md ul > li::before{content:"";position:absolute;left:4px;top:24px;width:10px;height:10px;background:var(--ink)}
+  .md ol{list-style:none;counter-reset:ol}
+  .md ol > li{counter-increment:ol}
+  .md ol > li::before{content:counter(ol,decimal-leading-zero);position:absolute;left:0;top:17px;font-family:"Space Mono",monospace;font-size:14px;letter-spacing:.06em;color:var(--ink)}
+  /* nested lists */
+  .md li ul,.md li ol{border-top:0;margin:6px 0 0}
+  .md li li{padding:5px 0 5px 26px;border-bottom:0;font-size:inherit}
+  .md li ul > li::before{left:4px;top:15px;width:7px;height:7px;background:var(--ink-soft)}
+  .md li ol > li::before{top:7px;font-size:12px}
+  .md li > p{margin:0}
+  .md h1 code,.md h2 code,.md h3 code,.md th code{text-transform:none}
+  /* code blocks */
+  .md pre{position:relative;margin:24px 0 30px;max-width:960px;border:1.5px solid var(--ink);background:var(--ink-ghost);padding:20px 24px;overflow-x:auto}
+  .md pre code{background:none;border:0;padding:0;font-size:15px;line-height:1.6;white-space:pre;display:block}
+
+  /* tables */
+  .table-wrap{overflow-x:auto;margin:28px 0 30px;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)}
+  .md table{border-collapse:collapse;width:100%;min-width:720px}
+  .md th{font-family:"Space Mono",monospace;font-weight:400;font-size:14px;letter-spacing:.12em;text-transform:uppercase;
+    padding:14px 18px;border-bottom:1.5px solid var(--ink);text-align:left;background:var(--ink-ghost)}
+  .md td{font-size:17px;line-height:1.55;padding:16px 18px;border-bottom:1px solid var(--ink-soft);vertical-align:top}
+  .md tr:last-child td{border-bottom:0}
+  .md th + th,.md td + td{border-left:1px solid var(--ink-soft)}
+  .md td:first-child,.md th:first-child{font-family:"Space Mono",monospace;width:56px;text-align:center}
+  .md td:nth-child(2){width:28%;text-transform:uppercase;font-size:16px}
+  .md tbody tr:hover td{background:var(--ink-ghost)}
+
+  .md hr{border:0;border-top:1.5px solid var(--ink);margin:48px 0}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    body{padding:16px 16px 48px}
+    .sheet{padding:16px}
+    .band{height:90px}
+    .export{right:12px;font-size:12px;padding:10px 12px}
+    .md{padding:36px 22px 48px}
+    .md h1{font-size:clamp(26px,8.4vw,46px);overflow-wrap:anywhere}
+    .md h2{font-size:28px;margin-top:60px}
+    .md h3{font-size:20px}
+    .md p,.md li{font-size:16px;overflow-wrap:anywhere}
+    .md > blockquote:first-of-type p{font-size:18px}
+    .md blockquote{padding:20px 20px}
+    .md blockquote p{font-size:16px}
+    .md td{font-size:15px}
+    .md pre code{font-size:13px}
+  }
+  @media print{
+    html,body{background:#fff;padding:0}
+    .sheet{box-shadow:none;padding:0}
+    .sheet::before{display:none}
+    .export,.toast{display:none}
+    .md h2{break-after:avoid}
+    .md blockquote,.md tr{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="frame">
+      <div class="band">
+        <button class="export" id="export" type="button"><span>Exportar como Markdown</span><span class="ic" aria-hidden="true">↓</span></button>
+        <span class="h" aria-hidden="true" style="left:0;top:100%"></span>
+        <span class="h" style="left:33.333%;top:100%"></span>
+        <span class="h" style="left:66.666%;top:100%"></span>
+        <span class="h" style="left:100%;top:100%"></span>
+      </div>
+      <main class="md">
+<h1>¿Cómo generar una presentación como un sitio web estático con IA?</h1>
+<blockquote>
+<p>Cómo usarlo: adjuntá <strong>dos archivos</strong> junto con este prompt: (1) el archivo <strong>.md</strong> con los contenidos y (2) una <strong>imagen de referencia</strong> para los estilos visuales. Copiá todo lo que está debajo de la línea y pegalo en Claude,  ChatGPT, Antigravity u otro.</p>
+</blockquote>
+<hr />
+<p>Necesito que generes una <strong>presentación de slides en formato HTML</strong> a partir de los archivos adjuntos:</p>
+<ol>
+<li><strong>Un archivo Markdown (.md):</strong> es la fuente de <strong>todos los contenidos</strong> de la presentación.</li>
+<li><strong>Una imagen de referencia:</strong> es la fuente de <strong>todos los estilos visuales</strong> de la presentación.</li>
+</ol>
+<h2>1. Entregable</h2>
+<ul>
+<li>Un <strong>único archivo <code>index.html</code></strong> autocontenido: HTML, CSS y JavaScript en el mismo archivo (<code>&lt;style&gt;</code> y <code>&lt;script&gt;</code> embebidos).</li>
+<li>Tiene que funcionar como un <strong>sitio autocontenido e independiente (<em>standalone</em>)</strong>: se abre <strong>haciendo doble clic en el archivo</strong> y se ve en el navegador, sin servidor, sin <em>deploy</em>, sin instalación, sin compilación ni ningún paso previo.</li>
+<li><strong>No usar ninguna librería ni framework</strong> (nada de React, Vue, Reveal.js, Tailwind, jQuery, Bootstrap, etc.) ni CDNs. Solo HTML, CSS y JavaScript nativos.</li>
+<li>Tiene que funcionar <strong>sin conexión a internet</strong>. Si usás una tipografía web, debe haber una alternativa del sistema definida (<code>font-family</code> con <em>fallback</em>) para que la presentación se vea correctamente aunque la fuente no cargue.</li>
+<li>Gráficos, íconos e ilustraciones: hacelos con <strong>SVG embebido en el propio HTML</strong> o con CSS. No dependas de archivos de imagen externos, salvo las imágenes que el propio .md referencie (en ese caso, usá exactamente la misma ruta relativa que figura en el .md).</li>
+</ul>
+<h3>Restricciones por abrirse como archivo local (<code>file://</code>)</h3>
+<p>Al abrirse con doble clic, la página corre bajo el protocolo <code>file://</code>, donde el navegador bloquea varias cosas. Por lo tanto:</p>
+<ul>
+<li><strong>No</strong> usar <code>fetch()</code> ni <code>XMLHttpRequest</code> para cargar archivos. El contenido del .md tiene que quedar <strong>escrito dentro del HTML</strong>, no leerse en tiempo de ejecución.</li>
+<li><strong>No</strong> usar módulos de JavaScript (<code>&lt;script type=&quot;module&quot;&gt;</code>, <code>import</code>/<code>export</code>).</li>
+<li><strong>No</strong> usar <code>history.pushState</code> ni <code>history.replaceState</code>: en <code>file://</code> Chrome los bloquea y lanza un error. Si querés reflejar el número de slide en la URL, usá solo <code>location.hash</code>, o directamente no lo hagas.</li>
+<li>No depender de <em>service workers</em>, <code>localStorage</code> obligatorio ni nada que requiera un servidor.</li>
+</ul>
+<h2>2. Formato de las slides</h2>
+<ul>
+<li>
+<p><strong>Orientación horizontal y proporción fija 16:9.</strong></p>
+</li>
+<li>
+<p>Las slides deben <strong>ocupar todo el espacio posible del <em>viewport</em></strong> manteniendo siempre la proporción 16:9 (<em>letterbox</em>: si la ventana es más ancha o más alta que 16:9, la slide se centra y sobra espacio solo en un eje).</p>
+</li>
+<li>
+<p>Deben <strong>adaptarse al redimensionar la ventana</strong> (evento <code>resize</code>) y verse completas y centradas en cualquier tamaño: notebooks de 1366×768, monitores de 1920×1080, pantallas grandes y celulares.</p>
+</li>
+<li>
+<p>Técnica recomendada:</p>
+<ul>
+<li>diseñar cada slide sobre un <strong>lienzo fijo de 1920×1080 px</strong>;</li>
+<li>escalarlo con JavaScript usando <code>scale = Math.min(anchoVentana/1920, altoVentana/1080)</code>;</li>
+<li>posicionar el lienzo con <code>position:absolute; left:50%; top:50%; transform: translate(-50%,-50%) scale(scale)</code>.</li>
+</ul>
+<p>Así la tipografía y la composición escalan juntas y nunca se deforman.</p>
+</li>
+<li>
+<p><strong>Cuidado con el centrado:</strong> no centres el lienzo con Grid o Flexbox (<code>place-items:center</code>) cuando es más grande que la ventana. Con ese método la slide queda corrida hacia un lado en pantallas menores a 1920 px. Usá el posicionamiento absoluto descrito arriba.</p>
+</li>
+<li>
+<p>No debe haber <em>scroll</em> en la página: <code>overflow:hidden</code> en <code>html</code> y <code>body</code>.</p>
+</li>
+<li>
+<p>Ningún texto puede desbordar ni quedar cortado dentro de su slide. Si un bloque es muy largo, ajustá el tamaño de letra o dividilo en más de una slide.</p>
+</li>
+</ul>
+<h2>3. Navegación</h2>
+<p>Incluí controles para recorrer las slides:</p>
+<ul>
+<li>
+<p><strong>Teclado:</strong></p>
+<ul>
+<li>→ / Av Pág / barra espaciadora: slide siguiente;</li>
+<li>← / Re Pág: slide anterior;</li>
+<li>Inicio / Fin: primera y última slide;</li>
+<li>F: pantalla completa (opcional).</li>
+</ul>
+<p>Si el foco está sobre un enlace o un botón, Enter y la barra espaciadora deben activar ese elemento y no cambiar de slide.</p>
+</li>
+<li>
+<p><strong>Controles en pantalla:</strong> botones &quot;anterior&quot; y &quot;siguiente&quot;, un indicador de posición (por ejemplo, <code>03 / 10</code>) y, si es posible, indicadores clicables para saltar a cualquier slide.</p>
+<ul>
+<li>Que sean discretos, que no tapen el contenido y que mantengan el estilo de la presentación.</li>
+<li>Pueden aparecer al mover el mouse, pero deben estar siempre visibles en dispositivos táctiles.</li>
+</ul>
+</li>
+<li>
+<p><strong>Táctil:</strong> deslizar el dedo a izquierda o derecha cambia de slide.</p>
+</li>
+<li>
+<p><strong>Progreso:</strong> una barra o indicador del avance en la presentación.</p>
+</li>
+<li>
+<p><strong>Transición:</strong> suave y breve entre slides (por ejemplo, un fundido de 0.3 a 0.5 s).</p>
+</li>
+<li>
+<p>Opcional: un botón de pantalla completa (<code>requestFullscreen</code>).</p>
+</li>
+</ul>
+<h2>4. Contenidos (archivo .md)</h2>
+<ul>
+<li>
+<p><strong>Todo el contenido debe salir del .md adjunto.</strong> No inventes información, datos, fechas, nombres ni conclusiones que no estén en el archivo.</p>
+</li>
+<li>
+<p>Organizá el contenido en slides con criterio de presentación:</p>
+<ul>
+<li>una idea principal por slide;</li>
+<li>títulos claros;</li>
+<li>textos que se puedan leer a distancia.</li>
+</ul>
+<p>Podés <strong>sintetizar</strong> párrafos largos para que entren en una slide, siempre que se mantenga el sentido. Cuando el .md tenga un texto que deba citarse tal cual (una consigna, una definición, una pregunta), respetalo literalmente.</p>
+</li>
+<li>
+<p>Usá la estructura del .md como guía:</p>
+<ul>
+<li>los títulos <code>#</code> y <code>##</code> sugieren las secciones o slides;</li>
+<li>las listas y tablas pueden convertirse en grillas, columnas o diagramas;</li>
+<li>las citas <code>&gt;</code> pueden convertirse en recuadros destacados;</li>
+<li>los enlaces deben seguir funcionando y abrirse en una pestaña nueva (<code>target=&quot;_blank&quot; rel=&quot;noopener&quot;</code>).</li>
+</ul>
+</li>
+<li>
+<p>Incluí una <strong>slide de portada</strong> y una <strong>slide de cierre</strong>, armadas con información que esté en el .md.</p>
+</li>
+<li>
+<p>Respetá el idioma y la ortografía del .md, incluidos tildes y signos de apertura (¿ ¡).</p>
+</li>
+</ul>
+<h2>5. Estilos visuales (imagen de referencia)</h2>
+<p>No te doy especificaciones de estilo: <strong>extraelas de la imagen de referencia adjunta y emulala.</strong> Analizala con atención e identificá:</p>
+<ul>
+<li><strong>Paleta de color:</strong> fondo, tinta o tintas principales, colores de acento y valores aproximados en hexadecimal. Si la imagen es monocromática, mantené la monocromía.</li>
+<li><strong>Tipografía:</strong> familia o estilo (serif, sans, monoespaciada, condensada…), pesos, uso de mayúsculas, espaciado entre letras, contraste de tamaños entre títulos y textos, y el tipo de interlineado. Elegí la tipografía disponible (del sistema o web con <em>fallback</em>) que más se acerque.</li>
+<li><strong>Retícula y composición:</strong> márgenes, columnas, módulos, alineaciones, uso del espacio vacío y cómo se distribuyen los bloques.</li>
+<li><strong>Recursos gráficos:</strong> líneas, filetes, marcos, grillas, texturas, formas, íconos, tipos de ilustración o gráficos, patrones y detalles característicos.</li>
+<li><strong>Tono general:</strong> técnico, editorial, lúdico, minimalista, etc.</li>
+</ul>
+<p>Con eso:</p>
+<ul>
+<li>Definí el sistema visual en <strong>variables CSS</strong> (<code>:root</code>) y aplicalo de forma consistente en todas las slides.</li>
+<li>Diseñá cada slide con una composición propia pero coherente con las demás. Evitá que todas sean &quot;título + viñetas&quot;. Usá la retícula y los recursos gráficos de la referencia para que se reconozca el mismo lenguaje.</li>
+<li>Si la referencia tiene ilustraciones o gráficos, creá <strong>ilustraciones propias en SVG</strong> con el mismo lenguaje visual, vinculadas al contenido de cada slide. Si usás aleatoriedad, que sea con una semilla fija para que el resultado sea siempre el mismo.</li>
+<li><strong>Emulá el estilo, no copies la pieza:</strong> no reproduzcas los textos, logos ni elementos identificatorios que aparecen en la imagen de referencia.</li>
+<li>Asegurá un buen <strong>contraste</strong> de lectura: como mínimo el nivel AA de WCAG para el texto.</li>
+</ul>
+<h2>6. Calidad del código</h2>
+<ul>
+<li>Código ordenado y comentado por secciones: variables, estructura de slides, estilos, navegación y escalado.</li>
+<li>Cada slide en un elemento propio (por ejemplo <code>&lt;section class=&quot;slide&quot;&gt;</code>), fácil de editar a mano para cambiar textos.</li>
+<li>Sin errores en la consola del navegador.</li>
+<li>Al imprimir (<code>@media print</code>), ocultar los controles de navegación.</li>
+</ul>
+<h2>7. Verificación antes de entregar</h2>
+<p>Al final, entregame el archivo <code>index.html</code> completo y un resumen breve con:</p>
+<ol>
+<li>la lista de slides con el título de cada una;</li>
+<li>las decisiones de estilo que extrajiste de la imagen (paleta, tipografías, recursos gráficos);</li>
+<li>cómo se navega la presentación.</li>
+</ol>
+
+      </main>
+      <div class="band bottom" aria-hidden="true">
+        <span class="h" style="left:0;top:0"></span>
+        <span class="h" style="left:100%;top:0"></span>
+      </div>
+    </div>
+  </div>
+<script>
+  // wrap tables so they scroll horizontally on narrow screens
+  document.querySelectorAll(".md table").forEach(t=>{const w=document.createElement("div");w.className="table-wrap";t.parentNode.insertBefore(w,t);w.appendChild(t);});
+</script>
+<script type="application/json" id="md-source">"# ¿Cómo generar una presentación como un sitio web estático con IA?\n\n> Cómo usarlo: adjuntá **dos archivos** junto con este prompt: (1) el archivo **.md** con los contenidos y (2) una **imagen de referencia** para los estilos visuales. Copiá todo lo que está debajo de la línea y pegalo en Claude,  ChatGPT, Antigravity u otro.\n\n---\n\nNecesito que generes una **presentación de slides en formato HTML** a partir de los archivos adjuntos:\n\n1. **Un archivo Markdown (.md):** es la fuente de **todos los contenidos** de la presentación.\n2. **Una imagen de referencia:** es la fuente de **todos los estilos visuales** de la presentación.\n\n## 1. Entregable\n\n- Un **único archivo `index.html`** autocontenido: HTML, CSS y JavaScript en el mismo archivo (`<style>` y `<script>` embebidos).\n- Tiene que funcionar como un **sitio autocontenido e independiente (*standalone*)**: se abre **haciendo doble clic en el archivo** y se ve en el navegador, sin servidor, sin *deploy*, sin instalación, sin compilación ni ningún paso previo.\n- **No usar ninguna librería ni framework** (nada de React, Vue, Reveal.js, Tailwind, jQuery, Bootstrap, etc.) ni CDNs. Solo HTML, CSS y JavaScript nativos.\n- Tiene que funcionar **sin conexión a internet**. Si usás una tipografía web, debe haber una alternativa del sistema definida (`font-family` con *fallback*) para que la presentación se vea correctamente aunque la fuente no cargue.\n- Gráficos, íconos e ilustraciones: hacelos con **SVG embebido en el propio HTML** o con CSS. No dependas de archivos de imagen externos, salvo las imágenes que el propio .md referencie (en ese caso, usá exactamente la misma ruta relativa que figura en el .md).\n\n### Restricciones por abrirse como archivo local (`file://`)\n\nAl abrirse con doble clic, la página corre bajo el protocolo `file://`, donde el navegador bloquea varias cosas. Por lo tanto:\n\n- **No** usar `fetch()` ni `XMLHttpRequest` para cargar archivos. El contenido del .md tiene que quedar **escrito dentro del HTML**, no leerse en tiempo de ejecución.\n- **No** usar módulos de JavaScript (`<script type=\"module\">`, `import`/`export`).\n- **No** usar `history.pushState` ni `history.replaceState`: en `file://` Chrome los bloquea y lanza un error. Si querés reflejar el número de slide en la URL, usá solo `location.hash`, o directamente no lo hagas.\n- No depender de *service workers*, `localStorage` obligatorio ni nada que requiera un servidor.\n\n## 2. Formato de las slides\n\n- **Orientación horizontal y proporción fija 16:9.**\n- Las slides deben **ocupar todo el espacio posible del *viewport*** manteniendo siempre la proporción 16:9 (*letterbox*: si la ventana es más ancha o más alta que 16:9, la slide se centra y sobra espacio solo en un eje).\n- Deben **adaptarse al redimensionar la ventana** (evento `resize`) y verse completas y centradas en cualquier tamaño: notebooks de 1366×768, monitores de 1920×1080, pantallas grandes y celulares.\n- Técnica recomendada:\n  - diseñar cada slide sobre un **lienzo fijo de 1920×1080 px**;\n  - escalarlo con JavaScript usando `scale = Math.min(anchoVentana/1920, altoVentana/1080)`;\n  - posicionar el lienzo con `position:absolute; left:50%; top:50%; transform: translate(-50%,-50%) scale(scale)`.\n\n  Así la tipografía y la composición escalan juntas y nunca se deforman.\n- **Cuidado con el centrado:** no centres el lienzo con Grid o Flexbox (`place-items:center`) cuando es más grande que la ventana. Con ese método la slide queda corrida hacia un lado en pantallas menores a 1920 px. Usá el posicionamiento absoluto descrito arriba.\n- No debe haber *scroll* en la página: `overflow:hidden` en `html` y `body`.\n- Ningún texto puede desbordar ni quedar cortado dentro de su slide. Si un bloque es muy largo, ajustá el tamaño de letra o dividilo en más de una slide.\n\n## 3. Navegación\n\nIncluí controles para recorrer las slides:\n\n- **Teclado:**\n  - → / Av Pág / barra espaciadora: slide siguiente;\n  - ← / Re Pág: slide anterior;\n  - Inicio / Fin: primera y última slide;\n  - F: pantalla completa (opcional).\n\n  Si el foco está sobre un enlace o un botón, Enter y la barra espaciadora deben activar ese elemento y no cambiar de slide.\n- **Controles en pantalla:** botones \"anterior\" y \"siguiente\", un indicador de posición (por ejemplo, `03 / 10`) y, si es posible, indicadores clicables para saltar a cualquier slide.\n  - Que sean discretos, que no tapen el contenido y que mantengan el estilo de la presentación.\n  - Pueden aparecer al mover el mouse, pero deben estar siempre visibles en dispositivos táctiles.\n- **Táctil:** deslizar el dedo a izquierda o derecha cambia de slide.\n- **Progreso:** una barra o indicador del avance en la presentación.\n- **Transición:** suave y breve entre slides (por ejemplo, un fundido de 0.3 a 0.5 s).\n- Opcional: un botón de pantalla completa (`requestFullscreen`).\n\n## 4. Contenidos (archivo .md)\n\n- **Todo el contenido debe salir del .md adjunto.** No inventes información, datos, fechas, nombres ni conclusiones que no estén en el archivo.\n- Organizá el contenido en slides con criterio de presentación:\n  - una idea principal por slide;\n  - títulos claros;\n  - textos que se puedan leer a distancia.\n\n  Podés **sintetizar** párrafos largos para que entren en una slide, siempre que se mantenga el sentido. Cuando el .md tenga un texto que deba citarse tal cual (una consigna, una definición, una pregunta), respetalo literalmente.\n- Usá la estructura del .md como guía:\n  - los títulos `#` y `##` sugieren las secciones o slides;\n  - las listas y tablas pueden convertirse en grillas, columnas o diagramas;\n  - las citas `>` pueden convertirse en recuadros destacados;\n  - los enlaces deben seguir funcionando y abrirse en una pestaña nueva (`target=\"_blank\" rel=\"noopener\"`).\n- Incluí una **slide de portada** y una **slide de cierre**, armadas con información que esté en el .md.\n- Respetá el idioma y la ortografía del .md, incluidos tildes y signos de apertura (¿ ¡).\n\n## 5. Estilos visuales (imagen de referencia)\n\nNo te doy especificaciones de estilo: **extraelas de la imagen de referencia adjunta y emulala.** Analizala con atención e identificá:\n\n- **Paleta de color:** fondo, tinta o tintas principales, colores de acento y valores aproximados en hexadecimal. Si la imagen es monocromática, mantené la monocromía.\n- **Tipografía:** familia o estilo (serif, sans, monoespaciada, condensada…), pesos, uso de mayúsculas, espaciado entre letras, contraste de tamaños entre títulos y textos, y el tipo de interlineado. Elegí la tipografía disponible (del sistema o web con *fallback*) que más se acerque.\n- **Retícula y composición:** márgenes, columnas, módulos, alineaciones, uso del espacio vacío y cómo se distribuyen los bloques.\n- **Recursos gráficos:** líneas, filetes, marcos, grillas, texturas, formas, íconos, tipos de ilustración o gráficos, patrones y detalles característicos.\n- **Tono general:** técnico, editorial, lúdico, minimalista, etc.\n\nCon eso:\n\n- Definí el sistema visual en **variables CSS** (`:root`) y aplicalo de forma consistente en todas las slides.\n- Diseñá cada slide con una composición propia pero coherente con las demás. Evitá que todas sean \"título + viñetas\". Usá la retícula y los recursos gráficos de la referencia para que se reconozca el mismo lenguaje.\n- Si la referencia tiene ilustraciones o gráficos, creá **ilustraciones propias en SVG** con el mismo lenguaje visual, vinculadas al contenido de cada slide. Si usás aleatoriedad, que sea con una semilla fija para que el resultado sea siempre el mismo.\n- **Emulá el estilo, no copies la pieza:** no reproduzcas los textos, logos ni elementos identificatorios que aparecen en la imagen de referencia.\n- Asegurá un buen **contraste** de lectura: como mínimo el nivel AA de WCAG para el texto.\n\n## 6. Calidad del código\n\n- Código ordenado y comentado por secciones: variables, estructura de slides, estilos, navegación y escalado.\n- Cada slide en un elemento propio (por ejemplo `<section class=\"slide\">`), fácil de editar a mano para cambiar textos.\n- Sin errores en la consola del navegador.\n- Al imprimir (`@media print`), ocultar los controles de navegación.\n\n## 7. Verificación antes de entregar\n\nAl final, entregame el archivo `index.html` completo y un resumen breve con:\n\n1. la lista de slides con el título de cada una;\n2. las decisiones de estilo que extrajiste de la imagen (paleta, tipografías, recursos gráficos);\n3. cómo se navega la presentación.\n"</script>
+<div class="toast" id="toast" role="status"></div>
+<script>
+  // export the original Markdown source as a local .md file
+  (function(){
+    const NAME="dg4-26-guia-promptear-slides.md";
+    const btn=document.getElementById("export"), toast=document.getElementById("toast");
+    const say=m=>{toast.textContent=m;toast.classList.add("on");clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove("on"),2600)};
+    btn.addEventListener("click",async()=>{
+      const src=JSON.parse(document.getElementById("md-source").textContent);
+      const blob=new Blob([src],{type:"text/markdown;charset=utf-8"});
+      if(window.showSaveFilePicker){
+        try{
+          const h=await showSaveFilePicker({suggestedName:NAME,types:[{description:"Markdown",accept:{"text/markdown":[".md"]}}]});
+          const w=await h.createWritable();await w.write(blob);await w.close();say("Archivo guardado");return;
+        }catch(e){if(e&&e.name==="AbortError")return;}
+      }
+      const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=NAME;
+      document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);say("Descarga iniciada");
+    });
+  })();
+</script>
+</body>
+</html>

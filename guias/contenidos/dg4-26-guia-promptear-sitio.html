@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Cómo generar un sitio web estático con IA?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f2eee3;
+    --ink:#1d3fb8;
+    --ink-2:#4563c9;
+    --ink-soft:rgba(29,63,184,.38);
+    --ink-faint:rgba(29,63,184,.14);
+    --ink-ghost:rgba(29,63,184,.07);
+    --bg:#d9d4c6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--bg)}
+  body{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--ink);-webkit-font-smoothing:antialiased;
+    padding:40px 24px 80px;line-height:1.6}
+  ::selection{background:var(--ink);color:var(--paper)}
+
+  /* ---------- sheet ---------- */
+  .sheet{position:relative;max-width:1180px;margin:0 auto;background:var(--paper);
+    box-shadow:0 30px 80px rgba(20,30,70,.16),0 2px 0 rgba(0,0,0,.04);padding:48px}
+  .sheet::before{ /* paper grain */
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55  0 0 0 0 .5  0 0 0 0 .4  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+  .frame{position:relative;border:1.5px solid var(--ink)}
+  .band{height:150px;border-bottom:1px solid var(--ink-soft);position:relative;
+    background-image:linear-gradient(var(--ink-faint) 1px,transparent 1px),linear-gradient(90deg,var(--ink-faint) 1px,transparent 1px);
+    background-size:40px 40px;background-position:-1px -1px}
+  .band.bottom{height:80px;border-bottom:0;border-top:1px solid var(--ink-soft)}
+  .h{position:absolute;width:11px;height:11px;background:var(--ink);transform:translate(-50%,-50%);z-index:2}
+  .md{position:relative;padding:56px 72px 72px}
+
+  .export{position:absolute;right:28px;top:50%;transform:translateY(-50%);z-index:3;display:inline-flex;align-items:center;gap:12px;
+    font-family:"Space Mono",monospace;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper);background:var(--ink);
+    border:1.5px solid var(--ink);padding:12px 18px;cursor:pointer;transition:background .2s,color .2s}
+  .export:hover{background:var(--paper);color:var(--ink)}
+  .export:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  .export .ic{font-size:18px;line-height:1}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);
+    font-family:"Space Mono",monospace;font-size:13px;letter-spacing:.06em;padding:10px 16px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:10}
+  .toast.on{opacity:1}
+  /* ---------- markdown typography ---------- */
+  .md > *:first-child{margin-top:0}
+  .md h1{font-size:96px;font-weight:500;line-height:.98;letter-spacing:-.035em;text-transform:uppercase;margin:0 0 48px}
+  .md h2{font-size:44px;font-weight:500;line-height:1.05;letter-spacing:-.025em;text-transform:uppercase;
+    margin:84px 0 28px;padding-top:26px;border-top:1.5px solid var(--ink);position:relative}
+  .md h2::before{content:"";position:absolute;left:0;top:-1px;width:11px;height:11px;background:var(--ink);transform:translate(-50%,-50%)}
+  .md h2::after{content:"";position:absolute;right:0;top:-1px;width:11px;height:11px;background:var(--ink);transform:translate(50%,-50%)}
+  .md h3{font-size:25px;font-weight:600;line-height:1.25;text-transform:uppercase;letter-spacing:.01em;margin:56px 0 18px}
+  .md p{font-size:19px;line-height:1.65;margin:0 0 20px;max-width:920px}
+  .md strong{font-weight:600}
+  .md em{font-style:italic}
+  .md a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--ink-soft);text-underline-offset:4px;text-decoration-thickness:1px;word-break:break-word}
+  .md a:hover{text-decoration-color:var(--ink);background:var(--ink-ghost)}
+  .md code{font-family:"IBM Plex Mono",monospace;background:var(--ink-ghost);border:1px solid var(--ink-faint);padding:0 5px;font-size:.92em}
+
+  /* blockquotes: boxed, like the slides' callouts */
+  .md blockquote{position:relative;border:1.5px solid var(--ink);background:var(--paper);padding:26px 32px;margin:30px 0 34px;max-width:960px}
+  .md blockquote::before,.md blockquote::after{content:"";position:absolute;bottom:0;width:11px;height:11px;background:var(--ink);transform:translateY(50%)}
+  .md blockquote::before{left:0;transform:translate(-50%,50%)}
+  .md blockquote::after{right:0;transform:translate(50%,50%)}
+  .md blockquote p{font-size:18px;margin:0}
+  .md blockquote p + p{margin-top:14px}
+  .md > blockquote:first-of-type{border-width:0 0 0 6px;padding:6px 0 6px 30px;background:none;margin:0 0 20px}
+  .md > blockquote:first-of-type::before,.md > blockquote:first-of-type::after{display:none}
+  .md > blockquote:first-of-type p{font-size:24px;line-height:1.5}
+
+  /* lists */
+  .md ul,.md ol{margin:0 0 22px;padding:0;max-width:920px;border-top:1.5px solid var(--ink)}
+  .md ul{list-style:none}
+  .md li{font-size:19px;line-height:1.6;padding:14px 0 14px 34px;border-bottom:1px solid var(--ink-soft);position:relative}
+  .md ul > li::before{content:"";position:absolute;left:4px;top:24px;width:10px;height:10px;background:var(--ink)}
+  .md ol{list-style:none;counter-reset:ol}
+  .md ol > li{counter-increment:ol}
+  .md ol > li::before{content:counter(ol,decimal-leading-zero);position:absolute;left:0;top:17px;font-family:"Space Mono",monospace;font-size:14px;letter-spacing:.06em;color:var(--ink)}
+  /* nested lists */
+  .md li ul,.md li ol{border-top:0;margin:6px 0 0}
+  .md li li{padding:5px 0 5px 26px;border-bottom:0;font-size:inherit}
+  .md li ul > li::before{left:4px;top:15px;width:7px;height:7px;background:var(--ink-soft)}
+  .md li ol > li::before{top:7px;font-size:12px}
+  .md li > p{margin:0}
+  .md h1 code,.md h2 code,.md h3 code,.md th code{text-transform:none}
+  /* code blocks */
+  .md pre{position:relative;margin:24px 0 30px;max-width:960px;border:1.5px solid var(--ink);background:var(--ink-ghost);padding:20px 24px;overflow-x:auto}
+  .md pre code{background:none;border:0;padding:0;font-size:15px;line-height:1.6;white-space:pre;display:block}
+
+  /* tables */
+  .table-wrap{overflow-x:auto;margin:28px 0 30px;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)}
+  .md table{border-collapse:collapse;width:100%;min-width:720px}
+  .md th{font-family:"Space Mono",monospace;font-weight:400;font-size:14px;letter-spacing:.12em;text-transform:uppercase;
+    padding:14px 18px;border-bottom:1.5px solid var(--ink);text-align:left;background:var(--ink-ghost)}
+  .md td{font-size:17px;line-height:1.55;padding:16px 18px;border-bottom:1px solid var(--ink-soft);vertical-align:top}
+  .md tr:last-child td{border-bottom:0}
+  .md th + th,.md td + td{border-left:1px solid var(--ink-soft)}
+  .md td:first-child,.md th:first-child{font-family:"Space Mono",monospace;width:56px;text-align:center}
+  .md td:nth-child(2){width:28%;text-transform:uppercase;font-size:16px}
+  .md tbody tr:hover td{background:var(--ink-ghost)}
+
+  .md hr{border:0;border-top:1.5px solid var(--ink);margin:48px 0}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    body{padding:16px 16px 48px}
+    .sheet{padding:16px}
+    .band{height:90px}
+    .export{right:12px;font-size:12px;padding:10px 12px}
+    .md{padding:36px 22px 48px}
+    .md h1{font-size:clamp(26px,8.4vw,46px);overflow-wrap:anywhere}
+    .md h2{font-size:28px;margin-top:60px}
+    .md h3{font-size:20px}
+    .md p,.md li{font-size:16px;overflow-wrap:anywhere}
+    .md > blockquote:first-of-type p{font-size:18px}
+    .md blockquote{padding:20px 20px}
+    .md blockquote p{font-size:16px}
+    .md td{font-size:15px}
+    .md pre code{font-size:13px}
+  }
+  @media print{
+    html,body{background:#fff;padding:0}
+    .sheet{box-shadow:none;padding:0}
+    .sheet::before{display:none}
+    .export,.toast{display:none}
+    .md h2{break-after:avoid}
+    .md blockquote,.md tr{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="frame">
+      <div class="band">
+        <button class="export" id="export" type="button"><span>Exportar como Markdown</span><span class="ic" aria-hidden="true">↓</span></button>
+        <span class="h" aria-hidden="true" style="left:0;top:100%"></span>
+        <span class="h" style="left:33.333%;top:100%"></span>
+        <span class="h" style="left:66.666%;top:100%"></span>
+        <span class="h" style="left:100%;top:100%"></span>
+      </div>
+      <main class="md">
+<h1>¿Cómo generar un sitio web estático con IA?</h1>
+<blockquote>
+<p>Cómo usarlo: adjuntá <strong>dos archivos</strong> junto con este prompt: (1) el archivo <strong>.md</strong> con los contenidos de la investigación y (2) una <strong>imagen de referencia</strong> para los estilos visuales. Copiá todo lo que está debajo de la línea y pegalo en Claude, ChatGPT, Antigravity u otro. El resultado es una <strong>primera versión</strong> del sitio, pensada para seguir iterando.</p>
+</blockquote>
+<hr />
+<p>Necesito que generes la <strong>versión inicial de un sitio web estático</strong> que publique los resultados de una investigación, a partir de los archivos adjuntos:</p>
+<ol>
+<li><strong>Un archivo Markdown (.md):</strong> es la fuente de <strong>todos los contenidos</strong> del sitio.</li>
+<li><strong>Una imagen de referencia:</strong> es la fuente de <strong>todos los estilos visuales</strong> del sitio.</li>
+</ol>
+<p>No busco un sitio terminado, sino una <strong>base sólida</strong>: la estructura de archivos, la navegación completa, las páginas iniciales con el contenido disponible y los estilos aplicados. En iteraciones siguientes voy a ir sumando y refinando contenidos e imágenes, así que el código tiene que ser fácil de ampliar.</p>
+<h2>1. Requisitos técnicos</h2>
+<ul>
+<li><strong>Sitio autocontenido e independiente (<em>standalone</em>):</strong> se abre <strong>haciendo doble clic en <code>index.html</code></strong> y se navega en el navegador, sin servidor, sin <em>deploy</em>, sin instalación, sin compilación ni ningún paso previo.</li>
+<li><strong>Solo HTML, CSS y JavaScript nativos.</strong> No usar librerías, frameworks ni CDNs (nada de React, Vue, Astro, Tailwind, Bootstrap, jQuery, generadores de sitios estáticos, etc.).</li>
+<li>Tiene que funcionar <strong>sin conexión a internet</strong>. Si usás una tipografía web, definí una alternativa del sistema (<code>font-family</code> con <em>fallback</em>) para que el sitio se vea bien aunque la fuente no cargue.</li>
+<li>Íconos y gráficos simples (como el ícono de menú): en <strong>SVG embebido</strong> o CSS, sin archivos externos.</li>
+</ul>
+<h3>Restricciones por abrirse como archivo local (<code>file://</code>)</h3>
+<p>Al abrirse con doble clic, las páginas corren bajo el protocolo <code>file://</code>, donde el navegador bloquea varias cosas. Por lo tanto:</p>
+<ul>
+<li><strong>No</strong> usar <code>fetch()</code> ni <code>XMLHttpRequest</code> para cargar contenidos, menús ni fragmentos de HTML. Cada página tiene que tener su contenido <strong>escrito en su propio HTML</strong>.</li>
+<li><strong>No</strong> usar módulos de JavaScript (<code>&lt;script type=&quot;module&quot;&gt;</code>, <code>import</code>/<code>export</code>). Los scripts se cargan con <code>&lt;script src=&quot;…&quot; defer&gt;</code> común.</li>
+<li><strong>No</strong> usar <code>history.pushState</code> ni <code>history.replaceState</code>.</li>
+<li>Sí se pueden usar, porque funcionan en <code>file://</code>:
+<ul>
+<li>enlaces relativos entre páginas HTML;</li>
+<li>una hoja de estilos compartida (<code>&lt;link rel=&quot;stylesheet&quot; href=&quot;…&quot;&gt;</code>);</li>
+<li>un JavaScript compartido (<code>&lt;script src=&quot;…&quot;&gt;</code>);</li>
+<li>imágenes con rutas relativas;</li>
+<li><code>IntersectionObserver</code>.</li>
+</ul>
+</li>
+<li><strong>Todas las rutas deben ser relativas</strong> (<code>capitulo-01.html</code>, <code>css/estilos.css</code>), nunca absolutas (<code>/capitulo-01.html</code>), porque las absolutas se rompen al abrir desde una carpeta local.</li>
+</ul>
+<h2>2. Estructura de archivos</h2>
+<p>Organizá el sitio con una estructura <strong>plana y simple</strong>: todas las páginas HTML en la raíz, para que las rutas relativas sean siempre las mismas.</p>
+<pre><code>sitio/
+├── index.html            ← portada
+├── capitulo-01.html      ← un archivo por capítulo
+├── capitulo-02.html
+├── capitulo-0N.html
+├── referencias.html      ← fuentes y bibliografía
+├── acerca.html           ← sobre el proyecto y el equipo
+├── css/
+│   └── estilos.css       ← todos los estilos del sitio
+├── js/
+│   └── nav.js            ← navegación compartida
+├── img/                  ← carpeta vacía para imágenes futuras
+└── README.md             ← cómo está armado el sitio y cómo ampliarlo
+</code></pre>
+<ul>
+<li><strong>Capítulos:</strong> la cantidad sale del .md. Se trata de una investigación breve, con <strong>pocos capítulos (entre 3 y 6 aproximadamente)</strong>. Usá los títulos <code>##</code> del .md (o la estructura equivalente que tenga) para definirlos. Si el .md no tiene una división clara, proponé una agrupación lógica de sus contenidos.</li>
+<li><strong><code>referencias.html</code> y <code>acerca.html</code>:</strong> creálos solo si el .md tiene contenido para ellos (fuentes, bibliografía, autores, equipo, contexto del proyecto). Si no lo tiene, creá igual las páginas con la estructura lista y el contenido marcado claramente como pendiente (ver punto 5).</li>
+<li>No agregues secciones que un informe breve no necesita: nada de blog, noticias, talleres, eventos, buscador ni formularios.</li>
+</ul>
+<h2>3. Navegación</h2>
+<h3>3.1 Patrón general</h3>
+<p>La navegación sigue el patrón de una <strong>guía o informe por capítulos</strong>:</p>
+<ul>
+<li>un <strong>menú lateral fijo a la izquierda</strong>, presente en todas las páginas;</li>
+<li>el contenido de cada página a la derecha;</li>
+<li>en las páginas de capítulo, herramientas para orientarse dentro de la página y para pasar al capítulo anterior o siguiente.</li>
+</ul>
+<h3>3.2 Menú lateral izquierdo (escritorio)</h3>
+<ul>
+<li><strong>Fijo</strong> (<em>sticky</em>) a la izquierda: queda visible al hacer <em>scroll</em> en el contenido. Si el menú es más alto que la ventana, tiene su propio <em>scroll</em>.</li>
+<li>Arriba, el <strong>título del sitio</strong> (o del informe), con un enlace a la portada.</li>
+<li>Debajo, la <strong>lista de páginas</strong> en este orden:
+<ol>
+<li><strong>Inicio</strong></li>
+<li><strong>Capítulos</strong>: un grupo con un subtítulo y la lista numerada de capítulos (<code>01 · Título</code>, <code>02 · Título</code>…)</li>
+<li><strong>Referencias</strong></li>
+<li><strong>Acerca del proyecto</strong></li>
+</ol>
+</li>
+<li><strong>Página actual destacada</strong> en el menú. Marcala también con <code>aria-current=&quot;page&quot;</code>.</li>
+<li><strong>Índice de la página (&quot;En esta página&quot;):</strong> en la página de un capítulo, debajo del capítulo activo en el menú, mostrá una sublista con las secciones internas del capítulo (los <code>###</code> del contenido), con enlaces de anclaje (<code>#seccion</code>).
+<ul>
+<li>Al hacer <em>scroll</em>, se resalta la sección que se está leyendo (<em>scrollspy</em> con <code>IntersectionObserver</code>).</li>
+<li>Al hacer clic, la página se desplaza suavemente a esa sección.</li>
+<li>Los títulos de sección necesitan un margen superior de anclaje (<code>scroll-margin-top</code>) para no quedar tapados.</li>
+</ul>
+</li>
+</ul>
+<h3>3.3 Navegación dentro de cada capítulo</h3>
+<ul>
+<li><strong>Migas de pan</strong> arriba del título: <code>Inicio › Capítulos › 02 · Título del capítulo</code>.</li>
+<li><strong>Indicador de capítulo</strong> junto al título: por ejemplo, &quot;Capítulo 2 de 5&quot;.</li>
+<li><strong>Navegación &quot;Anterior / Siguiente&quot;</strong> al final de cada capítulo, con el número y el título del capítulo de destino. El primer capítulo no tiene &quot;anterior&quot; (o enlaza a la portada) y el último no tiene &quot;siguiente&quot; (o enlaza a Referencias).</li>
+<li>Opcional: un enlace &quot;Volver arriba&quot; al final de los capítulos largos.</li>
+</ul>
+<h3>3.4 Portada (<code>index.html</code>)</h3>
+<ul>
+<li><strong>Presentación del informe:</strong> título, subtítulo o pregunta de investigación, y un párrafo introductorio, todo tomado del .md.</li>
+<li><strong>Índice visual de capítulos:</strong> una tarjeta o bloque por capítulo con número, título y una o dos líneas de resumen sacadas del .md, cada uno con enlace a su página.</li>
+<li><strong>Un enlace destacado para empezar a leer</strong> (al capítulo 1).</li>
+</ul>
+<h3>3.5 Diseño adaptable (<em>responsive</em>)</h3>
+<ul>
+<li><strong>Escritorio</strong> (a partir de unos 1024 px): menú lateral visible a la izquierda y contenido a la derecha, con un ancho de lectura cómodo (60-80 caracteres por línea).</li>
+<li><strong>Tablet y móvil</strong> (por debajo de ese ancho):
+<ul>
+<li>el menú lateral se oculta y aparece una <strong>barra superior</strong> con el título del sitio y un <strong>botón de menú con ícono de hamburguesa</strong> (☰);</li>
+<li>al tocarlo, el menú se abre como un <strong>panel lateral deslizable desde la izquierda</strong>, con una capa semitransparente sobre el contenido;</li>
+<li>el ícono cambia a una ✕ para cerrar;</li>
+<li>el panel muestra exactamente los mismos enlaces que el menú de escritorio, incluido el índice &quot;En esta página&quot;.</li>
+</ul>
+</li>
+<li>El panel móvil se cierra:
+<ul>
+<li>al tocar la ✕;</li>
+<li>al tocar la capa de fondo;</li>
+<li>al presionar Esc;</li>
+<li>al elegir un enlace.</li>
+</ul>
+</li>
+<li>Mientras el panel está abierto, el <em>scroll</em> del contenido de fondo queda bloqueado.</li>
+<li>Sin <em>scroll</em> horizontal en ningún ancho. Probar como mínimo a 375 px, 768 px, 1280 px y 1920 px.</li>
+</ul>
+<h3>3.6 Implementación de la navegación (una sola fuente)</h3>
+<p>Para que agregar o renombrar un capítulo sea simple, <strong>el menú tiene que definirse en un único lugar</strong>:</p>
+<ul>
+<li><code>js/nav.js</code> contiene un <strong>arreglo de configuración</strong> con las páginas del sitio (archivo, título, número de capítulo y una línea de resumen). Con esos datos genera en cada página:
+<ul>
+<li>el menú lateral;</li>
+<li>el panel móvil;</li>
+<li>las migas de pan;</li>
+<li>el indicador &quot;Capítulo N de M&quot;;</li>
+<li>los enlaces &quot;Anterior / Siguiente&quot;;</li>
+<li>el índice &quot;En esta página&quot;, a partir de los <code>&lt;h3&gt;</code> (o <code>&lt;h2&gt;</code>) con <code>id</code> del contenido.</li>
+</ul>
+</li>
+<li>Cada página HTML solo incluye contenedores vacíos con atributos o ids conocidos (por ejemplo <code>&lt;nav id=&quot;site-nav&quot;&gt;&lt;/nav&gt;</code>, <code>&lt;div id=&quot;breadcrumbs&quot;&gt;&lt;/div&gt;</code>, <code>&lt;nav id=&quot;pager&quot;&gt;&lt;/nav&gt;</code>) y carga <code>js/nav.js</code> con <code>&lt;script src=&quot;js/nav.js&quot; defer&gt;</code>.</li>
+<li><code>nav.js</code> detecta la página actual por el nombre del archivo (<code>location.pathname</code>), que funciona tanto en <code>file://</code> como en un servidor.</li>
+<li><strong>Respaldo sin JavaScript:</strong> incluí en cada página un enlace básico a <code>index.html</code> dentro de un <code>&lt;noscript&gt;</code>, para que nunca quede una página sin salida.</li>
+<li>Las tarjetas de capítulos de la portada pueden quedar escritas en el HTML o generarse desde el mismo arreglo; si se generan, mejor, para que haya una única fuente.</li>
+</ul>
+<h3>3.7 Accesibilidad de la navegación</h3>
+<ul>
+<li>Estructura semántica en todas las páginas:
+<ul>
+<li><code>&lt;header&gt;</code> para la barra móvil;</li>
+<li><code>&lt;nav aria-label=&quot;Navegación principal&quot;&gt;</code> para el menú lateral;</li>
+<li><code>&lt;main&gt;</code> para el contenido;</li>
+<li><code>&lt;footer&gt;</code> para el pie;</li>
+<li>un solo <code>&lt;h1&gt;</code> por página y jerarquía de títulos ordenada.</li>
+</ul>
+</li>
+<li>Un enlace &quot;<strong>Saltar al contenido</strong>&quot; al principio de cada página, visible al recibir el foco del teclado.</li>
+<li>Botón de hamburguesa como <code>&lt;button&gt;</code> real, con:
+<ul>
+<li><code>aria-label</code> (&quot;Abrir menú&quot; / &quot;Cerrar menú&quot;);</li>
+<li><code>aria-expanded</code>;</li>
+<li><code>aria-controls</code>.</li>
+</ul>
+</li>
+<li>Al abrir el panel, el foco pasa al primer enlace del menú. Al cerrarlo, vuelve al botón.</li>
+<li>Todo debe poder recorrerse con el teclado, y el foco tiene que ser siempre visible.</li>
+<li>Respetar <code>prefers-reduced-motion</code>: sin animaciones de deslizamiento ni <em>scroll</em> suave si el usuario lo pide.</li>
+</ul>
+<h2>4. Plantilla de página</h2>
+<p>Todas las páginas de capítulo comparten la <strong>misma estructura HTML</strong>, para que crear una nueva sea copiar un archivo y cambiar su contenido:</p>
+<pre><code>&lt;body&gt;
+  [enlace &quot;Saltar al contenido&quot;]
+  [barra superior móvil con título + botón hamburguesa]
+  [menú lateral / panel móvil (generado por nav.js)]
+  &lt;main&gt;
+    [migas de pan]
+    [indicador &quot;Capítulo N de M&quot;]
+    &lt;h1&gt;Título del capítulo&lt;/h1&gt;
+    [contenido: secciones con &lt;h2&gt;/&lt;h3&gt; con id, párrafos, listas, citas, tablas, figuras]
+    [navegación Anterior / Siguiente]
+  &lt;/main&gt;
+  [pie de página]
+&lt;/body&gt;
+</code></pre>
+<p>Dejá contemplados en el CSS los elementos que voy a usar al iterar, aunque todavía no estén en el contenido:</p>
+<ul>
+<li>títulos (<code>h1</code> a <code>h4</code>), párrafos, listas, citas destacadas (<code>blockquote</code>), tablas, código inline;</li>
+<li><strong>figuras con epígrafe</strong> (<code>&lt;figure&gt;</code> + <code>&lt;figcaption&gt;</code>), con imágenes adaptables (<code>max-width:100%</code>);</li>
+<li>notas o recuadros de aviso;</li>
+<li>enlaces externos, que se abren en una pestaña nueva (<code>target=&quot;_blank&quot; rel=&quot;noopener&quot;</code>).</li>
+</ul>
+<h2>5. Contenidos (archivo .md)</h2>
+<ul>
+<li><strong>Todo el contenido debe salir del .md adjunto.</strong> No inventes datos, resultados, conclusiones, autores, fechas ni referencias.</li>
+<li>Pasá el contenido del .md a HTML respetando su estructura y su formato: títulos, negritas, cursivas, listas, tablas, citas, enlaces y código.</li>
+<li>En esta primera versión <strong>podés trasladar el texto tal cual</strong>; no hace falta reescribirlo.</li>
+<li><strong>Contenido pendiente:</strong> si una página o sección de la estructura todavía no tiene contenido en el .md, dejala creada con su título y un bloque claramente identificado como pendiente. Por ejemplo, un recuadro con el texto <code>[Contenido pendiente: …]</code> que describa qué va ahí, con una clase CSS propia (<code>.pendiente</code>) para encontrarlo y reemplazarlo fácilmente después. No lo completes con texto inventado.</li>
+<li>Respetá el idioma y la ortografía del .md, incluidos tildes y signos de apertura (¿ ¡).</li>
+<li>Cada página debe tener su propio <code>&lt;title&gt;</code> (<code>Título de la página — Título del sitio</code>) y su <code>&lt;meta name=&quot;description&quot;&gt;</code> con una línea tomada del contenido.</li>
+</ul>
+<h2>6. Estilos visuales (imagen de referencia)</h2>
+<p>No te doy especificaciones de estilo: <strong>extraelas de la imagen de referencia adjunta y emulala.</strong> Analizá:</p>
+<ul>
+<li>la paleta de color;</li>
+<li>la tipografía (familia o estilo, pesos, mayúsculas, espaciado, jerarquía de tamaños);</li>
+<li>la retícula y la composición;</li>
+<li>los recursos gráficos (líneas, marcos, grillas, texturas, formas, íconos, ilustraciones);</li>
+<li>el tono general.</li>
+</ul>
+<p>Con eso:</p>
+<ul>
+<li>Definí el sistema visual como <strong>variables CSS</strong> (<code>:root</code>) al principio de <code>css/estilos.css</code>: colores, tipografías, escala de tamaños, espaciados, grosores de línea y anchos máximos. Así se puede ajustar todo el sitio desde un solo lugar.</li>
+<li>Aplicá el estilo de manera consistente a todos los componentes: menú lateral, panel móvil, botón de hamburguesa, migas de pan, tarjetas de la portada, contenido, navegación &quot;Anterior / Siguiente&quot;, recuadros de contenido pendiente y pie.</li>
+<li>Diseñá también los <strong>estados interactivos</strong> (<em>hover</em>, foco, página actual, sección activa del índice) con el mismo lenguaje visual.</li>
+<li><strong>Emulá el estilo, no copies la pieza:</strong> no reproduzcas los textos, logos ni elementos identificatorios de la imagen de referencia.</li>
+<li>Asegurá un <strong>contraste</strong> de lectura de, como mínimo, el nivel AA de WCAG.</li>
+</ul>
+<h2>7. Calidad del código y documentación</h2>
+<ul>
+<li>HTML semántico y válido, CSS ordenado por secciones comentadas (variables, base, estructura, navegación, contenido, componentes, adaptable, impresión) y JavaScript comentado.</li>
+<li>Sin errores en la consola del navegador.</li>
+<li>Estilos de impresión (<code>@media print</code>): ocultar el menú, el botón de hamburguesa y la navegación &quot;Anterior / Siguiente&quot;, y dejar solo el contenido.</li>
+<li><strong><code>README.md</code></strong> del sitio, breve, que explique:
+<ul>
+<li>la estructura de archivos;</li>
+<li><strong>cómo agregar un capítulo nuevo</strong> (copiar la plantilla y sumar la entrada en el arreglo de <code>nav.js</code>);</li>
+<li>dónde se definen las variables de estilo;</li>
+<li>cómo encontrar los bloques de contenido pendiente;</li>
+<li>que el sitio se abre con doble clic en <code>index.html</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>8. Verificación antes de entregar</h2>
+<p>Al final, entregame <strong>el contenido completo de cada archivo</strong>, cada uno con su ruta, y un resumen breve con:</p>
+<ol>
+<li>el mapa del sitio (páginas y capítulos, con su archivo);</li>
+<li>las decisiones de estilo que extrajiste de la imagen (paleta, tipografías, recursos gráficos);</li>
+<li>qué contenido quedó marcado como pendiente;</li>
+<li>cómo agregar un capítulo nuevo.</li>
+</ol>
+
+      </main>
+      <div class="band bottom" aria-hidden="true">
+        <span class="h" style="left:0;top:0"></span>
+        <span class="h" style="left:100%;top:0"></span>
+      </div>
+    </div>
+  </div>
+<script>
+  // wrap tables so they scroll horizontally on narrow screens
+  document.querySelectorAll(".md table").forEach(t=>{const w=document.createElement("div");w.className="table-wrap";t.parentNode.insertBefore(w,t);w.appendChild(t);});
+</script>
+<script type="application/json" id="md-source">"# ¿Cómo generar un sitio web estático con IA?\n\n> Cómo usarlo: adjuntá **dos archivos** junto con este prompt: (1) el archivo **.md** con los contenidos de la investigación y (2) una **imagen de referencia** para los estilos visuales. Copiá todo lo que está debajo de la línea y pegalo en Claude, ChatGPT, Antigravity u otro. El resultado es una **primera versión** del sitio, pensada para seguir iterando.\n\n---\n\nNecesito que generes la **versión inicial de un sitio web estático** que publique los resultados de una investigación, a partir de los archivos adjuntos:\n\n1. **Un archivo Markdown (.md):** es la fuente de **todos los contenidos** del sitio.\n2. **Una imagen de referencia:** es la fuente de **todos los estilos visuales** del sitio.\n\nNo busco un sitio terminado, sino una **base sólida**: la estructura de archivos, la navegación completa, las páginas iniciales con el contenido disponible y los estilos aplicados. En iteraciones siguientes voy a ir sumando y refinando contenidos e imágenes, así que el código tiene que ser fácil de ampliar.\n\n## 1. Requisitos técnicos\n\n- **Sitio autocontenido e independiente (*standalone*):** se abre **haciendo doble clic en `index.html`** y se navega en el navegador, sin servidor, sin *deploy*, sin instalación, sin compilación ni ningún paso previo.\n- **Solo HTML, CSS y JavaScript nativos.** No usar librerías, frameworks ni CDNs (nada de React, Vue, Astro, Tailwind, Bootstrap, jQuery, generadores de sitios estáticos, etc.).\n- Tiene que funcionar **sin conexión a internet**. Si usás una tipografía web, definí una alternativa del sistema (`font-family` con *fallback*) para que el sitio se vea bien aunque la fuente no cargue.\n- Íconos y gráficos simples (como el ícono de menú): en **SVG embebido** o CSS, sin archivos externos.\n\n### Restricciones por abrirse como archivo local (`file://`)\n\nAl abrirse con doble clic, las páginas corren bajo el protocolo `file://`, donde el navegador bloquea varias cosas. Por lo tanto:\n\n- **No** usar `fetch()` ni `XMLHttpRequest` para cargar contenidos, menús ni fragmentos de HTML. Cada página tiene que tener su contenido **escrito en su propio HTML**.\n- **No** usar módulos de JavaScript (`<script type=\"module\">`, `import`/`export`). Los scripts se cargan con `<script src=\"…\" defer>` común.\n- **No** usar `history.pushState` ni `history.replaceState`.\n- Sí se pueden usar, porque funcionan en `file://`:\n  - enlaces relativos entre páginas HTML;\n  - una hoja de estilos compartida (`<link rel=\"stylesheet\" href=\"…\">`);\n  - un JavaScript compartido (`<script src=\"…\">`);\n  - imágenes con rutas relativas;\n  - `IntersectionObserver`.\n- **Todas las rutas deben ser relativas** (`capitulo-01.html`, `css/estilos.css`), nunca absolutas (`/capitulo-01.html`), porque las absolutas se rompen al abrir desde una carpeta local.\n\n## 2. Estructura de archivos\n\nOrganizá el sitio con una estructura **plana y simple**: todas las páginas HTML en la raíz, para que las rutas relativas sean siempre las mismas.\n\n```\nsitio/\n├── index.html            ← portada\n├── capitulo-01.html      ← un archivo por capítulo\n├── capitulo-02.html\n├── capitulo-0N.html\n├── referencias.html      ← fuentes y bibliografía\n├── acerca.html           ← sobre el proyecto y el equipo\n├── css/\n│   └── estilos.css       ← todos los estilos del sitio\n├── js/\n│   └── nav.js            ← navegación compartida\n├── img/                  ← carpeta vacía para imágenes futuras\n└── README.md             ← cómo está armado el sitio y cómo ampliarlo\n```\n\n- **Capítulos:** la cantidad sale del .md. Se trata de una investigación breve, con **pocos capítulos (entre 3 y 6 aproximadamente)**. Usá los títulos `##` del .md (o la estructura equivalente que tenga) para definirlos. Si el .md no tiene una división clara, proponé una agrupación lógica de sus contenidos.\n- **`referencias.html` y `acerca.html`:** creálos solo si el .md tiene contenido para ellos (fuentes, bibliografía, autores, equipo, contexto del proyecto). Si no lo tiene, creá igual las páginas con la estructura lista y el contenido marcado claramente como pendiente (ver punto 5).\n- No agregues secciones que un informe breve no necesita: nada de blog, noticias, talleres, eventos, buscador ni formularios.\n\n## 3. Navegación\n\n### 3.1 Patrón general\n\nLa navegación sigue el patrón de una **guía o informe por capítulos**:\n\n- un **menú lateral fijo a la izquierda**, presente en todas las páginas;\n- el contenido de cada página a la derecha;\n- en las páginas de capítulo, herramientas para orientarse dentro de la página y para pasar al capítulo anterior o siguiente.\n\n### 3.2 Menú lateral izquierdo (escritorio)\n\n- **Fijo** (*sticky*) a la izquierda: queda visible al hacer *scroll* en el contenido. Si el menú es más alto que la ventana, tiene su propio *scroll*.\n- Arriba, el **título del sitio** (o del informe), con un enlace a la portada.\n- Debajo, la **lista de páginas** en este orden:\n  1. **Inicio**\n  2. **Capítulos**: un grupo con un subtítulo y la lista numerada de capítulos (`01 · Título`, `02 · Título`…)\n  3. **Referencias**\n  4. **Acerca del proyecto**\n- **Página actual destacada** en el menú. Marcala también con `aria-current=\"page\"`.\n- **Índice de la página (\"En esta página\"):** en la página de un capítulo, debajo del capítulo activo en el menú, mostrá una sublista con las secciones internas del capítulo (los `###` del contenido), con enlaces de anclaje (`#seccion`).\n  - Al hacer *scroll*, se resalta la sección que se está leyendo (*scrollspy* con `IntersectionObserver`).\n  - Al hacer clic, la página se desplaza suavemente a esa sección.\n  - Los títulos de sección necesitan un margen superior de anclaje (`scroll-margin-top`) para no quedar tapados.\n\n### 3.3 Navegación dentro de cada capítulo\n\n- **Migas de pan** arriba del título: `Inicio › Capítulos › 02 · Título del capítulo`.\n- **Indicador de capítulo** junto al título: por ejemplo, \"Capítulo 2 de 5\".\n- **Navegación \"Anterior / Siguiente\"** al final de cada capítulo, con el número y el título del capítulo de destino. El primer capítulo no tiene \"anterior\" (o enlaza a la portada) y el último no tiene \"siguiente\" (o enlaza a Referencias).\n- Opcional: un enlace \"Volver arriba\" al final de los capítulos largos.\n\n### 3.4 Portada (`index.html`)\n\n- **Presentación del informe:** título, subtítulo o pregunta de investigación, y un párrafo introductorio, todo tomado del .md.\n- **Índice visual de capítulos:** una tarjeta o bloque por capítulo con número, título y una o dos líneas de resumen sacadas del .md, cada uno con enlace a su página.\n- **Un enlace destacado para empezar a leer** (al capítulo 1).\n\n### 3.5 Diseño adaptable (*responsive*)\n\n- **Escritorio** (a partir de unos 1024 px): menú lateral visible a la izquierda y contenido a la derecha, con un ancho de lectura cómodo (60-80 caracteres por línea).\n- **Tablet y móvil** (por debajo de ese ancho):\n  - el menú lateral se oculta y aparece una **barra superior** con el título del sitio y un **botón de menú con ícono de hamburguesa** (☰);\n  - al tocarlo, el menú se abre como un **panel lateral deslizable desde la izquierda**, con una capa semitransparente sobre el contenido;\n  - el ícono cambia a una ✕ para cerrar;\n  - el panel muestra exactamente los mismos enlaces que el menú de escritorio, incluido el índice \"En esta página\".\n- El panel móvil se cierra:\n  - al tocar la ✕;\n  - al tocar la capa de fondo;\n  - al presionar Esc;\n  - al elegir un enlace.\n- Mientras el panel está abierto, el *scroll* del contenido de fondo queda bloqueado.\n- Sin *scroll* horizontal en ningún ancho. Probar como mínimo a 375 px, 768 px, 1280 px y 1920 px.\n\n### 3.6 Implementación de la navegación (una sola fuente)\n\nPara que agregar o renombrar un capítulo sea simple, **el menú tiene que definirse en un único lugar**:\n\n- `js/nav.js` contiene un **arreglo de configuración** con las páginas del sitio (archivo, título, número de capítulo y una línea de resumen). Con esos datos genera en cada página:\n  - el menú lateral;\n  - el panel móvil;\n  - las migas de pan;\n  - el indicador \"Capítulo N de M\";\n  - los enlaces \"Anterior / Siguiente\";\n  - el índice \"En esta página\", a partir de los `<h3>` (o `<h2>`) con `id` del contenido.\n- Cada página HTML solo incluye contenedores vacíos con atributos o ids conocidos (por ejemplo `<nav id=\"site-nav\"><\/nav>`, `<div id=\"breadcrumbs\"><\/div>`, `<nav id=\"pager\"><\/nav>`) y carga `js/nav.js` con `<script src=\"js/nav.js\" defer>`.\n- `nav.js` detecta la página actual por el nombre del archivo (`location.pathname`), que funciona tanto en `file://` como en un servidor.\n- **Respaldo sin JavaScript:** incluí en cada página un enlace básico a `index.html` dentro de un `<noscript>`, para que nunca quede una página sin salida.\n- Las tarjetas de capítulos de la portada pueden quedar escritas en el HTML o generarse desde el mismo arreglo; si se generan, mejor, para que haya una única fuente.\n\n### 3.7 Accesibilidad de la navegación\n\n- Estructura semántica en todas las páginas:\n  - `<header>` para la barra móvil;\n  - `<nav aria-label=\"Navegación principal\">` para el menú lateral;\n  - `<main>` para el contenido;\n  - `<footer>` para el pie;\n  - un solo `<h1>` por página y jerarquía de títulos ordenada.\n- Un enlace \"**Saltar al contenido**\" al principio de cada página, visible al recibir el foco del teclado.\n- Botón de hamburguesa como `<button>` real, con:\n  - `aria-label` (\"Abrir menú\" / \"Cerrar menú\");\n  - `aria-expanded`;\n  - `aria-controls`.\n- Al abrir el panel, el foco pasa al primer enlace del menú. Al cerrarlo, vuelve al botón.\n- Todo debe poder recorrerse con el teclado, y el foco tiene que ser siempre visible.\n- Respetar `prefers-reduced-motion`: sin animaciones de deslizamiento ni *scroll* suave si el usuario lo pide.\n\n## 4. Plantilla de página\n\nTodas las páginas de capítulo comparten la **misma estructura HTML**, para que crear una nueva sea copiar un archivo y cambiar su contenido:\n\n```\n<body>\n  [enlace \"Saltar al contenido\"]\n  [barra superior móvil con título + botón hamburguesa]\n  [menú lateral / panel móvil (generado por nav.js)]\n  <main>\n    [migas de pan]\n    [indicador \"Capítulo N de M\"]\n    <h1>Título del capítulo<\/h1>\n    [contenido: secciones con <h2>/<h3> con id, párrafos, listas, citas, tablas, figuras]\n    [navegación Anterior / Siguiente]\n  <\/main>\n  [pie de página]\n<\/body>\n```\n\nDejá contemplados en el CSS los elementos que voy a usar al iterar, aunque todavía no estén en el contenido:\n\n- títulos (`h1` a `h4`), párrafos, listas, citas destacadas (`blockquote`), tablas, código inline;\n- **figuras con epígrafe** (`<figure>` + `<figcaption>`), con imágenes adaptables (`max-width:100%`);\n- notas o recuadros de aviso;\n- enlaces externos, que se abren en una pestaña nueva (`target=\"_blank\" rel=\"noopener\"`).\n\n## 5. Contenidos (archivo .md)\n\n- **Todo el contenido debe salir del .md adjunto.** No inventes datos, resultados, conclusiones, autores, fechas ni referencias.\n- Pasá el contenido del .md a HTML respetando su estructura y su formato: títulos, negritas, cursivas, listas, tablas, citas, enlaces y código.\n- En esta primera versión **podés trasladar el texto tal cual**; no hace falta reescribirlo.\n- **Contenido pendiente:** si una página o sección de la estructura todavía no tiene contenido en el .md, dejala creada con su título y un bloque claramente identificado como pendiente. Por ejemplo, un recuadro con el texto `[Contenido pendiente: …]` que describa qué va ahí, con una clase CSS propia (`.pendiente`) para encontrarlo y reemplazarlo fácilmente después. No lo completes con texto inventado.\n- Respetá el idioma y la ortografía del .md, incluidos tildes y signos de apertura (¿ ¡).\n- Cada página debe tener su propio `<title>` (`Título de la página — Título del sitio`) y su `<meta name=\"description\">` con una línea tomada del contenido.\n\n## 6. Estilos visuales (imagen de referencia)\n\nNo te doy especificaciones de estilo: **extraelas de la imagen de referencia adjunta y emulala.** Analizá:\n\n- la paleta de color;\n- la tipografía (familia o estilo, pesos, mayúsculas, espaciado, jerarquía de tamaños);\n- la retícula y la composición;\n- los recursos gráficos (líneas, marcos, grillas, texturas, formas, íconos, ilustraciones);\n- el tono general.\n\nCon eso:\n\n- Definí el sistema visual como **variables CSS** (`:root`) al principio de `css/estilos.css`: colores, tipografías, escala de tamaños, espaciados, grosores de línea y anchos máximos. Así se puede ajustar todo el sitio desde un solo lugar.\n- Aplicá el estilo de manera consistente a todos los componentes: menú lateral, panel móvil, botón de hamburguesa, migas de pan, tarjetas de la portada, contenido, navegación \"Anterior / Siguiente\", recuadros de contenido pendiente y pie.\n- Diseñá también los **estados interactivos** (*hover*, foco, página actual, sección activa del índice) con el mismo lenguaje visual.\n- **Emulá el estilo, no copies la pieza:** no reproduzcas los textos, logos ni elementos identificatorios de la imagen de referencia.\n- Asegurá un **contraste** de lectura de, como mínimo, el nivel AA de WCAG.\n\n## 7. Calidad del código y documentación\n\n- HTML semántico y válido, CSS ordenado por secciones comentadas (variables, base, estructura, navegación, contenido, componentes, adaptable, impresión) y JavaScript comentado.\n- Sin errores en la consola del navegador.\n- Estilos de impresión (`@media print`): ocultar el menú, el botón de hamburguesa y la navegación \"Anterior / Siguiente\", y dejar solo el contenido.\n- **`README.md`** del sitio, breve, que explique:\n  - la estructura de archivos;\n  - **cómo agregar un capítulo nuevo** (copiar la plantilla y sumar la entrada en el arreglo de `nav.js`);\n  - dónde se definen las variables de estilo;\n  - cómo encontrar los bloques de contenido pendiente;\n  - que el sitio se abre con doble clic en `index.html`.\n\n## 8. Verificación antes de entregar\n\nAl final, entregame **el contenido completo de cada archivo**, cada uno con su ruta, y un resumen breve con:\n\n1. el mapa del sitio (páginas y capítulos, con su archivo);\n2. las decisiones de estilo que extrajiste de la imagen (paleta, tipografías, recursos gráficos);\n3. qué contenido quedó marcado como pendiente;\n4. cómo agregar un capítulo nuevo.\n"</script>
+<div class="toast" id="toast" role="status"></div>
+<script>
+  // export the original Markdown source as a local .md file
+  (function(){
+    const NAME="dg4-26-guia-promptear-sitio.md";
+    const btn=document.getElementById("export"), toast=document.getElementById("toast");
+    const say=m=>{toast.textContent=m;toast.classList.add("on");clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove("on"),2600)};
+    btn.addEventListener("click",async()=>{
+      const src=JSON.parse(document.getElementById("md-source").textContent);
+      const blob=new Blob([src],{type:"text/markdown;charset=utf-8"});
+      if(window.showSaveFilePicker){
+        try{
+          const h=await showSaveFilePicker({suggestedName:NAME,types:[{description:"Markdown",accept:{"text/markdown":[".md"]}}]});
+          const w=await h.createWritable();await w.write(blob);await w.close();say("Archivo guardado");return;
+        }catch(e){if(e&&e.name==="AbortError")return;}
+      }
+      const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=NAME;
+      document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);say("Descarga iniciada");
+    });
+  })();
+</script>
+</body>
+</html>

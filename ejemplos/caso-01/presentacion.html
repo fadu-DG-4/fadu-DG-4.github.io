@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presentación — Árboles nativos de la Argentina</title>
+<meta name="description" content="Presentación del informe sobre árboles autóctonos de la Argentina.">
+<!-- Estilos compartidos con el sitio: variables, tipografías, recursos gráficos y composiciones collage -->
+<link rel="stylesheet" href="css/estilos.css">
+<style>
+/* =====================================================================
+   Estilos propios de la presentación
+   (las variables de color, tipografía y los componentes vienen de css/estilos.css)
+   ===================================================================== */
+
+/* ---------- 1. Escenario 16:9 ---------- */
+html, body { height: 100%; overflow: hidden; }
+html { background: var(--frame); }
+body { padding: 0; background: var(--frame); min-height: 0; }
+body::after { display: none; }
+#stage {
+  position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px;
+  transform-origin: center center;
+  background: var(--paper) var(--grain);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.04);
+  overflow: hidden;
+}
+.slide {
+  position: absolute; inset: 0; padding: 56px 80px 72px;
+  opacity: 0; visibility: hidden; transition: opacity .4s ease, visibility 0s linear .4s;
+}
+.slide.active { opacity: 1; visibility: visible; transition: opacity .4s ease; }
+
+/* reseteo de los estilos de contenido del sitio dentro de las slides */
+.slide :is(h1, h2, h3) { margin: 0; padding: 0; border: 0; scroll-margin: 0; }
+.slide h1::first-letter { font: inherit; color: inherit; }
+.slide p { margin: 0; }
+.slide ul, .slide ol { margin: 0; padding: 0; list-style: none; }
+
+/* ---------- 2. Piezas comunes ---------- */
+.s-hdr {
+  display: flex; justify-content: space-between; padding-bottom: 18px; margin-bottom: 44px;
+  border-bottom: var(--line-heavy) solid var(--ink);
+  font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em;
+}
+.s-title { font-size: 104px; font-weight: 900; text-transform: uppercase; letter-spacing: -.05em; line-height: .88; max-width: 1500px; }
+.s-k { display: inline-block; font-size: 18px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; color: var(--olive-ink); }
+.s-note { position: absolute; left: 80px; right: 80px; bottom: 72px; padding-top: 22px; border-top: var(--line-bold) solid var(--ink); font-size: 30px; line-height: 1.35; max-width: 1500px; }
+.slide .stars svg { width: 26px; height: 26px; }
+.slide .crosshair { width: 96px; height: 96px; }
+
+/* ---------- 3. Slides ---------- */
+/* 01 portada */
+.s-cover { position: relative; height: 640px; }
+.s-cover__meta { display: flex; justify-content: space-between; align-items: flex-start; font-size: 22px; font-weight: 900; text-transform: uppercase; line-height: 1.1; }
+.s-cover__title { font-size: 214px; font-weight: 900; text-transform: uppercase; letter-spacing: -.06em; line-height: .82; margin-top: 10px; }
+.s-cover__title .line { display: block; }
+.s-cover__title .line--indent { padding-left: 13%; }
+.s-cover__title .small { display: inline-block; font-size: .36em; letter-spacing: -.02em; vertical-align: .9em; margin-right: .2em; }
+.s-cover__title .sw { letter-spacing: -.02em; }
+.s-cover__foot { position: absolute; right: 0; bottom: -64px; font-size: 20px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
+.s-cover__campo { position: absolute; left: 0; right: 0; bottom: 0; height: 300px; margin: 0; }
+
+/* 02 pregunta */
+.s-q { display: grid; grid-template-columns: 1.55fr 1fr; gap: 110px; align-items: end; height: 660px; margin-top: 30px; }
+.s-q blockquote { margin: 0; font-size: 74px; line-height: 1.12; padding-left: 44px; border-left-width: 10px; }
+.s-q__side { font-size: 27px; line-height: 1.4; display: grid; gap: 26px; padding-bottom: 12px; }
+.s-q__side p:first-of-type { font-size: 22px; font-weight: 800; text-transform: uppercase; line-height: 1.3; }
+
+/* 03 definiciones */
+.s-cols3 { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 44px; border-top: var(--line-heavy) solid var(--ink); }
+.s-cols3 article { padding: 26px 40px 34px 0; display: grid; gap: 12px; align-content: start; }
+.s-cols3 article + article { padding-left: 40px; border-left: var(--line-bold) solid var(--ink); }
+.s-cols3 h3 { font-size: 42px; font-weight: 900; text-transform: uppercase; letter-spacing: -.04em; line-height: .95; }
+.s-cols3 p { font-size: 24px; line-height: 1.35; }
+.s-cols3 .s-ico { width: 100%; height: 230px; margin-bottom: 6px; }
+.s-cols3 .is-dark { background: var(--ink); color: var(--paper); padding-right: 40px; }
+.s-cols3 article:first-child { padding-left: 0; }
+.s-cols3 .is-dark h3, .s-cols3 .is-dark .s-k { color: var(--paper); }
+
+/* 04 y 08 collage */
+.s-split { display: grid; grid-template-columns: 440px 1fr; gap: 56px; align-items: center; height: 860px; }
+.s-list { display: grid; gap: 0; border-top: var(--line-heavy) solid var(--ink); }
+.s-list li { position: relative; padding: 22px 0 22px 44px; border-bottom: var(--line) solid rgba(20,20,20,.25); font-size: 28px; line-height: 1.32; }
+.s-list li::before { content: ""; position: absolute; left: 4px; top: 32px; width: 22px; height: 22px; background: var(--olive);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
+.s-collage .collage { margin: 0; }
+.s-collage .collage__text { font-size: 17px; }
+.s-ceibo { display: grid; grid-template-columns: 380px 1fr; gap: 50px; align-items: center; height: 860px; }
+.s-ceibo__txt { display: grid; gap: 22px; font-size: 27px; line-height: 1.35; }
+.s-ceibo__txt h2 { font-size: 110px; font-weight: 900; text-transform: uppercase; letter-spacing: -.05em; line-height: .85; }
+.s-sci { font-family: var(--font-serif); font-style: italic; font-size: 34px; color: var(--olive-ink); }
+.s-big { font-size: 120px; line-height: .9; margin-top: 10px !important; }
+.s-mi { font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
+.s-collage .collage__note { font-size: 15px; }
+
+/* 05 regiones */
+.s-cols5 { display: grid; grid-template-columns: repeat(5, 1fr); margin-top: 56px; border-top: var(--line-heavy) solid var(--ink); border-bottom: var(--line-bold) solid var(--ink); }
+.s-cols5 article { padding: 26px 24px 34px; display: grid; gap: 14px; align-content: start; min-height: 360px; }
+.s-cols5 article + article { border-left: var(--line-bold) solid var(--ink); }
+.s-cols5 h3 { font-size: 38px; font-weight: 900; text-transform: uppercase; letter-spacing: -.035em; line-height: .95; min-height: 74px; }
+.s-amb { font-size: 25px; line-height: 1.3; color: var(--ink-2); }
+.s-sp { font-size: 26px; font-weight: 900; text-transform: uppercase; letter-spacing: -.01em; margin-top: auto !important; padding-top: 18px; border-top: var(--line) solid var(--ink); }
+
+/* 06 diagrama */
+.s-diagram { height: 860px; display: grid; place-items: center; }
+.s-diagram .diagrama { width: 1760px; height: auto; min-width: 0; }
+
+/* 07 pampeana */
+.s-pampa { position: relative; height: 860px; }
+.s-macro { position: absolute; left: -10px; top: 10px; font-size: 250px; font-weight: 900; text-transform: uppercase; letter-spacing: -.07em; line-height: .8; color: var(--ink); }
+.s-pampa__txt { position: absolute; left: 0; bottom: 30px; width: 860px; display: grid; gap: 18px; font-size: 27px; line-height: 1.35; }
+.s-pampa__txt h2 { font-size: 54px; font-weight: 900; text-transform: uppercase; letter-spacing: -.04em; line-height: .95; }
+.s-pampa__nota { position: absolute; right: 0; bottom: 30px; width: 760px; margin: 0; font-size: 24px; line-height: 1.4; padding: 24px 30px; }
+.s-ico--pampa { position: absolute; right: 0; top: 230px; width: 860px; height: auto; }
+.s-ico-t { font: italic 400 30px var(--font-serif); fill: var(--olive-ink); }
+.s-ico-t--s { font: 900 13px var(--font-sans); font-style: normal; letter-spacing: .08em; fill: var(--ink); }
+
+/* 09 lapacho y algarrobo */
+.s-duo { display: grid; grid-template-columns: 1fr 1fr; height: 780px; border-top: var(--line-heavy) solid var(--ink); }
+.s-duo article { padding: 26px 56px 0 0; display: grid; gap: 22px; align-content: start; font-size: 29px; line-height: 1.38; }
+.s-duo article + article { padding-left: 56px; border-left: var(--line-bold) solid var(--ink); }
+.s-macro2 { font-size: 158px; font-weight: 900; text-transform: uppercase; letter-spacing: -.06em; line-height: .82; }
+.s-duo h3 { font-size: 30px; font-weight: 900; text-transform: uppercase; letter-spacing: .02em; color: var(--olive-ink); }
+.s-tag { position: absolute; right: 80px; bottom: 72px; background: var(--ink); color: var(--paper); padding: 8px 16px; font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em; }
+
+/* 10 hallazgos */
+.s-find { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 50px; border-top: var(--line-heavy) solid var(--ink); }
+.s-find li { padding: 26px 46px 0 0; display: grid; gap: 16px; align-content: start; }
+.s-find .s-ico { width: 100%; height: 200px; margin-bottom: 6px; }
+.s-find li + li { padding-left: 46px; border-left: var(--line-bold) solid var(--ink); }
+.s-num { font-size: 130px; font-weight: 900; letter-spacing: -.07em; line-height: .8; }
+.s-find p { font-size: 30px; line-height: 1.3; font-weight: 700; }
+
+/* 11 preguntas */
+.s-open { position: relative; height: 860px; }
+.s-open__q { font-size: 96px; font-weight: 900; text-transform: uppercase; letter-spacing: -.05em; line-height: .9; max-width: 1560px; }
+.s-open__q--2 { margin-top: 56px !important; padding-left: 240px; }
+.s-open__q .sw { font-size: 1.1em; }
+.s-open__foot { position: absolute; left: 0; bottom: 0; width: 900px; display: grid; gap: 18px; font-size: 28px; line-height: 1.38; padding-top: 22px; border-top: var(--line-bold) solid var(--ink); }
+
+/* 12 cierre */
+.s-end { position: relative; height: 952px; }
+.s-end__top { display: flex; justify-content: space-between; align-items: flex-start; }
+.s-ico--end { position: absolute; right: 0; top: 70px; width: 580px; height: auto; }
+.s-end__title { font-size: 250px; font-weight: 900; text-transform: uppercase; letter-spacing: -.065em; line-height: .8; margin-top: 10px !important; }
+.s-end__cols { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: 1fr 1fr; border-top: var(--line-heavy) solid var(--ink); }
+.s-end__cols > div { padding: 26px 50px 0 0; display: grid; gap: 14px; align-content: start; font-size: 25px; line-height: 1.4; }
+.s-end__cols > div + div { padding-left: 50px; border-left: var(--line-bold) solid var(--ink); }
+.s-end__cta { margin-top: 14px; font-size: 22px; justify-self: start; }
+
+/* ---------- 4. Navegación ---------- */
+#progress { position: fixed; left: 0; top: 0; height: 4px; background: var(--olive); z-index: 100; transition: width .4s; }
+#nav {
+  position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 100;
+  display: flex; align-items: center; gap: 6px; padding: 6px 8px;
+  background: var(--paper); border: var(--line-bold) solid var(--ink); color: var(--ink);
+  font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em;
+  opacity: 0; transition: opacity .3s;
+}
+body:hover #nav, #nav:focus-within { opacity: 1; }
+@media (hover: none) { #nav { opacity: 1; } }
+#nav button { appearance: none; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 4px 10px; }
+#nav button:hover { background: var(--ink); color: var(--paper); }
+#nav .dots { display: flex; gap: 5px; padding: 0 4px; }
+#nav .dots button { width: 10px; height: 10px; padding: 0; border: 1.5px solid var(--ink); }
+#nav .dots button[aria-current="true"] { background: var(--ink); }
+@media print { #nav, #progress { display: none; } }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+<main id="stage" aria-roledescription="presentación">
+<section class="slide active" data-title="Portada" aria-label="1 de 10: Portada">
+  <div class="s-cover">
+    <div class="s-cover__meta"><svg class="crosshair" viewBox="0 0 60 60" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="30" cy="30" r="26"/><line x1="30" y1="2" x2="30" y2="58"/><line x1="2" y1="30" x2="58" y2="30"/><line x1="10" y1="27" x2="10" y2="33"/><line x1="27" y1="10" x2="33" y2="10"/><line x1="15" y1="27" x2="15" y2="33"/><line x1="27" y1="15" x2="33" y2="15"/><line x1="20" y1="27" x2="20" y2="33"/><line x1="27" y1="20" x2="33" y2="20"/><line x1="25" y1="27" x2="25" y2="33"/><line x1="27" y1="25" x2="33" y2="25"/><line x1="35" y1="27" x2="35" y2="33"/><line x1="27" y1="35" x2="33" y2="35"/><line x1="40" y1="27" x2="40" y2="33"/><line x1="27" y1="40" x2="33" y2="40"/><line x1="45" y1="27" x2="45" y2="33"/><line x1="27" y1="45" x2="33" y2="45"/><line x1="50" y1="27" x2="50" y2="33"/><line x1="27" y1="50" x2="33" y2="50"/></svg><span>Informe de<br>investigación</span><span class="stars" aria-hidden="true"><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg></span></div>
+    <h1 class="s-cover__title">
+      <span class="line">Árb<span class="sw">o</span>les</span>
+      <span class="line line--indent">nativos</span>
+      <span class="line"><span class="small">de la</span>Arge<span class="sw">n</span>tina</span>
+    </h1>
+    <p class="s-cover__foot">Diseño Gráfico 4 · Cátedra Meygide-Carpintero · FADU-UBA · 2026</p>
+  </div>
+  <div class="campo s-cover__campo" aria-hidden="true"></div>
+</section>
+<section class="slide" data-title="Pregunta de investigación" aria-label="2 de 10: Pregunta de investigación"><header class="s-hdr"><span>[02] &nbsp;Pregunta de investigación</span><span>Árboles nativos de la Argentina</span></header>
+  <div class="s-q">
+    <blockquote class="brackets"><p>¿Qué lugar ocupan los árboles nativos en los paisajes urbanos argentinos y qué los diferencia de las especies exóticas que hoy predominan en calles y plazas?</p></blockquote>
+    <div class="s-q__side">
+      <span class="stars" aria-hidden="true"><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg></span>
+      <p>Una breve investigación sobre árboles <strong>autóctonos</strong> de la Argentina: dónde crecen, qué especies se destacan y por qué conviene volver a incorporarlos en el diseño de los espacios públicos.</p>
+      <p>Lectura de fuentes especializadas + observación del arbolado en distintos barrios.</p>
+    </div>
+  </div>
+</section>
+<section class="slide" data-title="01 · Qué entendemos por especie nativa" aria-label="3 de 10: 01 · Qué entendemos por especie nativa"><header class="s-hdr"><span>[03] &nbsp;Capítulo 01 · Introducción</span><span>Capítulo 1 de 4</span></header>
+  <h2 class="s-title">Qué entendemos por <span class="sw">e</span>specie nativa</h2>
+  <div class="s-cols3">
+    <article><svg class="s-ico" viewBox="0 0 300 220" aria-hidden="true"><path d="M40 190 L60 60 L150 30 L250 70 L270 190 Z" fill="none" stroke="#141414" stroke-width="4" stroke-dasharray="12 8"/><circle cx="155" cy="112.3" r="34" fill="#8f8a52" stroke="#141414" stroke-width="5"/><line x1="155" y1="146.3" x2="155" y2="165" stroke="#141414" stroke-width="7.0"/><path d="M155 165 Q143.1 173.5 131.2 183.7" fill="none" stroke="#141414" stroke-width="3.5"/><path d="M155 165 Q149.1 173.5 143.1 183.7" fill="none" stroke="#141414" stroke-width="3.5"/><path d="M155 165 Q160.9 173.5 166.9 183.7" fill="none" stroke="#141414" stroke-width="3.5"/><path d="M155 165 Q166.9 173.5 178.8 183.7" fill="none" stroke="#141414" stroke-width="3.5"/><rect x="54.0" y="54.0" width="12" height="12" fill="#141414"/><rect x="244.0" y="64.0" width="12" height="12" fill="#141414"/><rect x="34.0" y="184.0" width="12" height="12" fill="#141414"/><rect x="264.0" y="184.0" width="12" height="12" fill="#141414"/></svg><span class="s-k">01</span><h3>Nativa · autóctona</h3><p>Se originó y evolucionó en una región determinada, sin intervención humana.</p></article>
+    <article><svg class="s-ico" viewBox="0 0 300 220" aria-hidden="true"><rect x="120" y="40" width="160" height="160" fill="none" stroke="#141414" stroke-width="4"/><circle cx="60" cy="106.6" r="28" fill="none" stroke="#141414" stroke-width="5"/><line x1="60" y1="134.6" x2="60" y2="150" stroke="#141414" stroke-width="7.0"/><path d="M60 150 Q50.2 157.0 40.4 165.4" fill="none" stroke="#141414" stroke-width="3.5"/><path d="M60 150 Q55.1 157.0 50.2 165.4" fill="none" stroke="#141414" stroke-width="3.5"/><path d="M60 150 Q64.9 157.0 69.8 165.4" fill="none" stroke="#141414" stroke-width="3.5"/><path d="M60 150 Q69.8 157.0 79.6 165.4" fill="none" stroke="#141414" stroke-width="3.5"/><path d="M100 115 H190" stroke="#141414" stroke-width="6"/><path d="M178 100 L198 115 L178 130" fill="none" stroke="#141414" stroke-width="6"/><circle cx="200" cy="150" r="10" fill="none" stroke="#141414" stroke-width="3" stroke-dasharray="4 4"/><rect x="114.0" y="34.0" width="12" height="12" fill="#141414"/><rect x="274.0" y="194.0" width="12" height="12" fill="#141414"/></svg><span class="s-k">02</span><h3>Exótica</h3><p>Introducida desde otras regiones del mundo.</p></article>
+    <article class="is-dark"><svg class="s-ico" viewBox="0 0 300 220" aria-hidden="true"><circle cx="150" cy="105.7" r="26" fill="#f2f0ea" stroke="#f2f0ea" stroke-width="5"/><line x1="150" y1="131.7" x2="150" y2="146.0" stroke="#f2f0ea" stroke-width="7.0"/><path d="M150 146.0 Q140.9 152.5 131.8 160.3" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><path d="M150 146.0 Q145.4 152.5 140.9 160.3" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><path d="M150 146.0 Q154.6 152.5 159.1 160.3" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><path d="M150 146.0 Q159.1 152.5 168.2 160.3" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><circle cx="85" cy="86.8" r="15" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><line x1="85" y1="101.8" x2="85" y2="110.0" stroke="#f2f0ea" stroke-width="4.9"/><circle cx="215" cy="86.8" r="15" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><line x1="215" y1="101.8" x2="215" y2="110.0" stroke="#f2f0ea" stroke-width="4.9"/><circle cx="70" cy="167.8" r="13" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><line x1="70" y1="180.8" x2="70" y2="188.0" stroke="#f2f0ea" stroke-width="4.9"/><circle cx="230" cy="167.8" r="13" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><line x1="230" y1="180.8" x2="230" y2="188.0" stroke="#f2f0ea" stroke-width="4.9"/><circle cx="150" cy="188.9" r="11" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><line x1="150" y1="199.9" x2="150" y2="206.0" stroke="#f2f0ea" stroke-width="4.9"/><circle cx="35" cy="135.1" r="9" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><line x1="35" y1="144.1" x2="35" y2="149.0" stroke="#f2f0ea" stroke-width="4.9"/><circle cx="265" cy="135.1" r="9" fill="none" stroke="#f2f0ea" stroke-width="3.5"/><line x1="265" y1="144.1" x2="265" y2="149.0" stroke="#f2f0ea" stroke-width="4.9"/><line x1="130" y1="70" x2="100" y2="55" stroke="#f2f0ea" stroke-width="3" stroke-dasharray="5 5"/><line x1="170" y1="70" x2="200" y2="55" stroke="#f2f0ea" stroke-width="3" stroke-dasharray="5 5"/><line x1="125" y1="150" x2="95" y2="170" stroke="#f2f0ea" stroke-width="3" stroke-dasharray="5 5"/><line x1="175" y1="150" x2="205" y2="170" stroke="#f2f0ea" stroke-width="3" stroke-dasharray="5 5"/></svg><span class="s-k">03</span><h3>Invasora</h3><p>Exótica que se reproduce sin control y desplaza a la flora local.</p></article>
+  </div>
+  <p class="s-note">Hablamos de especies nativas <strong>de cada región</strong>: un árbol de la selva misionera puede resultar tan ajeno a la Patagonia como una especie traída de otro continente.</p>
+</section>
+<section class="slide" data-title="01 · Por qué importan" aria-label="4 de 10: 01 · Por qué importan"><header class="s-hdr"><span>[04] &nbsp;Capítulo 01 · Por qué importan</span><span>Fig. 01</span></header>
+  <div class="s-split">
+    <ul class="s-list">
+      <li><strong>Menos riego y cuidados:</strong> adaptadas al clima y al suelo de su región.</li>
+      <li><strong>Fauna local:</strong> sostienen aves, insectos polinizadores y mariposas.</li>
+      <li><strong>Identidad:</strong> forman parte del paisaje y la cultura de cada lugar.</li>
+    </ul>
+    <div class="s-collage"><figure class="collage brackets">
+        <div class="collage__stage">
+          <!-- Titular en dos planos: una línea detrás de la imagen y otra delante -->
+          <p class="collage__head collage__head--back" aria-hidden="true">C<span class="sw">o</span>rredores</p>
+          <img src="img/ilustracion-introduccion-recorte.png" alt="Ilustración pictórica en collage: una flor lila y una flor durazno gigantes, con un picaflor, irrumpen sobre un fragmento de vereda cuyas baldosas levantan las raíces; a un lado, un arbolito diminuto en su cazuela y un trozo de pared" loading="lazy">
+          <p class="collage__head collage__head--front" aria-hidden="true">Biol<span class="sw">ó</span>gicos</p>
+          <!-- Misceláneas vectoriales (recursos gráficos de la referencia) -->
+          <svg class="collage__misc collage__misc--scope" viewBox="0 0 60 60" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="30" cy="30" r="26"/><line x1="30" y1="0" x2="30" y2="60"/><line x1="0" y1="30" x2="60" y2="30"/><line x1="10" y1="27" x2="10" y2="33"/><line x1="27" y1="10" x2="33" y2="10"/><line x1="15" y1="27" x2="15" y2="33"/><line x1="27" y1="15" x2="33" y2="15"/><line x1="20" y1="27" x2="20" y2="33"/><line x1="27" y1="20" x2="33" y2="20"/><line x1="25" y1="27" x2="25" y2="33"/><line x1="27" y1="25" x2="33" y2="25"/><line x1="35" y1="27" x2="35" y2="33"/><line x1="27" y1="35" x2="33" y2="35"/><line x1="40" y1="27" x2="40" y2="33"/><line x1="27" y1="40" x2="33" y2="40"/><line x1="45" y1="27" x2="45" y2="33"/><line x1="27" y1="45" x2="33" y2="45"/><line x1="50" y1="27" x2="50" y2="33"/><line x1="27" y1="50" x2="33" y2="50"/></svg>
+          <svg class="collage__misc collage__misc--crop" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5"><path vector-effect="non-scaling-stroke" d="M0 14V0H14M86 0H100V14M100 86V100H86M14 100H0V86"/></svg>
+          <span class="collage__misc collage__misc--stars stars" aria-hidden="true"><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg></span>
+          <p class="collage__misc collage__misc--label" aria-hidden="true">Cap. 01<br>01 / 04</p>
+          <!-- Párrafo ubicado en un hueco libre de la imagen -->
+          <div class="collage__text">
+            <span class="stars" aria-hidden="true"><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg></span>
+            <p>En el contexto urbano, estas ventajas se traducen en menor mantenimiento y en espacios públicos que funcionan como pequeños corredores biológicos dentro de la ciudad.</p>
+          </div>
+        </div>
+      </figure></div>
+  </div>
+</section>
+<section class="slide" data-title="02 · Una gran diversidad de ambientes" aria-label="5 de 10: 02 · Una gran diversidad de ambientes"><header class="s-hdr"><span>[05] &nbsp;Capítulo 02 · Regiones y paisajes</span><span>Capítulo 2 de 4</span></header>
+  <h2 class="s-title">Una gran diversidad <span class="sw">d</span>e ambientes</h2>
+  <div class="s-cols5"><article><span class="s-k">R·01</span><h3>Selva Paranaense</h3><p class="s-amb">Selva subtropical húmeda</p><p class="s-sp"><span class="sw">→</span> Lapacho rosado</p></article><article><span class="s-k">R·02</span><h3>Yungas</h3><p class="s-amb">Selva de montaña</p><p class="s-sp"><span class="sw">→</span> Cedro salteño</p></article><article><span class="s-k">R·03</span><h3>Chaco</h3><p class="s-amb">Bosque seco</p><p class="s-sp"><span class="sw">→</span> Quebracho colorado</p></article><article><span class="s-k">R·04</span><h3>Espinal</h3><p class="s-amb">Bosque bajo y pastizal</p><p class="s-sp"><span class="sw">→</span> Algarrobo</p></article><article><span class="s-k">R·05</span><h3>Bosques Patagónicos</h3><p class="s-amb">Bosque frío de montaña</p><p class="s-sp"><span class="sw">→</span> Pehuén (araucaria)</p></article></div>
+  <p class="s-note">La humedad disminuye de noreste a sudoeste, y con ella cambia la vegetación: de la selva densa al bosque seco, al pastizal y a la estepa.</p>
+</section>
+<section class="slide" data-title="02 · Relaciones entre regiones, especies y usos" aria-label="6 de 10: 02 · Relaciones entre regiones, especies y usos"><header class="s-hdr"><span>[06] &nbsp;Capítulo 02 · Relaciones entre regiones, especies y usos</span><span>Fig. 02</span></header>
+  <div class="s-diagram"><svg class="diagrama" viewBox="0 0 1760 860" role="img" aria-labelledby="dgh-t dgh-d" xmlns="http://www.w3.org/2000/svg">
+<title id="dgh-t">Relaciones entre regiones, especies nativas y usos urbanos</title>
+<desc id="dgh-d">Diagrama en tres columnas. Seis regiones (Selva Paranaense, Yungas, Chaco, Espinal, Pampeana y Bosques Patagónicos) se conectan con ocho especies nativas (lapacho rosado, ceibo, cedro salteño, quebracho colorado, algarrobo, tala, ombú y pehuén), y estas con cinco usos urbanos posibles (arbolado de calles, plazas y parques, riberas y zonas húmedas, zonas secas bajo riego y climas fríos). Arriba, un gradiente de humedad ordena las regiones de húmeda a seca. Las líneas punteadas indican usos posibles con condiciones.</desc>
+<style>.dg-mac{font:900 112px var(--font-sans);letter-spacing:-.06em;text-transform:uppercase}.dg-sw{font-family:var(--font-serif);font-style:italic;font-weight:400;fill:#8f8a52;letter-spacing:0}.dg-num{font:900 92px var(--font-sans);letter-spacing:-.06em}.dg-h{font:900 22px var(--font-sans);letter-spacing:.06em;text-transform:uppercase}.dg-n{font:800 21px var(--font-sans);letter-spacing:-.01em;text-transform:uppercase}.dg-mi{font:700 13px var(--font-sans);letter-spacing:.12em;text-transform:uppercase}.dg-it{font:italic 400 22px var(--font-serif)}</style>
+<text x="0" y="108" class="dg-mac" text-anchor="start" fill="#141414">H<tspan class="dg-sw">ú</tspan>medo</text>
+<text x="1760" y="108" class="dg-mac" text-anchor="end" fill="#141414">Sec<tspan class="dg-sw">o</tspan></text>
+<rect x="0" y="146" width="1760" height="18" fill="#141414"/>
+<line x1="0.0" y1="164" x2="0.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="0.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">00</text>
+<line x1="17.6" y1="164" x2="17.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="35.2" y1="164" x2="35.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="52.8" y1="164" x2="52.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="70.4" y1="164" x2="70.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="88.0" y1="164" x2="88.0" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="105.6" y1="164" x2="105.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="123.2" y1="164" x2="123.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="140.8" y1="164" x2="140.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="158.4" y1="164" x2="158.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="176.0" y1="164" x2="176.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="176.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">10</text>
+<line x1="193.6" y1="164" x2="193.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="211.2" y1="164" x2="211.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="228.8" y1="164" x2="228.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="246.4" y1="164" x2="246.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="264.0" y1="164" x2="264.0" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="281.6" y1="164" x2="281.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="299.2" y1="164" x2="299.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="316.8" y1="164" x2="316.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="334.4" y1="164" x2="334.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="352.0" y1="164" x2="352.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="352.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">20</text>
+<line x1="369.6" y1="164" x2="369.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="387.2" y1="164" x2="387.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="404.8" y1="164" x2="404.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="422.4" y1="164" x2="422.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="440.0" y1="164" x2="440.0" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="457.6" y1="164" x2="457.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="475.2" y1="164" x2="475.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="492.8" y1="164" x2="492.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="510.4" y1="164" x2="510.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="528.0" y1="164" x2="528.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="528.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">30</text>
+<line x1="545.6" y1="164" x2="545.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="563.2" y1="164" x2="563.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="580.8" y1="164" x2="580.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="598.4" y1="164" x2="598.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="616.0" y1="164" x2="616.0" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="633.6" y1="164" x2="633.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="651.2" y1="164" x2="651.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="668.8" y1="164" x2="668.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="686.4" y1="164" x2="686.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="704.0" y1="164" x2="704.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="704.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">40</text>
+<line x1="721.6" y1="164" x2="721.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="739.2" y1="164" x2="739.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="756.8" y1="164" x2="756.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="774.4" y1="164" x2="774.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="792.0" y1="164" x2="792.0" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="809.6" y1="164" x2="809.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="827.2" y1="164" x2="827.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="844.8" y1="164" x2="844.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="862.4" y1="164" x2="862.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="880.0" y1="164" x2="880.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="880.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">50</text>
+<line x1="897.6" y1="164" x2="897.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="915.2" y1="164" x2="915.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="932.8" y1="164" x2="932.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="950.4" y1="164" x2="950.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="968.0" y1="164" x2="968.0" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="985.6" y1="164" x2="985.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1003.2" y1="164" x2="1003.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1020.8" y1="164" x2="1020.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1038.4" y1="164" x2="1038.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1056.0" y1="164" x2="1056.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="1056.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">60</text>
+<line x1="1073.6" y1="164" x2="1073.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1091.2" y1="164" x2="1091.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1108.8" y1="164" x2="1108.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1126.4" y1="164" x2="1126.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1144.0" y1="164" x2="1144.0" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1161.6" y1="164" x2="1161.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1179.2" y1="164" x2="1179.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1196.8" y1="164" x2="1196.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1214.4" y1="164" x2="1214.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1232.0" y1="164" x2="1232.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="1232.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">70</text>
+<line x1="1249.6" y1="164" x2="1249.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1267.2" y1="164" x2="1267.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1284.8" y1="164" x2="1284.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1302.4" y1="164" x2="1302.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1320.0" y1="164" x2="1320.0" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1337.6" y1="164" x2="1337.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1355.2" y1="164" x2="1355.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1372.8" y1="164" x2="1372.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1390.4" y1="164" x2="1390.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1408.0" y1="164" x2="1408.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="1408.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">80</text>
+<line x1="1425.6" y1="164" x2="1425.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1443.2" y1="164" x2="1443.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1460.8" y1="164" x2="1460.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1478.4" y1="164" x2="1478.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1496.0" y1="164" x2="1496.0" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1513.6" y1="164" x2="1513.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1531.2" y1="164" x2="1531.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1548.8" y1="164" x2="1548.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1566.4" y1="164" x2="1566.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1584.0" y1="164" x2="1584.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="1584.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">90</text>
+<line x1="1601.6" y1="164" x2="1601.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1619.2" y1="164" x2="1619.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1636.8" y1="164" x2="1636.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1654.4" y1="164" x2="1654.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1672.0" y1="164" x2="1672.0" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1689.6" y1="164" x2="1689.6" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1707.2" y1="164" x2="1707.2" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1724.8" y1="164" x2="1724.8" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1742.4" y1="164" x2="1742.4" y2="174" stroke="#141414" stroke-width="1"/>
+<line x1="1760.0" y1="164" x2="1760.0" y2="186" stroke="#141414" stroke-width="2"/>
+<text x="1760.0" y="208" class="dg-mi" text-anchor="middle" fill="#141414">100</text>
+<rect x="129.8" y="142" width="22" height="26" fill="#f2f0ea" stroke="#141414" stroke-width="3"/>
+<text x="140.8" y="132" class="dg-mi" text-anchor="middle" fill="#141414">R·01</text>
+<rect x="376.2" y="142" width="22" height="26" fill="#f2f0ea" stroke="#141414" stroke-width="3"/>
+<text x="387.2" y="132" class="dg-mi" text-anchor="middle" fill="#141414">R·02</text>
+<rect x="1608.2" y="142" width="22" height="26" fill="#f2f0ea" stroke="#141414" stroke-width="3"/>
+<text x="1619.2" y="132" class="dg-mi" text-anchor="middle" fill="#141414">R·03</text>
+<rect x="1115.4" y="142" width="22" height="26" fill="#f2f0ea" stroke="#141414" stroke-width="3"/>
+<text x="1126.4" y="132" class="dg-mi" text-anchor="middle" fill="#141414">R·04</text>
+<rect x="798.6" y="142" width="22" height="26" fill="#f2f0ea" stroke="#141414" stroke-width="3"/>
+<text x="809.6" y="132" class="dg-mi" text-anchor="middle" fill="#141414">R·05</text>
+<rect x="587.4" y="142" width="22" height="26" fill="#f2f0ea" stroke="#141414" stroke-width="3"/>
+<text x="598.4" y="132" class="dg-mi" text-anchor="middle" fill="#141414">R·06</text>
+<text x="880.0" y="226" class="dg-mi" text-anchor="middle" fill="#5e5a2c">Posición aproximada de cada región · lluvia, temperatura y suelo</text>
+<text x="-4" y="312" class="dg-num" text-anchor="start" fill="none" stroke="#141414" stroke-width="2">06</text>
+<rect x="116" y="272" width="284" height="36" fill="#141414"/>
+<text x="130" y="297" class="dg-h" text-anchor="start" fill="#f2f0ea" textLength="93" lengthAdjust="spacingAndGlyphs">Región</text>
+<text x="676" y="312" class="dg-num" text-anchor="start" fill="none" stroke="#141414" stroke-width="2">08</text>
+<rect x="796" y="272" width="284" height="36" fill="#141414"/>
+<text x="810" y="297" class="dg-h" text-anchor="start" fill="#f2f0ea" textLength="217" lengthAdjust="spacingAndGlyphs">Especie nativa</text>
+<text x="1342" y="312" class="dg-num" text-anchor="start" fill="none" stroke="#141414" stroke-width="2">05</text>
+<rect x="1462" y="272" width="280" height="36" fill="#141414"/>
+<text x="1476" y="297" class="dg-h" text-anchor="start" fill="#f2f0ea" textLength="155" lengthAdjust="spacingAndGlyphs">Uso urbano</text>
+<path d="M400 693.4H426.0V412.1H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="422.0" y="408.1" width="8" height="8" fill="#141414"/>
+<path d="M400 607.8H446.7V412.1H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="442.7" y="408.1" width="8" height="8" fill="#141414"/>
+<path d="M400 693.4H467.5V656.7H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="463.5" y="652.7" width="8" height="8" fill="#141414"/>
+<path d="M400 607.8H488.2V595.6H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="484.2" y="591.6" width="8" height="8" fill="#141414"/>
+<path d="M400 351.0H508.9V351.0H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="504.9" y="347.0" width="8" height="8" fill="#141414"/>
+<path d="M400 779.0H529.6V779.0H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="525.6" y="775.0" width="8" height="8" fill="#141414"/>
+<path d="M400 522.2H550.4V534.4H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="546.4" y="530.4" width="8" height="8" fill="#141414"/>
+<path d="M400 693.4H571.1V717.9H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="567.1" y="713.9" width="8" height="8" fill="#141414"/>
+<path d="M400 436.6H591.8V473.3H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="587.8" y="469.3" width="8" height="8" fill="#141414"/>
+<path d="M400 607.8H612.5V656.7H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="608.5" y="652.7" width="8" height="8" fill="#141414"/>
+<path d="M400 351.0H633.3V412.1H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="629.3" y="408.1" width="8" height="8" fill="#141414"/>
+<path d="M400 522.2H654.0V595.6H680" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="650.0" y="591.6" width="8" height="8" fill="#141414"/>
+<path d="M1080 779.0H1106.0V458.0H1346" fill="none" stroke="#5e5a2c" stroke-width="3" stroke-dasharray="10 7"/>
+<rect x="1102.0" y="454.0" width="8" height="8" fill="#5e5a2c"/>
+<path d="M1080 656.7H1123.8V351.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1119.8" y="347.0" width="8" height="8" fill="#141414"/>
+<path d="M1080 717.9H1141.7V458.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1137.7" y="454.0" width="8" height="8" fill="#141414"/>
+<path d="M1080 656.7H1159.5V458.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1155.5" y="454.0" width="8" height="8" fill="#141414"/>
+<path d="M1080 595.6H1177.3V458.0H1346" fill="none" stroke="#5e5a2c" stroke-width="3" stroke-dasharray="10 7"/>
+<rect x="1173.3" y="454.0" width="8" height="8" fill="#5e5a2c"/>
+<path d="M1080 473.3H1195.2V458.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1191.2" y="454.0" width="8" height="8" fill="#141414"/>
+<path d="M1080 351.0H1213.0V351.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1209.0" y="347.0" width="8" height="8" fill="#141414"/>
+<path d="M1080 779.0H1230.8V779.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1226.8" y="775.0" width="8" height="8" fill="#141414"/>
+<path d="M1080 412.1H1248.7V458.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1244.7" y="454.0" width="8" height="8" fill="#141414"/>
+<path d="M1080 595.6H1266.5V672.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1262.5" y="668.0" width="8" height="8" fill="#141414"/>
+<path d="M1080 351.0H1284.3V458.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1280.3" y="454.0" width="8" height="8" fill="#141414"/>
+<path d="M1080 534.4H1302.2V672.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1298.2" y="668.0" width="8" height="8" fill="#141414"/>
+<path d="M1080 412.1H1320.0V565.0H1346" fill="none" stroke="#141414" stroke-width="3"/>
+<rect x="1316.0" y="561.0" width="8" height="8" fill="#141414"/>
+<rect x="0" y="330.0" width="400" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="0" y="330.0" width="74" height="42" fill="#141414"/>
+<text x="37" y="357.0" class="dg-mi" text-anchor="middle" fill="#f2f0ea">R·01</text>
+<text x="92" y="358.0" class="dg-n" text-anchor="start" fill="#141414">Selva Paranaense</text>
+<rect x="0" y="415.6" width="400" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="0" y="415.6" width="74" height="42" fill="#141414"/>
+<text x="37" y="442.6" class="dg-mi" text-anchor="middle" fill="#f2f0ea">R·02</text>
+<text x="92" y="443.6" class="dg-n" text-anchor="start" fill="#141414">Yungas</text>
+<rect x="0" y="501.2" width="400" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="0" y="501.2" width="74" height="42" fill="#141414"/>
+<text x="37" y="528.2" class="dg-mi" text-anchor="middle" fill="#f2f0ea">R·03</text>
+<text x="92" y="529.2" class="dg-n" text-anchor="start" fill="#141414">Chaco</text>
+<rect x="0" y="586.8" width="400" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="0" y="586.8" width="74" height="42" fill="#141414"/>
+<text x="37" y="613.8" class="dg-mi" text-anchor="middle" fill="#f2f0ea">R·04</text>
+<text x="92" y="614.8" class="dg-n" text-anchor="start" fill="#141414">Espinal</text>
+<rect x="0" y="672.4" width="400" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="0" y="672.4" width="74" height="42" fill="#141414"/>
+<text x="37" y="699.4" class="dg-mi" text-anchor="middle" fill="#f2f0ea">R·05</text>
+<text x="92" y="700.4" class="dg-n" text-anchor="start" fill="#141414">Pampeana</text>
+<rect x="0" y="758.0" width="400" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="0" y="758.0" width="74" height="42" fill="#141414"/>
+<text x="37" y="785.0" class="dg-mi" text-anchor="middle" fill="#f2f0ea">R·06</text>
+<text x="92" y="786.0" class="dg-n" text-anchor="start" fill="#141414">Bosques Patagónicos</text>
+<rect x="680" y="330.0" width="400" height="42" fill="#141414"/>
+<text x="700" y="358.0" class="dg-n" text-anchor="start" fill="#f2f0ea">Lapacho rosado</text>
+<rect x="680" y="391.1" width="400" height="42" fill="#141414"/>
+<text x="700" y="419.1" class="dg-n" text-anchor="start" fill="#f2f0ea">Ceibo</text>
+<rect x="680" y="452.3" width="400" height="42" fill="#141414"/>
+<text x="700" y="480.3" class="dg-n" text-anchor="start" fill="#f2f0ea">Cedro salteño</text>
+<rect x="680" y="513.4" width="400" height="42" fill="#141414"/>
+<text x="700" y="541.4" class="dg-n" text-anchor="start" fill="#f2f0ea">Quebracho colorado</text>
+<rect x="680" y="574.6" width="400" height="42" fill="#141414"/>
+<text x="700" y="602.6" class="dg-n" text-anchor="start" fill="#f2f0ea">Algarrobo</text>
+<rect x="680" y="635.7" width="400" height="42" fill="#141414"/>
+<text x="700" y="663.7" class="dg-n" text-anchor="start" fill="#f2f0ea">Tala</text>
+<rect x="680" y="696.9" width="400" height="42" fill="#141414"/>
+<text x="700" y="724.9" class="dg-n" text-anchor="start" fill="#f2f0ea">Ombú</text>
+<rect x="680" y="758.0" width="400" height="42" fill="#141414"/>
+<text x="700" y="786.0" class="dg-n" text-anchor="start" fill="#f2f0ea">Pehuén</text>
+<rect x="1346" y="330.0" width="396" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="1728" y="330.0" width="14" height="42" fill="#8f8a52"/>
+<text x="1366" y="358.0" class="dg-n" text-anchor="start" fill="#141414">Arbolado de calles</text>
+<rect x="1346" y="437.0" width="396" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="1728" y="437.0" width="14" height="42" fill="#8f8a52"/>
+<text x="1366" y="465.0" class="dg-n" text-anchor="start" fill="#141414">Plazas y parques</text>
+<rect x="1346" y="544.0" width="396" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="1728" y="544.0" width="14" height="42" fill="#8f8a52"/>
+<text x="1366" y="572.0" class="dg-n" text-anchor="start" fill="#141414">Riberas y zonas húmedas</text>
+<rect x="1346" y="651.0" width="396" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="1728" y="651.0" width="14" height="42" fill="#8f8a52"/>
+<text x="1366" y="679.0" class="dg-n" text-anchor="start" fill="#141414">Zonas secas (bajo riego)</text>
+<rect x="1346" y="758.0" width="396" height="42" fill="#f2f0ea" stroke="#141414" stroke-width="4"/>
+<rect x="1728" y="758.0" width="14" height="42" fill="#8f8a52"/>
+<text x="1366" y="786.0" class="dg-n" text-anchor="start" fill="#141414">Climas fríos</text>
+<text x="1086" y="379.1" class="dg-mi" text-anchor="start" fill="#5e5a2c">↑ Especie más vinculada</text>
+<path d="M1332 443.0V423.0H1352.0" fill="none" stroke="#141414" stroke-width="4"/>
+<path d="M1756 443.0V423.0H1736.0" fill="none" stroke="#141414" stroke-width="4"/>
+<path d="M1332 473.0V493.0H1352.0" fill="none" stroke="#141414" stroke-width="4"/>
+<path d="M1756 473.0V493.0H1736.0" fill="none" stroke="#141414" stroke-width="4"/>
+<text x="1346" y="517.0" class="dg-mi" text-anchor="start" fill="#141414">7 conexiones</text>
+<path fill="#141414" d="M836.0 44l3.5 12.5L852.0 60l-12.5 3.5L836.0 76l-3.5 -12.5L820.0 60l12.5 -3.5z"/>
+<path fill="#141414" d="M880.0 44l3.5 12.5L896.0 60l-12.5 3.5L880.0 76l-3.5 -12.5L864.0 60l12.5 -3.5z"/>
+<path fill="#141414" d="M924.0 44l3.5 12.5L940.0 60l-12.5 3.5L924.0 76l-3.5 -12.5L908.0 60l12.5 -3.5z"/>
+<line x1="40" y1="838" x2="100" y2="838" stroke="#141414" stroke-width="3"/>
+<text x="112" y="843" class="dg-mi" text-anchor="start" fill="#141414">Presencia natural / uso habitual</text>
+<line x1="500" y1="838" x2="560" y2="838" stroke="#5e5a2c" stroke-width="3" stroke-dasharray="10 7"/>
+<text x="572" y="843" class="dg-mi" text-anchor="start" fill="#141414">Uso posible con condiciones (espacio, riego, clima)</text>
+<text x="1760" y="844" class="dg-it" text-anchor="end" fill="#5e5a2c">6 regiones × 8 especies × 5 usos — relaciones a validar con las fuentes</text>
+</svg></div>
+</section>
+<section class="slide" data-title="02 · El caso de la región pampeana" aria-label="7 de 10: 02 · El caso de la región pampeana"><header class="s-hdr"><span>[07] &nbsp;Capítulo 02 · El caso de la región pampeana</span><span>Árboles nativos de la Argentina</span></header>
+  <div class="s-pampa">
+    <p class="s-macro" aria-hidden="true">Pa<span class="sw">s</span>tizal</p>
+    <div class="s-pampa__txt">
+      <span class="stars" aria-hidden="true"><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg></span>
+      <h2>El caso de la región pampeana</h2>
+      <p>Predominaba el <strong>pastizal</strong> y los árboles nativos eran escasos, como el <strong>tala</strong> y el <strong>ombú</strong>.</p>
+      <p>Por eso, en ciudades como Buenos Aires el paisaje arbolado que hoy parece "natural" está formado, en gran parte, por especies exóticas.</p>
+    </div>
+    <svg class="s-ico s-ico--pampa" viewBox="0 0 800 360" aria-hidden="true"><line x1="0" y1="300" x2="800" y2="300" stroke="#141414" stroke-width="6"/><path d="M10.0 300 Q6.4 268.4 0.9 247.3" fill="none" stroke="#141414" stroke-width="2.5"/><path d="M15.3 300 Q15.7 279.0 16.2 264.9" fill="none" stroke="#141414" stroke-width="2.1"/><path d="M20.6 300 Q20.7 279.6 20.8 265.9" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M25.9 300 Q21.4 263.8 14.7 239.6" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M31.2 300 Q34.6 264.2 39.7 240.3" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M36.5 300 Q37.8 272.6 39.8 254.4" fill="none" stroke="#141414" stroke-width="2.9"/><path d="M41.8 300 Q40.7 257.8 39.1 229.6" fill="none" stroke="#141414" stroke-width="3.0"/><path d="M47.1 300 Q50.8 280.0 56.4 266.7" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M52.4 300 Q48.4 275.9 42.5 259.9" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M57.7 300 Q54.4 247.7 49.4 212.9" fill="none" stroke="#141414" stroke-width="2.4"/><path d="M63.0 300 Q61.7 255.2 59.7 225.3" fill="none" stroke="#141414" stroke-width="2.4"/><path d="M68.3 300 Q63.7 279.4 56.8 265.6" fill="none" stroke="#141414" stroke-width="1.9"/><path d="M73.6 300 Q72.8 253.4 71.7 222.4" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M78.9 300 Q78.4 257.4 77.7 229.0" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M84.2 300 Q86.3 248.6 89.4 214.4" fill="none" stroke="#141414" stroke-width="1.9"/><path d="M89.5 300 Q89.8 257.9 90.2 229.8" fill="none" stroke="#141414" stroke-width="2.8"/><path d="M94.8 300 Q92.6 251.4 89.3 218.9" fill="none" stroke="#141414" stroke-width="3.0"/><path d="M100.1 300 Q99.2 277.0 98.0 261.7" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M105.4 300 Q105.3 275.6 105.1 259.4" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M110.7 300 Q113.5 253.9 117.6 223.2" fill="none" stroke="#141414" stroke-width="2.4"/><path d="M116.0 300 Q114.1 245.2 111.2 208.7" fill="none" stroke="#141414" stroke-width="2.6"/><path d="M121.3 300 Q122.1 257.0 123.4 228.4" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M126.6 300 Q131.2 246.7 138.2 211.2" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M131.9 300 Q127.3 254.1 120.5 223.5" fill="none" stroke="#141414" stroke-width="2.6"/><path d="M137.2 300 Q142.3 254.8 150.0 224.7" fill="none" stroke="#141414" stroke-width="2.8"/><path d="M142.5 300 Q141.3 270.0 139.5 250.1" fill="none" stroke="#141414" stroke-width="2.5"/><path d="M147.8 300 Q147.4 281.1 146.8 268.4" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M153.1 300 Q148.5 277.1 141.6 261.8" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M158.4 300 Q155.8 276.6 151.8 260.9" fill="none" stroke="#141414" stroke-width="2.1"/><path d="M163.7 300 Q159.3 245.4 152.8 209.0" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M169.0 300 Q173.0 258.9 179.0 231.5" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M174.3 300 Q172.0 245.7 168.5 209.5" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M179.6 300 Q183.6 266.9 189.6 244.9" fill="none" stroke="#141414" stroke-width="2.9"/><path d="M184.9 300 Q181.5 275.7 176.5 259.4" fill="none" stroke="#141414" stroke-width="1.9"/><path d="M190.2 300 Q190.0 272.2 189.8 253.7" fill="none" stroke="#141414" stroke-width="2.4"/><path d="M195.5 300 Q190.3 271.0 182.6 251.6" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M200.8 300 Q201.5 266.5 202.5 244.2" fill="none" stroke="#141414" stroke-width="2.9"/><path d="M206.1 300 Q206.3 253.0 206.5 221.7" fill="none" stroke="#141414" stroke-width="2.5"/><path d="M211.4 300 Q206.8 253.6 199.8 222.7" fill="none" stroke="#141414" stroke-width="2.9"/><path d="M216.7 300 Q220.6 249.2 226.4 215.4" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M222.0 300 Q220.9 265.5 219.4 242.5" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M227.3 300 Q222.7 255.4 215.9 225.6" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M232.6 300 Q229.1 273.2 223.8 255.4" fill="none" stroke="#141414" stroke-width="2.1"/><path d="M237.9 300 Q232.7 279.8 224.9 266.3" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M243.2 300 Q241.8 277.7 239.7 262.9" fill="none" stroke="#141414" stroke-width="1.6"/><path d="M248.5 300 Q249.7 245.3 251.5 208.8" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M253.8 300 Q252.2 271.4 249.8 252.3" fill="none" stroke="#141414" stroke-width="2.1"/><path d="M259.1 300 Q262.7 276.8 268.2 261.4" fill="none" stroke="#141414" stroke-width="3.0"/><path d="M264.4 300 Q264.2 262.4 264.0 237.4" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M269.7 300 Q268.1 277.7 265.6 262.8" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M275.0 300 Q271.5 247.2 266.2 212.0" fill="none" stroke="#141414" stroke-width="1.6"/><path d="M280.3 300 Q280.6 242.1 281.0 203.4" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M285.6 300 Q280.7 259.2 273.3 232.0" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M290.9 300 Q294.7 240.9 300.3 201.5" fill="none" stroke="#141414" stroke-width="2.6"/><path d="M296.2 300 Q294.8 271.0 292.7 251.7" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M301.5 300 Q301.8 249.6 302.3 216.0" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M306.8 300 Q303.9 268.2 299.6 246.9" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M312.1 300 Q315.8 240.6 321.3 201.1" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M317.4 300 Q319.9 247.6 323.6 212.7" fill="none" stroke="#141414" stroke-width="1.9"/><path d="M322.7 300 Q321.2 260.3 318.9 233.8" fill="none" stroke="#141414" stroke-width="1.6"/><path d="M328.0 300 Q325.7 280.8 322.3 268.0" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M333.3 300 Q338.0 252.9 345.2 221.5" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M338.6 300 Q343.7 242.6 351.3 204.4" fill="none" stroke="#141414" stroke-width="2.9"/><path d="M343.9 300 Q341.0 266.7 336.6 244.5" fill="none" stroke="#141414" stroke-width="1.9"/><path d="M349.2 300 Q346.1 273.7 341.5 256.2" fill="none" stroke="#141414" stroke-width="2.5"/><path d="M354.5 300 Q358.0 244.2 363.4 207.0" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M359.8 300 Q362.9 254.6 367.6 224.3" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M365.1 300 Q369.4 254.3 375.8 223.8" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M370.4 300 Q370.2 250.5 369.8 217.5" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M375.7 300 Q374.0 248.9 371.3 214.8" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M381.0 300 Q379.9 241.2 378.3 202.0" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M386.3 300 Q388.6 242.2 392.1 203.7" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M391.6 300 Q388.0 276.7 382.5 261.1" fill="none" stroke="#141414" stroke-width="2.9"/><path d="M396.9 300 Q393.2 248.1 387.7 213.5" fill="none" stroke="#141414" stroke-width="2.8"/><path d="M402.2 300 Q403.8 240.8 406.3 201.4" fill="none" stroke="#141414" stroke-width="2.1"/><path d="M407.5 300 Q403.7 259.0 397.9 231.6" fill="none" stroke="#141414" stroke-width="1.6"/><path d="M412.8 300 Q414.4 241.2 416.7 202.0" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M418.1 300 Q417.4 242.8 416.4 204.6" fill="none" stroke="#141414" stroke-width="2.8"/><path d="M423.4 300 Q420.4 247.3 415.9 212.2" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M428.7 300 Q426.0 269.7 422.0 249.5" fill="none" stroke="#141414" stroke-width="2.4"/><path d="M434.0 300 Q433.2 271.1 431.9 251.8" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M439.3 300 Q437.8 243.8 435.5 206.3" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M444.6 300 Q448.8 257.5 455.1 229.2" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M449.9 300 Q449.9 243.5 449.9 205.8" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M455.2 300 Q450.2 260.0 442.7 233.4" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M460.5 300 Q455.3 274.3 447.6 257.2" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M465.8 300 Q465.5 274.8 465.1 257.9" fill="none" stroke="#141414" stroke-width="2.6"/><path d="M471.1 300 Q469.3 258.6 466.6 231.0" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M476.4 300 Q479.4 258.7 483.8 231.1" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M481.7 300 Q479.1 258.5 475.2 230.8" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M487.0 300 Q487.1 249.6 487.2 215.9" fill="none" stroke="#141414" stroke-width="2.4"/><path d="M492.3 300 Q496.6 250.1 503.0 216.8" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M497.6 300 Q497.7 256.3 497.7 227.1" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M502.9 300 Q502.4 252.9 501.7 221.5" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M508.2 300 Q512.8 261.9 519.7 236.5" fill="none" stroke="#141414" stroke-width="2.6"/><path d="M513.5 300 Q518.1 245.2 525.0 208.6" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M518.8 300 Q523.4 258.5 530.3 230.8" fill="none" stroke="#141414" stroke-width="2.8"/><path d="M524.1 300 Q520.2 276.2 514.3 260.4" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M529.4 300 Q526.7 279.0 522.7 264.9" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M534.7 300 Q537.7 253.9 542.1 223.1" fill="none" stroke="#141414" stroke-width="2.9"/><path d="M540.0 300 Q542.2 275.5 545.6 259.2" fill="none" stroke="#141414" stroke-width="2.5"/><path d="M545.3 300 Q549.3 276.0 555.3 260.0" fill="none" stroke="#141414" stroke-width="3.0"/><path d="M550.6 300 Q555.3 272.8 562.4 254.6" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M555.9 300 Q561.0 261.5 568.6 235.9" fill="none" stroke="#141414" stroke-width="2.8"/><path d="M561.2 300 Q560.5 275.2 559.4 258.7" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M566.5 300 Q563.3 267.8 558.6 246.3" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M571.8 300 Q566.8 251.7 559.3 219.4" fill="none" stroke="#141414" stroke-width="2.4"/><path d="M577.1 300 Q572.1 263.5 564.6 239.2" fill="none" stroke="#141414" stroke-width="2.1"/><path d="M582.4 300 Q582.5 255.8 582.7 226.3" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M587.7 300 Q590.7 240.6 595.2 201.0" fill="none" stroke="#141414" stroke-width="3.0"/><path d="M593.0 300 Q590.6 277.6 586.9 262.7" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M598.3 300 Q595.9 249.3 592.3 215.5" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M603.6 300 Q607.9 264.3 614.3 240.4" fill="none" stroke="#141414" stroke-width="2.7"/><path d="M608.9 300 Q605.3 271.1 599.8 251.9" fill="none" stroke="#141414" stroke-width="2.9"/><path d="M614.2 300 Q616.3 258.0 619.4 230.1" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M619.5 300 Q621.5 279.6 624.4 266.0" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M624.8 300 Q629.4 279.0 636.2 264.9" fill="none" stroke="#141414" stroke-width="2.5"/><path d="M630.1 300 Q625.8 248.3 619.3 213.9" fill="none" stroke="#141414" stroke-width="2.8"/><path d="M635.4 300 Q639.2 279.2 644.8 265.3" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M640.7 300 Q641.3 267.8 642.1 246.3" fill="none" stroke="#141414" stroke-width="2.9"/><path d="M646.0 300 Q642.1 270.7 636.4 251.2" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M651.3 300 Q647.2 272.0 641.1 253.3" fill="none" stroke="#141414" stroke-width="1.8"/><path d="M656.6 300 Q653.5 279.9 648.8 266.5" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M661.9 300 Q664.6 269.2 668.6 248.6" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M667.2 300 Q663.9 261.0 658.8 235.0" fill="none" stroke="#141414" stroke-width="2.1"/><path d="M672.5 300 Q669.9 281.2 666.0 268.7" fill="none" stroke="#141414" stroke-width="1.6"/><path d="M677.8 300 Q678.3 251.2 679.1 218.7" fill="none" stroke="#141414" stroke-width="1.9"/><path d="M683.1 300 Q687.6 262.1 694.4 236.8" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M688.4 300 Q687.7 247.6 686.6 212.7" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M693.7 300 Q692.6 246.9 690.9 211.6" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M699.0 300 Q704.0 253.1 711.5 221.9" fill="none" stroke="#141414" stroke-width="2.1"/><path d="M704.3 300 Q706.4 247.0 709.7 211.7" fill="none" stroke="#141414" stroke-width="2.5"/><path d="M709.6 300 Q708.0 265.0 705.6 241.7" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M714.9 300 Q710.4 276.5 703.7 260.9" fill="none" stroke="#141414" stroke-width="2.6"/><path d="M720.2 300 Q716.7 271.3 711.4 252.1" fill="none" stroke="#141414" stroke-width="1.7"/><path d="M725.5 300 Q729.4 246.7 735.1 211.1" fill="none" stroke="#141414" stroke-width="2.5"/><path d="M730.8 300 Q728.1 270.2 724.1 250.3" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M736.1 300 Q732.5 262.7 727.2 237.8" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M741.4 300 Q746.2 270.9 753.4 251.6" fill="none" stroke="#141414" stroke-width="3.0"/><path d="M746.7 300 Q744.0 259.0 740.1 231.7" fill="none" stroke="#141414" stroke-width="3.0"/><path d="M752.0 300 Q750.5 269.0 748.3 248.3" fill="none" stroke="#141414" stroke-width="1.6"/><path d="M757.3 300 Q757.0 266.0 756.6 243.3" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M762.6 300 Q762.6 273.6 762.7 255.9" fill="none" stroke="#141414" stroke-width="1.6"/><path d="M767.9 300 Q763.6 270.9 757.2 251.5" fill="none" stroke="#141414" stroke-width="2.2"/><path d="M773.2 300 Q768.2 280.2 760.8 267.1" fill="none" stroke="#141414" stroke-width="2.0"/><path d="M778.5 300 Q779.4 272.2 780.7 253.7" fill="none" stroke="#141414" stroke-width="2.3"/><path d="M783.8 300 Q785.4 250.5 787.9 217.5" fill="none" stroke="#141414" stroke-width="2.6"/><path d="M789.1 300 Q788.0 245.1 786.2 208.5" fill="none" stroke="#141414" stroke-width="2.1"/><path d="M794.4 300 Q790.8 240.6 785.3 201.1" fill="none" stroke="#141414" stroke-width="2.6"/><path d="M799.7 300 Q795.0 255.0 787.8 225.0" fill="none" stroke="#141414" stroke-width="2.8"/><circle cx="250" cy="195.0" r="50" fill="#8f8a52" stroke="#141414" stroke-width="6"/><line x1="250" y1="245.0" x2="250" y2="272.5" stroke="#141414" stroke-width="8.4"/><path d="M250 272.5 Q232.5 285.0 215.0 300.0" fill="none" stroke="#141414" stroke-width="4.2"/><path d="M250 272.5 Q241.2 285.0 232.5 300.0" fill="none" stroke="#141414" stroke-width="4.2"/><path d="M250 272.5 Q258.8 285.0 267.5 300.0" fill="none" stroke="#141414" stroke-width="4.2"/><path d="M250 272.5 Q267.5 285.0 285.0 300.0" fill="none" stroke="#141414" stroke-width="4.2"/><circle cx="600" cy="148.8" r="72" fill="#141414" stroke="#141414" stroke-width="7"/><line x1="600" y1="220.8" x2="600" y2="260.4" stroke="#141414" stroke-width="9.8"/><path d="M600 260.4 Q574.8 278.4 549.6 300.0" fill="none" stroke="#141414" stroke-width="4.9"/><path d="M600 260.4 Q587.4 278.4 574.8 300.0" fill="none" stroke="#141414" stroke-width="4.9"/><path d="M600 260.4 Q612.6 278.4 625.2 300.0" fill="none" stroke="#141414" stroke-width="4.9"/><path d="M600 260.4 Q625.2 278.4 650.4 300.0" fill="none" stroke="#141414" stroke-width="4.9"/><text x="250" y="340" text-anchor="middle" class="s-ico-t">tala</text><text x="600" y="345" text-anchor="middle" class="s-ico-t">ombú</text><circle cx="700" cy="70" r="34" fill="none" stroke="#141414" stroke-width="3"/><line x1="700" y1="22" x2="700" y2="118" stroke="#141414" stroke-width="2"/><line x1="652" y1="70" x2="748" y2="70" stroke="#141414" stroke-width="2"/></svg>
+    <aside class="nota s-pampa__nota"><p>Recuperar especies nativas de la región, o de regiones cercanas con clima similar, es una de las líneas de trabajo del arbolado urbano actual.</p></aside>
+  </div>
+</section>
+<section class="slide" data-title="03 · Ceibo" aria-label="8 de 10: 03 · Ceibo"><header class="s-hdr"><span>[08] &nbsp;Capítulo 03 · Especies destacadas</span><span>Fig. 03</span></header>
+  <div class="s-ceibo">
+    <div class="s-ceibo__txt">
+      <h2>Ceibo</h2>
+      <p class="s-sci">Erythrina crista-galli</p>
+      <p>Crece en las riberas y zonas húmedas del litoral. Florece desde la primavera hasta el verano.</p>
+      <p>Por su tolerancia a los suelos húmedos se lo utiliza en plazas, parques y costaneras.</p>
+      <p class="s-big"><span class="sw">1942</span></p>
+      <p class="s-mi">Su flor roja fue declarada flor nacional</p>
+    </div>
+    <div class="s-collage"><figure class="collage collage--ceibo brackets">
+        <div class="collage__stage">
+          <!-- Titular en dos planos -->
+          <p class="collage__head collage__head--back" aria-hidden="true">Fl<span class="sw">o</span>r</p>
+          <img src="img/ilustracion-ceibo-recorte.png" alt="Ilustración pictórica en collage: una rama gigante de ceibo con racimos de flores rojas, hojas y espinas, que nace gruesa abajo a la izquierda y termina en un brote arriba a la derecha; dos abejas pequeñas. Dos recuadros muestran un ceibo adulto completo y el detalle de un brote con hojas nuevas" loading="lazy">
+          <p class="collage__head collage__head--front" aria-hidden="true">Naci<span class="sw">o</span>nal</p>
+
+          <!-- Textos explicativos de los recuadros -->
+          <div class="collage__note collage__note--a">
+            <p class="collage__note-k">A — Ejemplar adulto</p>
+            <p>Árbol de tamaño mediano y tronco tortuoso.</p>
+          </div>
+          <div class="collage__note collage__note--b">
+            <p class="collage__note-k">B — Brote</p>
+            <p>Nacimiento de las hojas trifoliadas. Florece desde la primavera hasta el verano.</p>
+          </div>
+          <div class="collage__note collage__note--c">
+            <p class="collage__note-k">C — Rama</p>
+            <p>Ramas con pequeñas espinas; flores rojas en racimo hacia el extremo.</p>
+          </div>
+
+          <!-- Misceláneas vectoriales -->
+          <span class="collage__misc collage__misc--stars stars" aria-hidden="true"><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg></span>
+          <svg class="collage__misc collage__misc--scope" viewBox="0 0 60 60" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="30" cy="30" r="26"/><line x1="30" y1="0" x2="30" y2="60"/><line x1="0" y1="30" x2="60" y2="30"/><line x1="10" y1="27" x2="10" y2="33"/><line x1="27" y1="10" x2="33" y2="10"/><line x1="15" y1="27" x2="15" y2="33"/><line x1="27" y1="15" x2="33" y2="15"/><line x1="20" y1="27" x2="20" y2="33"/><line x1="27" y1="20" x2="33" y2="20"/><line x1="25" y1="27" x2="25" y2="33"/><line x1="27" y1="25" x2="33" y2="25"/><line x1="35" y1="27" x2="35" y2="33"/><line x1="27" y1="35" x2="33" y2="35"/><line x1="40" y1="27" x2="40" y2="33"/><line x1="27" y1="40" x2="33" y2="40"/><line x1="45" y1="27" x2="45" y2="33"/><line x1="27" y1="45" x2="33" y2="45"/><line x1="50" y1="27" x2="50" y2="33"/><line x1="27" y1="50" x2="33" y2="50"/></svg>
+          <svg class="collage__misc collage__misc--crop" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5"><path vector-effect="non-scaling-stroke" d="M0 18V0H18M82 0H100V18M100 82V100H82M18 100H0V82"/></svg>
+          <p class="collage__misc collage__misc--label" aria-hidden="true">Erythrina<br>crista-galli</p>
+        </div>
+      </figure></div>
+  </div>
+</section>
+<section class="slide" data-title="04 · Hallazgos principales" aria-label="9 de 10: 04 · Hallazgos principales"><header class="s-hdr"><span>[09] &nbsp;Capítulo 04 · Conclusiones</span><span>Capítulo 4 de 4</span></header>
+  <h2 class="s-title">Hallazgos <span class="sw">p</span>rincipales</h2>
+  <ol class="s-find">
+    <li><svg class="s-ico" viewBox="0 0 300 220" aria-hidden="true"><circle cx="40" cy="49.8" r="13" fill="#141414" stroke="#141414" stroke-width="3"/><line x1="40" y1="62.9" x2="40" y2="70" stroke="#141414" stroke-width="4.2"/><circle cx="84" cy="49.8" r="13" fill="#141414" stroke="#141414" stroke-width="3"/><line x1="84" y1="62.9" x2="84" y2="70" stroke="#141414" stroke-width="4.2"/><circle cx="128" cy="49.8" r="13" fill="#141414" stroke="#141414" stroke-width="3"/><line x1="128" y1="62.9" x2="128" y2="70" stroke="#141414" stroke-width="4.2"/><circle cx="172" cy="49.8" r="13" fill="#8f8a52" stroke="#141414" stroke-width="3"/><line x1="172" y1="62.9" x2="172" y2="70" stroke="#141414" stroke-width="4.2"/><circle cx="216" cy="49.8" r="13" fill="#141414" stroke="#141414" stroke-width="3"/><line x1="216" y1="62.9" x2="216" y2="70" stroke="#141414" stroke-width="4.2"/><circle cx="260" cy="49.8" r="13" fill="#141414" stroke="#141414" stroke-width="3"/><line x1="260" y1="62.9" x2="260" y2="70" stroke="#141414" stroke-width="4.2"/><circle cx="40" cy="141.8" r="13" fill="#141414" stroke="#141414" stroke-width="3"/><line x1="40" y1="154.8" x2="40" y2="162" stroke="#141414" stroke-width="4.2"/><circle cx="84" cy="141.8" r="13" fill="#141414" stroke="#141414" stroke-width="3"/><line x1="84" y1="154.8" x2="84" y2="162" stroke="#141414" stroke-width="4.2"/><circle cx="128" cy="141.8" r="13" fill="#141414" stroke="#141414" stroke-width="3"/><line x1="128" y1="154.8" x2="128" y2="162" stroke="#141414" stroke-width="4.2"/><circle cx="172" cy="141.8" r="13" fill="#141414" stroke="#141414" stroke-width="3"/><line x1="172" y1="154.8" x2="172" y2="162" stroke="#141414" stroke-width="4.2"/><circle cx="216" cy="141.8" r="13" fill="#8f8a52" stroke="#141414" stroke-width="3"/><line x1="216" y1="154.8" x2="216" y2="162" stroke="#141414" stroke-width="4.2"/><circle cx="260" cy="141.8" r="13" fill="#141414" stroke="#141414" stroke-width="3"/><line x1="260" y1="154.8" x2="260" y2="162" stroke="#141414" stroke-width="4.2"/><line x1="10" y1="200" x2="290" y2="200" stroke="#141414" stroke-width="4"/></svg><span class="s-num">0<span class="sw">1</span></span><p>La mayoría del arbolado urbano relevado corresponde a especies exóticas.</p></li>
+    <li><svg class="s-ico" viewBox="0 0 300 220" aria-hidden="true"><rect x="20" y="18" width="80" height="86" fill="none" stroke="#141414" stroke-width="4"/><text x="28" y="38" class="s-ico-t s-ico-t--s">R·01</text><circle cx="60" cy="71.8" r="13" fill="#8f8a52" stroke="#141414" stroke-width="3"/><line x1="60" y1="84.8" x2="60" y2="92" stroke="#141414" stroke-width="4.2"/><rect x="112" y="18" width="80" height="86" fill="none" stroke="#141414" stroke-width="4"/><text x="120" y="38" class="s-ico-t s-ico-t--s">R·02</text><circle cx="152" cy="71.8" r="13" fill="#8f8a52" stroke="#141414" stroke-width="3"/><line x1="152" y1="84.8" x2="152" y2="92" stroke="#141414" stroke-width="4.2"/><rect x="204" y="18" width="80" height="86" fill="none" stroke="#141414" stroke-width="4"/><text x="212" y="38" class="s-ico-t s-ico-t--s">R·03</text><circle cx="244" cy="71.8" r="13" fill="#8f8a52" stroke="#141414" stroke-width="3"/><line x1="244" y1="84.8" x2="244" y2="92" stroke="#141414" stroke-width="4.2"/><rect x="20" y="118" width="80" height="86" fill="none" stroke="#141414" stroke-width="4"/><text x="28" y="138" class="s-ico-t s-ico-t--s">R·04</text><circle cx="60" cy="171.8" r="13" fill="#8f8a52" stroke="#141414" stroke-width="3"/><line x1="60" y1="184.8" x2="60" y2="192" stroke="#141414" stroke-width="4.2"/><rect x="112" y="118" width="80" height="86" fill="none" stroke="#141414" stroke-width="4"/><text x="120" y="138" class="s-ico-t s-ico-t--s">R·05</text><circle cx="152" cy="171.8" r="13" fill="#8f8a52" stroke="#141414" stroke-width="3"/><line x1="152" y1="184.8" x2="152" y2="192" stroke="#141414" stroke-width="4.2"/><rect x="204" y="118" width="80" height="86" fill="none" stroke="#141414" stroke-width="4"/><text x="212" y="138" class="s-ico-t s-ico-t--s">R·06</text><circle cx="244" cy="171.8" r="13" fill="#8f8a52" stroke="#141414" stroke-width="3"/><line x1="244" y1="184.8" x2="244" y2="192" stroke="#141414" stroke-width="4.2"/></svg><span class="s-num">0<span class="sw">2</span></span><p>Existen especies nativas aptas para el uso urbano en casi todas las regiones.</p></li>
+    <li><svg class="s-ico" viewBox="0 0 300 220" aria-hidden="true"><circle cx="150" cy="106.8" r="44" fill="#8f8a52" stroke="#141414" stroke-width="5"/><line x1="150" y1="150.8" x2="150" y2="175" stroke="#141414" stroke-width="7.0"/><path d="M150 175 Q134.6 186.0 119.2 199.2" fill="none" stroke="#141414" stroke-width="3.5"/><path d="M150 175 Q142.3 186.0 134.6 199.2" fill="none" stroke="#141414" stroke-width="3.5"/><path d="M150 175 Q157.7 186.0 165.4 199.2" fill="none" stroke="#141414" stroke-width="3.5"/><path d="M150 175 Q165.4 186.0 180.8 199.2" fill="none" stroke="#141414" stroke-width="3.5"/><path fill="#141414" d="M232 24l4.8 17.2L254 46l-17.2 4.8L232 68l-4.8 -17.2L210 46l17.2 -4.8z"/><path fill="#141414" d="M266 79l2.9 10.1L279 92l-10.1 2.9L266 105l-2.9 -10.1L253 92l10.1 -2.9z"/><path fill="#141414" d="M60 47l2.9 10.1L73 60l-10.1 2.9L60 73l-2.9 -10.1L47 60l10.1 -2.9z"/><g fill="none" stroke="#141414" stroke-width="3"><circle cx="72" cy="140" r="10"/><path d="M62 140h-14M82 140h14M72 130v-10"/></g><path d="M210 150 q20 -30 46 -10" fill="none" stroke="#141414" stroke-width="3" stroke-dasharray="5 5"/></svg><span class="s-num">0<span class="sw">3</span></span><p>Incorporarlas aporta beneficios ecológicos y de identidad.</p></li>
+  </ol>
+  <p class="s-note">No se trata de reemplazar todos los árboles exóticos existentes, sino de considerar a las nativas como <strong>primera opción</strong> al planificar nuevas plantaciones.</p>
+</section>
+<section class="slide" data-title="Cierre" aria-label="10 de 10: Cierre">
+  <div class="s-end">
+    <div class="s-end__top"><svg class="crosshair" viewBox="0 0 60 60" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="30" cy="30" r="26"/><line x1="30" y1="2" x2="30" y2="58"/><line x1="2" y1="30" x2="58" y2="30"/><line x1="10" y1="27" x2="10" y2="33"/><line x1="27" y1="10" x2="33" y2="10"/><line x1="15" y1="27" x2="15" y2="33"/><line x1="27" y1="15" x2="33" y2="15"/><line x1="20" y1="27" x2="20" y2="33"/><line x1="27" y1="20" x2="33" y2="20"/><line x1="25" y1="27" x2="25" y2="33"/><line x1="27" y1="25" x2="33" y2="25"/><line x1="35" y1="27" x2="35" y2="33"/><line x1="27" y1="35" x2="33" y2="35"/><line x1="40" y1="27" x2="40" y2="33"/><line x1="27" y1="40" x2="33" y2="40"/><line x1="45" y1="27" x2="45" y2="33"/><line x1="27" y1="45" x2="33" y2="45"/><line x1="50" y1="27" x2="50" y2="33"/><line x1="27" y1="50" x2="33" y2="50"/></svg><span class="stars" aria-hidden="true"><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg><svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 0l2.2 7.8L20 10l-7.8 2.2L10 20l-2.2-7.8L0 10l7.8-2.2z"/></svg></span></div>
+    <p class="s-end__title">Árb<span class="sw">o</span>les<br>nativos</p>
+    <svg class="s-ico s-ico--end" viewBox="0 0 800 600" aria-hidden="true"><rect x="20" y="20" width="760" height="560" fill="#f2f0ea" stroke="#141414" stroke-width="6"/><line x1="20" y1="70" x2="780" y2="70" stroke="#141414" stroke-width="6"/><rect x="40.0" y="37.0" width="16" height="16" fill="#141414"/><rect x="70" y="37" width="16" height="16" fill="none" stroke="#141414" stroke-width="3"/><rect x="92" y="37" width="16" height="16" fill="none" stroke="#141414" stroke-width="3"/><line x1="200" y1="70" x2="200" y2="580" stroke="#141414" stroke-width="4"/><rect x="44" y="100" width="126" height="12" fill="#8a877d"/><rect x="44" y="144" width="126" height="12" fill="#8a877d"/><rect x="44" y="188" width="140" height="22" fill="#141414"/><rect x="44" y="232" width="126" height="12" fill="#8a877d"/><rect x="44" y="276" width="126" height="12" fill="#8a877d"/><rect x="44" y="320" width="126" height="12" fill="#8a877d"/><rect x="44" y="364" width="126" height="12" fill="#8a877d"/><path d="M490 560 V360 M490 420 H330 V250 M490 380 H650 V230 M490 360 V170 M330 300 H260 V200 M650 290 H730 V190" fill="none" stroke="#141414" stroke-width="10"/><circle cx="330" cy="204" r="46" fill="#8f8a52" stroke="#141414" stroke-width="5"/><rect x="321.0" y="241.0" width="18" height="18" fill="#141414"/><circle cx="650" cy="184" r="46" fill="#8f8a52" stroke="#141414" stroke-width="5"/><rect x="641.0" y="221.0" width="18" height="18" fill="#141414"/><circle cx="490" cy="124" r="46" fill="#8f8a52" stroke="#141414" stroke-width="5"/><rect x="481.0" y="161.0" width="18" height="18" fill="#141414"/><circle cx="260" cy="154" r="46" fill="#8f8a52" stroke="#141414" stroke-width="5"/><rect x="251.0" y="191.0" width="18" height="18" fill="#141414"/><circle cx="730" cy="144" r="46" fill="#8f8a52" stroke="#141414" stroke-width="5"/><rect x="721.0" y="181.0" width="18" height="18" fill="#141414"/><path d="M490 560 q-60 10 -100 18 M490 560 q60 10 100 18 M490 560 v20" fill="none" stroke="#141414" stroke-width="5"/><path fill="#141414" d="M300 104l3.5 12.5L316 120l-12.5 3.5L300 136l-3.5 -12.5L284 120l12.5 -3.5z"/><path fill="#141414" d="M700 98l4.8 17.2L722 120l-17.2 4.8L700 142l-4.8 -17.2L678 120l17.2 -4.8z"/></svg>
+    <div class="s-end__cols">
+      <div><p class="s-k">Referencias</p>
+        <p>Cabrera, A. L. (1976). <em>Regiones fitogeográficas argentinas</em>. Buenos Aires: ACME.</p>
+        <p>Instituto de Botánica Darwinion. <em>Flora del Cono Sur</em>. <a href="https://www.darwin.edu.ar" target="_blank" rel="noopener">www.darwin.edu.ar</a></p></div>
+      <div><p class="s-k">Acerca del proyecto</p>
+        <p>Trabajo Práctico 4 de <strong>Diseño Gráfico 4</strong> · Cátedra Meygide-Carpintero · FADU-UBA · 2026.</p>
+        <p><strong>Equipo:</strong> Nombre Apellido y Nombre Apellido.</p>
+        <a class="cta s-end__cta" href="portal.html">Ver el sitio completo <span class="arrow" aria-hidden="true">↗</span></a></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<nav id="nav" aria-label="Navegación de la presentación">
+  <button id="prev" type="button" aria-label="Anterior">←</button>
+  <span class="dots" id="dots"></span>
+  <span id="count" aria-live="polite">01/10</span>
+  <button id="next" type="button" aria-label="Siguiente">→</button>
+  <button id="fs" type="button" aria-label="Pantalla completa">⛶</button>
+</nav>
+
+<script>
+/* =====================================================================
+   Escalado del lienzo 1920×1080 y navegación
+   ===================================================================== */
+(function () {
+  "use strict";
+  var stage = document.getElementById("stage");
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var N = slides.length, cur = 0;
+
+  /* --- escalado (letterbox centrado) --- */
+  function fit() {
+    var vw = document.documentElement.clientWidth || innerWidth, vh = document.documentElement.clientHeight || innerHeight;
+    var s = Math.min(vw / 1920, vh / 1080);
+    stage.style.transform = "translate(-50%,-50%) scale(" + s + ")";
+  }
+  addEventListener("resize", fit); fit();
+
+  /* --- controles --- */
+  var dots = document.getElementById("dots"), count = document.getElementById("count"), prog = document.getElementById("progress");
+  slides.forEach(function (sl, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.title = sl.dataset.title; b.setAttribute("aria-label", "Ir a la slide " + (i + 1) + ": " + sl.dataset.title);
+    b.addEventListener("click", function () { go(i); });
+    dots.appendChild(b);
+  });
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function go(i) {
+    cur = Math.max(0, Math.min(N - 1, i));
+    slides.forEach(function (s, k) { s.classList.toggle("active", k === cur); s.setAttribute("aria-hidden", k === cur ? "false" : "true"); });
+    Array.prototype.forEach.call(dots.children, function (d, k) { d.setAttribute("aria-current", k === cur ? "true" : "false"); });
+    count.textContent = pad(cur + 1) + "/" + pad(N);
+    prog.style.width = ((cur + 1) / N * 100) + "%";
+  }
+  document.getElementById("prev").addEventListener("click", function () { go(cur - 1); });
+  document.getElementById("next").addEventListener("click", function () { go(cur + 1); });
+  document.getElementById("fs").addEventListener("click", function () {
+    if (document.fullscreenElement) document.exitFullscreen(); else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
+  });
+
+  /* --- teclado --- */
+  addEventListener("keydown", function (e) {
+    var onControl = e.target.closest && e.target.closest("a, button");
+    if ((e.key === "Enter" || e.key === " ") && onControl) return;
+    if (["ArrowRight", "PageDown", " "].indexOf(e.key) > -1) { e.preventDefault(); go(cur + 1); }
+    else if (["ArrowLeft", "PageUp"].indexOf(e.key) > -1) { e.preventDefault(); go(cur - 1); }
+    else if (e.key === "Home") go(0);
+    else if (e.key === "End") go(N - 1);
+    else if (e.key === "f" || e.key === "F") document.getElementById("fs").click();
+  });
+
+  /* --- táctil --- */
+  var tx = null;
+  addEventListener("touchstart", function (e) { tx = e.touches[0].clientX; }, { passive: true });
+  addEventListener("touchend", function (e) {
+    if (tx === null) return; var dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1)); tx = null;
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>

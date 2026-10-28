@@ -115,6 +115,31 @@ Explorar distintas posibilidades para la presentación visual del informe final.
 
 Buscar referencias y proponer posibles ejemplos de piezas que puedan acompañar la investigación y utilizarse durante la presentación. No es necesario diseñar ni producir ninguna pieza gráfica en esta instancia, simplemente armar un **mosaico o tablero de referencias y/o ejemplos**. Para esto, se puede crear un tablero en Figma, Miro u otra plataforma similar, e incluir el enlace dentro del archivo *Markdown* principal (`README.md`) para que el resto del grupo y docentes pueda acceder a él.
 
+## Tarea para la clase del 5/11/26
+La próxima clase será la última sesión de tutorías que los grupos tendrán con los docentes. Se espera que las investigaciones estén claramente definidas y avanzadas, y que también puedan presentarse avances de las piezas que forman parte de la entrega final.
+### 1. Informe de investigación preliminar
+Presentar una versión preliminar del informe en forma de un sitio web funcional, navegable e interactivo, que incluya imágenes y/o diagramas.
+
+Se deberán tener en cuenta los siguientes aspectos:
+- El sitio debe estar organizado en diferentes páginas y secciones.
+- El informe debe ser una síntesis concisa, clara y cuidadosamente revisada por los integrantes del grupo, centrada en el recorte de investigación realizado y en su aplicación mediante ejemplos o demostraciones concretas.
+- Se espera que cada grupo realice una selección, revisión y edición responsable del material generado con inteligencia artificial. El informe no debe reducirse a copiar y pegar textos generados automáticamente.
+- La página de inicio debe presentar el tópico asignado y explicar el recorte realizado.
+- La página de inicio debe incluir los nombres de los integrantes del grupo.
+- El desarrollo de la investigación debe organizarse en cuatro o cinco páginas o capítulos de extensión moderada.
+- Cada página debe incluir imágenes, capturas, esquemas o diagramas explicativos que acompañen la investigación.
+- Se recomienda evaluar la incorporación de alguna sección interactiva o animada con un propósito vinculado al tema desarrollado, como demostración, experimentación, explicación o gamificación.
+- Opcionalmente, el sitio puede incluir una página adicional con las referencias y/o fuentes consultadas.
+
+> Como alternativa al sitio web, el informe también puede presentarse mediante una plataforma gratuita para la creación de wikis o documentos colaborativos, como Notion o GitHub Wiki.
+
+### 2. Presentación preliminar
+Traer un primer borrador de la presentación, o al menos un punteo organizado de los temas que se desarrollarán durante la exposición del grupo.
+
+### 3. Producción de piezas
+Dado que la semana próxima será la última instancia de corrección, es imprescindible presentar una versión avanzada de las piezas que acompañarán la investigación y que serán expuestas durante la presentación.
+
+Las producciones pueden ser piezas complementarias al informe, vinculadas con el tema investigado, o producciones que permitan demostrar o aplicar los conceptos desarrollados durante la exposición.
 
 ## Entrega final del trabajo práctico
 

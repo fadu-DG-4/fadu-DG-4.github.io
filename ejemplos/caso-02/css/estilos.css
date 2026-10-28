@@ -1587,6 +1587,158 @@ figcaption strong {
 }
 
 /* --------------------------------------------------------------------------
+   COMPOSICIÓN MULTIESCALAR / ZOOM SUPERPUESTO (Capítulo 3 - Especies destacadas)
+   -------------------------------------------------------------------------- */
+.composicion-multiescalar {
+  margin: var(--space-8) 0 var(--space-10);
+  position: relative;
+  max-width: 100%;
+}
+
+/* Fila superior que contiene el snippet/spec a la izquierda y el árbol (Zoom Out) a la derecha */
+.zoom-header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: -24px; /* Superposición sutil con el borde superior de la caja principal */
+  position: relative;
+  z-index: 6;
+}
+
+.zoom-header-info {
+  flex: 1 1 360px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.zoom-header-info .zoom-snippet {
+  margin: 0;
+  max-width: 100%;
+}
+
+.zoom-header-info .zoom-spec {
+  margin: 0;
+  max-width: fit-content;
+}
+
+/* Caja Zoom Out (Árbol hábito) ubicada arriba al lado del snippet */
+.zoom-box.box-zoomout.top-positioned {
+  position: relative;
+  flex: 0 0 270px;
+  max-width: 280px;
+  background-color: var(--color-surface);
+  box-shadow: 3px 3px 0px var(--color-border);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.zoom-box.box-zoomout.top-positioned:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--color-border);
+}
+
+.cuerpo-zoomout {
+  height: 155px;
+  background-color: var(--color-surface);
+  position: relative;
+  overflow: hidden;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+/* Escenario principal */
+.zoom-stage {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: var(--space-4);
+}
+
+/* Caja principal: Rama de ceibo en diagonal */
+.zoom-box.box-principal {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.cuerpo-principal {
+  position: relative;
+  height: 420px;
+  background-color: var(--color-surface);
+  overflow: hidden;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.zoom-img-principal {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  mix-blend-mode: multiply;
+  filter: contrast(1.02);
+}
+
+/* Caja Zoom In (Detalle hoja y brote) - Flotando abajo a la derecha con mínima superposición */
+.zoom-box.box-zoomin {
+  position: absolute;
+  bottom: -22px;
+  right: -12px;
+  width: 270px;
+  z-index: 8;
+  background-color: var(--color-surface);
+  box-shadow: 4px 4px 0px var(--color-border);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.zoom-box.box-zoomin:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--color-border);
+}
+
+.cuerpo-zoomin {
+  height: 155px;
+  background-color: var(--color-surface);
+  position: relative;
+  overflow: hidden;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.zoom-img-encajada {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  mix-blend-mode: multiply;
+}
+
+/* Pastillas de identificación de escala */
+.zoom-pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 1px 6px;
+  border: 1px solid var(--color-border);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  display: inline-block;
+}
+
+.zoom-pill.in {
+  background-color: #eaf5ea;
+  color: #1b5e20;
+  border-color: #2e7d32;
+}
+
+.zoom-pill.out {
+  background-color: #fdf2e9;
+  color: #b73e00;
+  border-color: #d35400;
+}
+
+.info-zoomin,
+.info-zoomout {
+  padding: var(--space-2) var(--space-3);
+}
+
+/* --------------------------------------------------------------------------
    8. RECUADRO DE CONTENIDO PENDIENTE (.pendiente)
    -------------------------------------------------------------------------- */
 .pendiente {
@@ -1970,6 +2122,38 @@ figcaption strong {
   .esquema-snippet {
     max-width: 100%;
   }
+
+  /* Ajuste de composición multiescalar en pantallas reducidas */
+  .zoom-header-row {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .zoom-box.box-zoomout.top-positioned {
+    width: 100%;
+    max-width: 100%;
+    flex: auto;
+  }
+
+  .zoom-box.box-zoomin {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    width: 100%;
+    max-width: 100%;
+    margin-top: var(--space-4);
+  }
+
+  .cuerpo-principal {
+    height: 300px;
+  }
+
+  .cuerpo-zoomin,
+  .cuerpo-zoomout {
+    height: 190px;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -2043,6 +2227,19 @@ figcaption strong {
   .ventana-figura {
     border: 1pt solid #000000;
     page-break-inside: avoid;
+  }
+
+  .composicion-multiescalar {
+    border: 1pt solid #000000;
+    page-break-inside: avoid;
+  }
+
+  .zoom-box.box-zoomin,
+  .zoom-box.box-zoomout {
+    position: static;
+    width: 100%;
+    margin-top: 10pt;
+    box-shadow: none;
   }
 
   table {

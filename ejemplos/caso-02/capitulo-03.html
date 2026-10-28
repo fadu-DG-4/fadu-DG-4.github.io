@@ -83,17 +83,125 @@
 
             <p>El ceibo (<em>Erythrina crista-galli</em>) crece en las riberas y zonas húmedas del litoral. Su flor roja fue declarada <strong>flor nacional</strong> en 1942.</p>
 
-            <!-- Ventana de figura técnica -->
-            <figure class="ventana-figura">
-              <div class="ventana-header">
-                <span class="ventana-titulo">boceto-ceibo.svg</span>
-                <span class="ventana-controles" aria-hidden="true">✕</span>
+            <!-- Composición analítica multiescalar con ventanas superpuestas (zoom in / zoom out) -->
+            <figure class="composicion-multiescalar" aria-label="Análisis morfológico multiescalar del ceibo: rama en floración con zoom in de brote y zoom out de hábito">
+
+              <!-- Fila superior de cabecera: Snippet/spec a la izquierda + Caja Zoom Out (árbol) a la derecha -->
+              <div class="zoom-header-row">
+                <div class="zoom-header-info">
+                  <!-- Snippet de código decorativo como cabecera analítica -->
+                  <div class="conector-snippet zoom-snippet" aria-hidden="true">
+<pre><span class="sn-kw">def</span> <span class="sn-fn">analizar_escalas</span>(especimen):
+    <span class="sn-kw">return</span> {
+        <span class="sn-str">"zoom_in"</span>  : especimen.folíolo.<span class="sn-fn">microscopía</span>(acúleo),  <span class="sn-com">// 2:1</span>
+        <span class="sn-str">"meso"</span>     : especimen.rama.<span class="sn-fn">inflorescencia</span>(carmín),   <span class="sn-com">// 1:10</span>
+        <span class="sn-str">"zoom_out"</span> : especimen.hábito.<span class="sn-fn">canopia_urbana</span>()      <span class="sn-com">// 1:100</span>
+    }</pre>
+                  </div>
+
+                  <!-- Caja de especificaciones técnicas superpuesta -->
+                  <div class="conector-spec superpuesto zoom-spec">
+                    <div><span class="spec-kw">sistema</span> : <span class="spec-fn">desglose_multiescalar</span>;</div>
+                    <div><span class="spec-kw">vector</span> : macro [árbol] ➔ meso [rama] ➔ micro [brote];</div>
+                    <div><span class="spec-val">resolución = { 1:100, 1:10, 2:1 }</span> // ratios ópticos</div>
+                  </div>
+                </div>
+
+                <!-- Caja Zoom Out: Pequeño árbol de ceibo arriba al lado del snippet -->
+                <div class="zoom-box box-zoomout top-positioned">
+                  <div class="cuadro-wireframe">
+                    <div class="cuadro-header header-zoomout">
+                      <span>zoom_out // hábito_árbol.raw</span>
+                      <span class="zoom-pill out">[ - ZOOM OUT ]</span>
+                      <span class="cuadro-ctrl" aria-hidden="true">✕</span>
+                    </div>
+                    <div class="cuadro-cuerpo cuerpo-zoomout">
+                      <span class="corner-cross top-left" aria-hidden="true">+</span>
+                      <span class="corner-cross top-right" aria-hidden="true">+</span>
+                      <span class="corner-cross bottom-left" aria-hidden="true">+</span>
+                      <span class="corner-cross bottom-right" aria-hidden="true">+</span>
+
+                      <img src="img/ceibo-arbol-habito.jpg" 
+                           alt="Árbol completo de ceibo en floración mostrando fuste tortuoso y copa amplia" 
+                           class="zoom-img-encajada"
+                           width="800" 
+                           height="600">
+                    </div>
+                  </div>
+                  
+                  <div class="cuadro-info info-zoomout">
+                    <div class="info-tag">[ HÁBITO MACRO // ESCALA 1:100 ]</div>
+                    <div class="info-nombre">Porte arbóreo (5–10 m) + Silueta</div>
+                    <p class="info-desc">Arquitectura de copa extendida aparasolada y tronco tortuoso.</p>
+                  </div>
+                </div>
               </div>
-              <div class="ventana-cuerpo">
-                <img src="img/boceto-ceibo.svg" alt="Boceto de una rama de ceibo con hojas trifoliadas, espinas y un racimo de flores, con un recuadro de detalle de la flor" width="800" height="460">
+
+              <!-- Escenario de composición: Caja principal de la rama y detalle flotante -->
+              <div class="zoom-stage">
+
+                <!-- 1. CAJA PRINCIPAL: Rama de ceibo en diagonal (completamente visible) -->
+                <div class="zoom-box box-principal">
+                  <div class="cuadro-wireframe">
+                    <div class="cuadro-header">
+                      <span>espécimen_02 // rama_florífera_diagonal.raw</span>
+                      <span class="cuadro-ctrl" aria-hidden="true">✕</span>
+                    </div>
+                    <div class="cuadro-cuerpo cuerpo-principal">
+                      <span class="corner-cross top-left" aria-hidden="true">+</span>
+                      <span class="corner-cross top-right" aria-hidden="true">+</span>
+                      <span class="corner-cross bottom-left" aria-hidden="true">+</span>
+                      <span class="corner-cross bottom-right" aria-hidden="true">+</span>
+
+                      <!-- Imagen principal de la rama con fusión multiply -->
+                      <img src="img/ceibo-rama-diagonal.jpg" 
+                           alt="Rama florecida de ceibo dispuesta en diagonal con racimo floral carmín y follaje trifoliado" 
+                           class="zoom-img-principal"
+                           width="1200" 
+                           height="896">
+                    </div>
+                  </div>
+                  
+                  <div class="cuadro-info">
+                    <div class="info-tag">[ ESPÉCIMEN PRINCIPAL // COTA MESO 1:10 ]</div>
+                    <div class="info-nombre">Erythrina crista-galli · Inflorescencia y eje leñoso</div>
+                    <p class="info-desc">Racimo floral carmín en ángulo diagonal, con hojas trifoliadas y acúleos cónicos sobre el fuste secundario.</p>
+                  </div>
+                </div>
+
+                <!-- 2. CAJA SUPERPUESTA: ZOOM IN (Detalle de hoja y brote en esquina inferior) -->
+                <div class="zoom-box box-zoomin">
+                  <div class="cuadro-wireframe">
+                    <div class="cuadro-header header-zoomin">
+                      <span>zoom_in // folíolo_brote.raw</span>
+                      <span class="zoom-pill in">[ + ZOOM IN ]</span>
+                      <span class="cuadro-ctrl" aria-hidden="true">✕</span>
+                    </div>
+                    <div class="cuadro-cuerpo cuerpo-zoomin">
+                      <span class="corner-cross top-left" aria-hidden="true">+</span>
+                      <span class="corner-cross top-right" aria-hidden="true">+</span>
+                      <span class="corner-cross bottom-left" aria-hidden="true">+</span>
+                      <span class="corner-cross bottom-right" aria-hidden="true">+</span>
+
+                      <img src="img/ceibo-detalle-hoja-brote.jpg" 
+                           alt="Macro detalle de hoja trifoliada, brote tierno y espina nodal de ceibo" 
+                           class="zoom-img-encajada"
+                           width="800" 
+                           height="600">
+                    </div>
+                  </div>
+                  
+                  <div class="cuadro-info info-zoomin">
+                    <div class="info-tag">[ DETALLE MICRO // ESCALA 2:1 ]</div>
+                    <div class="info-nombre">Folíolo + Brote apical + Acúleo</div>
+                    <p class="info-desc">Venación reticulada y acúleos nodales de defensa mecánica.</p>
+                  </div>
+                </div>
+
               </div>
-              <figcaption>
-                <strong>Figura 3.</strong> Boceto de ilustración botánica del ceibo. En la versión final, la flor se representará en color.
+
+              <figcaption class="composicion-caption">
+                <strong>Figura 3.</strong> Análisis morfológico multiescalar del ceibo (<em>Erythrina crista-galli</em>). En la ventana principal, espécimen de rama florífera en diagonal en cota meso (1:10) que exhibe la floración carmín y la disposición del follaje. En la cabecera analítica, <strong>zoom out</strong> (1:100) documentando el porte arbóreo completo y la silueta de la copa; hacia el cuadrante inferior, <strong>zoom in</strong> (2:1) con macro detalle de la venación foliar, brote tierno y acúleo nodal.
               </figcaption>
             </figure>
 

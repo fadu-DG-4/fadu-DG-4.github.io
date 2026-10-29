@@ -179,6 +179,23 @@ Debido a la amplitud de los temas y a la diversidad de recortes posibles, no se 
 
 > **Nota 3:** La definición de la pieza o las piezas a presentar será discutida con cada grupo durante las tutorías con los docentes. Estas piezas pueden pensarse como piezas cerradas independientes o como ejemplos que ayuden a conducir la presentación o demostración de los puntos investigados.
 
+## Tutorías
+Las dos últimas clases previas a la exposición de los resultados de las investigaciones se desarrollarán en **modalidad de tutoría**. En estas instancias, los docentes acompañarán y orientarán a cada grupo en el desarrollo de su proyecto. No serán clases destinadas a la presentación de conceptos teóricos ni instancias generales de corrección.
+
+A cada grupo se le asignará un horario específico dentro de la clase. Las tutorías se realizarán de manera individual, con la participación exclusiva de los docentes y del grupo correspondiente.
+
+> Para aprovechar mejor el tiempo, es importante tener disponible todo el material de trabajo y llevar preparadas preguntas concretas. Si desean compartir ejemplos visuales o interactivos, deberán preparar con anticipación los tableros, prototipos o sitios que quieran mostrar durante la tutoría.
+
+## Uso de la inteligencia artificial
+
+Es importante entender que la **inteligencia artificial** puede funcionar como asistente, instrumento de análisis o incluso como objeto de investigación, pero **no reemplaza la responsabilidad del grupo**. Toda información generada debe ser revisada, contrastada con fuentes confiables y elaborada críticamente. También es recomendable registrar qué herramientas se utilizaron, para qué tareas y qué decisiones fueron tomadas por los integrantes del grupo.
+
+**La inteligencia artificial puede constituir —o no— el objeto de la investigación**. Cuando no lo sea, puede resultar útil para buscar y analizar información, explorar y relacionar temas, documentar el proceso y comunicar visualmente los resultados.
+
+También es importante aprovechar su capacidad para explicar cuestiones complejas o detallar, paso a paso, cómo realizar una tarea que los integrantes del grupo aún no conocen.
+
+> A la hora de producir las piezas, no se trata únicamente de utilizar la inteligencia artificial como asistente para hacer aquello que ya sabemos hacer, sino también como guía para aprender, explorar y resolver aquello que todavía no sabemos cómo hacer.
+
 
 ---
 

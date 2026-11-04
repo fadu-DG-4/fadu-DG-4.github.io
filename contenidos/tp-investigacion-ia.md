@@ -196,6 +196,45 @@ También es importante aprovechar su capacidad para explicar cuestiones compleja
 
 > A la hora de producir las piezas, no se trata únicamente de utilizar la inteligencia artificial como asistente para hacer aquello que ya sabemos hacer, sino también como guía para aprender, explorar y resolver aquello que todavía no sabemos cómo hacer.
 
+## El informe
+El informe deberá llevarse el día de la presentación en un pendrive por cada grupo. Si se desarrolló un sitio web, es importante verificar previamente que pueda abrirse y visualizarse correctamente haciendo doble clic en el archivo HTML principal, generalmente `index.html`.
+
+La portada —es decir, la primera página del informe— debe incluir:
+
+- el tópico asignado;
+- los nombres de los integrantes del grupo;
+- el título de la investigación;
+- (opcionalmente) una bajada o subtítulo.
+
+El título debe funcionar como una invitación a leer: tiene que ser claro, atractivo y lo suficientemente sugerente —o incluso provocador— como para despertar curiosidad sobre el recorte de la investigación.
+
+Todas las imágenes, tipografías, videos, archivos de audio y demás recursos utilizados en el informe deben estar incluidos dentro de la carpeta del proyecto. Verificar también que los enlaces a esos recursos utilicen rutas relativas y funcionen correctamente.
+
+## La presentación
+Cada grupo dispondrá de un máximo de 25 minutos para realizar su presentación. Este tiempo incluye tanto el recorrido por las diapositivas como la presentación de las piezas producidas durante la investigación.
+
+### 1. Antes de la presentación
+- Planificar cómo se distribuirá el tiempo entre las distintas etapas de la presentación: qué se mostrará, en qué momento y con qué propósito. Ensayar un breve guion que organice la narrativa y ayude a definir qué se quiere comunicar.
+- Llevar en un pendrive el material completo de la entrega: la presentación, el informe y las piezas producidas por el grupo.
+- Siempre que sea posible, llevar una computadora por grupo para conectarla a la pantalla del taller durante la presentación.
+- Verificar previamente que todos los archivos estén correctamente guardados en el pendrive y puedan abrirse sin problemas.
+
+### 2. Durante la presentación
+- No pensar la presentación únicamente como una exposición de temas teóricos leídos desde las diapositivas. Si bien es importante introducir el tema y los conceptos principales —especialmente para quienes no estén familiarizados con el tópico investigado—, se espera que las ideas se expliquen mediante ejemplos y a través de las piezas producidas específicamente como parte del trabajo.
+- Evaluar el formato de la presentación. No todo debe ser necesariamente expositivo: algunas partes pueden incluir demostraciones prácticas o dinámicas participativas que involucren al auditorio.
+- Considerar también el aspecto performático de la presentación: cómo se distribuyen las intervenciones entre los integrantes, qué ritmo tiene la exposición, cómo se utilizan la voz, el cuerpo y el espacio, y de qué manera se articulan el discurso oral, las imágenes, las animaciones y las piezas producidas.
+- Evaluar si es posible incorporar el espacio del taller o algunos de sus objetos como parte de la presentación, siempre que esa decisión contribuya a comunicar mejor la investigación.
+
+
+## Cronograma de presentaciones
+Las presentaciones grupales se realizarán en dos jornadas, de acuerdo con el siguiente cronograma:
+
+- **Jueves 12 de noviembre**: presentarán los grupos 1, 2, 3 y 4.
+- **Jueves 19 de noviembre**: presentarán los grupos 5, 6, 7 y 8.
+
+El orden de exposición de cada jornada podrá ser acordado entre los propios grupos. Si no se alcanza un acuerdo, se definirá al azar.
+
+> **Nota**: Si bien los grupos 5, 6, 7 y 8 dispondrán de una semana adicional antes de realizar su presentación, no habrá nuevas instancias de tutoría durante ese período.
 
 ---
 
